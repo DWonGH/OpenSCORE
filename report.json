@@ -1,0 +1,37 @@
+{
+  "Diagnostic significance": [
+    {
+      "Epilepsy": [
+        {
+          "Psychogenic non-epileptic seizures (PNES)": 2
+        },
+        {
+          "Other non-epileptic clinical episode": 0
+        }
+      ]
+    },
+    {
+      "Status epilepticus": [
+        {
+          "Focal dysfunction of the central nervous system": 0
+        },
+        {
+          "Diffuse dysfunction of the central nervous system": 0
+        }
+      ]
+    },
+    {
+      "Continuous spikes and waves during slow sleep (CSWS) or electrical status epilepticus in sleep (ESES)": [
+        {
+          "Coma": 0
+        },
+        {
+          "Brain death": 0
+        },
+        {
+          "EEG abnormality of uncertain significance": 0
+        }
+      ]
+    }
+  ]
+}

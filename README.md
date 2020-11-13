@@ -5,6 +5,7 @@ Software for viewing and reporting EEGs according to the SCORE standard.
 1. Download code
 ```shell script
 git clone https://github.com/DWonGH/OpenSCORE.git
+cd OpenSCORE
 ```
 
 2. Setup virtual / conda environment e.g.

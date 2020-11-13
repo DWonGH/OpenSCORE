@@ -7,6 +7,8 @@ __pycache__/
 *.so
 
 .idea
+report.json
+reports
 
 # Distribution / packaging
 .Python

@@ -1,7 +1,7 @@
 import os
 import json
 
-from PyQt5.QtWidgets import QMainWindow, QWidget, QAction, QVBoxLayout, QStatusBar, QTreeView, QErrorMessage
+from PyQt5.QtWidgets import QTabWidget,  QMainWindow, QWidget, QAction, QVBoxLayout, QStatusBar, QTreeView, QErrorMessage
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtCore import Qt
 
@@ -27,6 +27,12 @@ class MainWindow(QMainWindow):
         self.file_name = "report_1"
         if not os.path.exists(self.report_dir):
             os.mkdir(self.report_dir)
+
+        tab_view = QTabWidget()
+        
+
+
+
 
         # Build checkboxes and and viewer widget
         self.model = QStandardItemModel()

@@ -43,6 +43,10 @@ class MainMenuBar(QMenuBar):
                 self.parent.interpreter_name = dialog.txe_interpreter_name.text()
                 self.parent.eeg_sequence_list_location = dialog.txe_specified_paths.text()
                 self.parent.root_output_directory = dialog.txe_root_output_directory.text()
+                with open(self.parent.eeg_sequence_list_location, 'r') as f:
+                    self.parent.eeg_sequence_list = f.read().splitlines()
+                for line in self.parent.eeg_sequence_list:
+                    print(line)
             else:
                 print("It didnt work :(")
         except Exception as e:

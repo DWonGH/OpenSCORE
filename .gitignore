@@ -5,8 +5,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Test output/ report
+# Test outputs
 report.json
+specified_recordings.txt
+root output directory
 
 # C extensions
 *.so

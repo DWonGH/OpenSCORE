@@ -46,6 +46,16 @@ class MainTabWidget(QWidget):
             "Findings": {
                 "Background Activity": self.findings_tab.background_activity_tab.get_details()
             },
-            "Diagnostic significance": self.diagnostic_significance_tab.get_details()
+            "Diagnostic significance": self.diagnostic_significance_tab.get_details(),
+            "Clinical comments": self.clinical_comments.get_details()
         }
         return patient_score
+
+    def reset_score(self):
+        """
+        Make each box in score empty for fresh report
+        :return:
+        """
+        items = (self.layout.itemAt(i) for i in range(self.layout.count()))
+        for widget in items:
+            print(widget)

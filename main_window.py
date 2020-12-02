@@ -1,7 +1,10 @@
 import json
 
-from PyQt5.QtWidgets import QMainWindow, QWidget, QAction, QVBoxLayout, QStatusBar
+from PyQt5.QtWidgets import QMainWindow, QWidget, QAction, QVBoxLayout, QStatusBar, QHBoxLayout
+
 from main_tab import MainTabWidget
+from directory_sidebar import FileViewTree
+from main_toolbar import MainToolBar
 
 
 class MainWindow(QMainWindow):
@@ -40,12 +43,19 @@ class MainWindow(QMainWindow):
         # bt_close_window.triggered.connect(self.close())
         self.file_menu.addAction(self.bt_close_window)
 
+        self.addToolBar(MainToolBar(self))
+
         # Create the central layout and Tab Viewer
-        self.layout = QVBoxLayout()
-        self.main_widget = QWidget()
-        self.main_tab_view = MainTabWidget(self)
-        self.layout.addWidget(self.main_tab_view)
-        self.main_widget.setLayout(self.layout)
+        self.main_widget = QWidget()  # Main wrapper
+        self.main_layout = QVBoxLayout()  #
+        self.vertical_split = QHBoxLayout()  # For fitting the sidebar and scoring section next to each other
+        # Create sidebar (directory tree)
+        self.file_view_tree = FileViewTree(self)
+        self.vertical_split.addWidget(self.file_view_tree)
+        self.main_tab_view = MainTabWidget(self)  # The main scoring section
+        self.vertical_split.addWidget(self.main_tab_view)
+        self.main_layout.addLayout(self.vertical_split)
+        self.main_widget.setLayout(self.main_layout)
         self.setCentralWidget(self.main_widget)
 
         # Status bar at the bottom

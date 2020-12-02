@@ -11,8 +11,8 @@ class MainMenuBar(QMenuBar):
 
         self.file_menu = self.addMenu("&File")
 
-        self.bt_new_session = QAction("&New TEETACSI Session", self)
-        self.bt_new_session.setStatusTip("Start a new TEETACSI session")
+        self.bt_new_session = QAction("&Load EEG sequence", self)
+        self.bt_new_session.setStatusTip("Load a specified set of EEG recording to analyze")
         self.bt_new_session.triggered.connect(self.hdl_new_session)
         self.file_menu.addAction(self.bt_new_session)
 
@@ -45,8 +45,7 @@ class MainMenuBar(QMenuBar):
                 self.parent.root_output_directory = dialog.txe_root_output_directory.text()
                 with open(self.parent.eeg_sequence_list_location, 'r') as f:
                     self.parent.eeg_sequence_list = f.read().splitlines()
-                for line in self.parent.eeg_sequence_list:
-                    print(line)
+                self.parent.load_tueg_recording(0)
             else:
                 print("It didnt work :(")
         except Exception as e:

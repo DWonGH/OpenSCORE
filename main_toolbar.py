@@ -7,10 +7,6 @@ class MainToolBar(QToolBar):
 
         self.parent = parent
 
-        self.bt_open_selected = QAction("&Open Selected", self)
-        self.bt_open_selected.triggered.connect(self.hdl_open_selected)
-        self.addAction(self.bt_open_selected)
-
         self.bt_previous_recording = QAction("&Previous", self)
         # self.next_recording.triggered.connect(self.eeg_graph.decrease_volts_scale)
         self.addAction(self.bt_previous_recording)
@@ -27,5 +23,9 @@ class MainToolBar(QToolBar):
         # self.next_recording.triggered.connect(self.eeg_graph.stop_analysis)
         self.addAction(self.stop_analysis)
 
-    def hdl_open_selected(self):
-        print(self.parent.file_view_tree.data_directory)
+    def hdl_next_recording(self):
+        # First check if the user has saved
+        # If the user hasnt saved then show pop up dialog warning about lost work
+        # Change the main windows current index to + 1
+        # Call the main windows load recording
+        pass

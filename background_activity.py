@@ -233,5 +233,7 @@ class BackgroundActivityTab(QWidget):
             self.txe_pdr_freq_asymmetry_left.setEnabled(False)
             self.txe_pdr_freq_asymmetry_right.setEnabled(True)
 
+    def clear_inputs(self):
+        pass
 
 

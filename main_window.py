@@ -37,3 +37,6 @@ class MainWindow(QMainWindow):
 
         self.statusBar = QStatusBar()
         self.setStatusBar(self.statusBar)
+
+        self.eeg_sequence_list_location = None
+        self.root_output_directory = None

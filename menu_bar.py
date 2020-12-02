@@ -1,6 +1,6 @@
 import json
 from PyQt5.QtWidgets import QMenuBar, QAction
-
+from start_session_dialog import StartSessionDialog
 
 class MainMenuBar(QMenuBar):
     def __init__(self, parent):
@@ -9,6 +9,11 @@ class MainMenuBar(QMenuBar):
         self.parent = parent
 
         self.file_menu = self.addMenu("&File")
+
+        self.bt_new_session = QAction("&New TEETACSI Session", self)
+        self.bt_new_session.setStatusTip("Start a new TEETACSI session")
+        self.bt_new_session.triggered.connect(self.hdl_new_session)
+        self.file_menu.addAction(self.bt_new_session)
 
         self.bt_new_file = QAction("&New", self)
         self.bt_new_file.setStatusTip("New report")
@@ -29,6 +34,18 @@ class MainMenuBar(QMenuBar):
         self.bt_close_window.setStatusTip("Exit OpenScore")
         # bt_close_window.triggered.connect(self.close())
         self.file_menu.addAction(self.bt_close_window)
+
+    def hdl_new_session(self):
+        try:
+            dialog = StartSessionDialog(self)
+            if dialog.exec_():
+                self.parent.interpreter_name = dialog.txe_interpreter_name.text()
+                self.parent.eeg_sequence_list_location = dialog.txe_specified_paths.text()
+                self.parent.root_output_directory = dialog.txe_root_output_directory.text()
+            else:
+                print("It didnt work :(")
+        except Exception as e:
+            print(f"Exception starting a new analysis session {e}")
 
     def hdl_save_report(self):
         """

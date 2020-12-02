@@ -31,3 +31,19 @@ class MainTabWidget(QWidget):
 
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
+
+    def get_info(self):
+        """
+        Pulls the data from each input in the UI
+        :return: A dictionary describing the 5 main categories and various sub categories of the
+                    SCORE EEG reporting standard
+        """
+        patient_score = {
+            "Patient details": self.patient_details_tab.get_details(),
+            "Recording conditions": self.recording_conditions.get_details(),
+            "Findings": {
+                "Background Activity": self.findings_tab.background_activity_tab.get_details()
+            },
+            "Diagnostic significance": self.diagnostic_significance_tab.get_details()
+        }
+        return patient_score

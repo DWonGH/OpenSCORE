@@ -2,6 +2,7 @@ import json
 from PyQt5.QtWidgets import QMenuBar, QAction
 from start_session_dialog import StartSessionDialog
 
+
 class MainMenuBar(QMenuBar):
     def __init__(self, parent):
         super().__init__(parent)

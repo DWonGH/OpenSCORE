@@ -4,6 +4,7 @@ from patient_details import PatientDetailTab
 from recording_conditions import RecordingConditionsTab
 from findings import FindingsTab
 from diagnostic_significance import DiagnosticSignificanceTab
+from clinical_comment import ClinicalComments
 
 
 class MainTabWidget(QWidget):
@@ -22,13 +23,14 @@ class MainTabWidget(QWidget):
         self.recording_conditions = RecordingConditionsTab(self)
         self.findings_tab = FindingsTab(self)
         self.diagnostic_significance_tab = DiagnosticSignificanceTab(self)
+        self.clinical_comments = ClinicalComments(self)
         self.tabs.resize(300, 200)
 
         self.tabs.addTab(self.patient_details_tab, "Patient details")
         self.tabs.addTab(self.recording_conditions, "Recording Conditions")
         self.tabs.addTab(self.findings_tab, "Findings")
         self.tabs.addTab(self.diagnostic_significance_tab, "Diagnostic Significance")
-
+        self.tabs.addTab(self.clinical_comments, "Clinical Comments")
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
 

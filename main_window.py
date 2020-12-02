@@ -17,7 +17,7 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.setWindowTitle('OpenSCORE')
-        self.resize(500, 300)
+        self.resize(558, 500)
 
         self.menu = MainMenuBar(self)
         self.setMenuBar(self.menu)

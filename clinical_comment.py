@@ -28,9 +28,4 @@ class ClinicalComments(QWidget):
         self.txe_interpreter_name = clinical_comments["Interpreter name"]
         self.txe_clinical_comments = clinical_comments["Clinical comments"]
 
-    def get_check_list(self, chlist):
-        results = {}
-        for i in range(chlist.rowCount()):
-            results[chlist.item(i).text()] = chlist.item(i).checkState()
-        return results
 

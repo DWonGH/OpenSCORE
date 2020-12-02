@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QSizePolicy, QRadioButton, QSpacerItem, QCheckBox, Q
 
 
 class DiagnosticSignificanceTab(QWidget):
+
     def __init__(self, parent):
         super(QWidget, self).__init__(parent)
 
@@ -88,7 +89,6 @@ class DiagnosticSignificanceTab(QWidget):
         return diagnostic_significance
 
     def abnormal_toggled(self):
-        print("Toggle")
         if self.rbt_abnormal.isChecked():
             self.chb_brain_death.setEnabled(True)
             self.chb_diffuse_dysfunction.setEnabled(True)

@@ -3,7 +3,6 @@ import json
 from PyQt5.QtWidgets import QMainWindow, QWidget, QAction, QVBoxLayout, QStatusBar, QHBoxLayout
 
 from main_tab import MainTabWidget
-from directory_sidebar import FileViewTree
 from main_toolbar import MainToolBar
 from menu_bar import MainMenuBar
 

@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QWidget, QTabWidget, QVBoxLayout
-from background_activity import BackgroundActivityTab
+from modules.background_activity import BackgroundActivityTab
 
 
 class FindingsTab(QWidget):
@@ -31,3 +31,11 @@ class FindingsTab(QWidget):
 
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
+
+    def get_fields(self):
+        findings = {
+            "Background activity": self.background_activity_tab.get_fields()
+        }
+
+    def set_fields(self, findings):
+        self.background_activity_tab.set_fields(findings["Background Activity"])

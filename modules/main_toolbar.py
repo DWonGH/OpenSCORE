@@ -1,7 +1,9 @@
 import os
 import subprocess
 
-from PyQt5.QtWidgets import QToolBar, QAction, QLabel
+from PyQt5.QtWidgets import QToolBar, QAction, QLabel, QDialog, QMessageBox
+
+import modules.standard_dialogs as dlg
 
 
 class MainToolBar(QToolBar):
@@ -13,7 +15,7 @@ class MainToolBar(QToolBar):
         self.lbl_current_eeg = QLabel("Current EEG: ")
         self.addWidget(self.lbl_current_eeg)
 
-        self.lbl_current_eeg_name = QLabel(self.parent.current_eeg_fname)
+        self.lbl_current_eeg_name = QLabel("")
         self.lbl_current_eeg_name.setMinimumWidth(110)
         self.addWidget(self.lbl_current_eeg_name)
 
@@ -44,14 +46,19 @@ class MainToolBar(QToolBar):
         # If its the last in the list show a pop up
         # Change the main windows current index to + 1
         # Call the main windows load recording
-        if self.parent.progress_saved is False:
-            print("you should have saved your progress, we lost it all now")
-        if self.parent.current_eeg_index < len(self.parent.eeg_sequence_list)-1:
-            print("Moving to next eeg")
-            self.parent.current_eeg_index += 1
-            self.parent.load_eeg_sequence()
-        else:
-            print("Thats the last eeg in the list")
+        try:
+            if self.parent.progress_saved is False:
+                print("you should have saved your progress, we lost it all now")
+            if self.parent.current_eeg_index < len(self.parent.eeg_list) - 1:
+                print("Moving to next eeg")
+                self.parent.current_eeg_index += 1
+                self.parent.current_eeg_directory = self.parent.eeg_list[self.parent.current_eeg_index]
+                self.parent.load_eeg()
+            else:
+                print("Thats the last eeg in the list")
+        except Exception as e:
+            result = dlg.message_dialog("Exception", "We ran into an error!", QMessageBox.Critical, str(e))
+            print(f"Exception {e}")
 
     def hdl_previous_recording(self):
         # First check if the user has saved
@@ -60,21 +67,35 @@ class MainToolBar(QToolBar):
         # If its the last in the list show a pop up
         # Change the main windows current index to + 1
         # Call the main windows load recording
-        if self.parent.progress_saved is False:
-            print("you should have saved your progress, we lost it all now")
-        if self.parent.current_eeg_index > 0:
-            print("Moving to previous eeg")
-            self.parent.current_eeg_index -= 1
-            self.parent.load_eeg_sequence()
-        else:
-            print("Thats the last eeg in the list")
+        try:
+            if self.parent.progress_saved is False:
+                print("you should have saved your progress, we lost it all now")
+            if self.parent.current_eeg_index > 0:
+                print("Moving to previous eeg")
+                self.parent.current_eeg_index -= 1
+                self.parent.current_eeg_directory = self.parent.eeg_list[self.parent.current_eeg_index]
+                self.parent.load_eeg()
+            else:
+                print("Thats the last eeg in the list")
+        except Exception as e:
+            result = dlg.message_dialog("Exception", "We ran into an error!", QMessageBox.Critical, str(e))
+            print(f"Exception {e}")
 
     def hdl_open_in_edfbrowser(self):
         # C:\Program Files\EDFbrowser\edfbrowser.exe
         edfbrowser_path = os.path.join('C:\\Program Files\\EDFbrowser\\edfbrowser.exe')
         try:
-            edf_path = os.path.join(self.parent.eeg_sequence_list[self.parent.current_eeg_index], self.parent.current_eeg_fname)
-            if os.path.exists(edf_path):
-                subprocess.Popen([edfbrowser_path, edf_path])
+            if os.path.exists(self.parent.current_edf_path):
+                subprocess.Popen([edfbrowser_path, self.parent.current_edf_path])
         except Exception as e:
+            result = dlg.message_dialog("Exception", "We ran into an error!", QMessageBox.Critical, str(e))
             print(e)
+
+    def hdl_start_analysis(self):
+        # get the specified output directory
+        # get the input directory path
+        # starting from root of tueg directory,
+        # if the next directory isnt there, create it and change into it
+        # otherwise change into the next one
+        #
+        pass

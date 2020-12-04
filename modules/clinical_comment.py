@@ -17,15 +17,15 @@ class ClinicalComments(QWidget):
 
         self.setLayout(self.layout)
 
-    def get_details(self):
+    def get_fields(self):
         clinical_comments = {
             "Interpreter name": self.txe_interpreter_name.text(),
             "Clinical comments": self.txe_clinical_comments.toPlainText()
         }
         return clinical_comments
 
-    def load_details(self, clinical_comments):
-        self.txe_interpreter_name = clinical_comments["Interpreter name"]
-        self.txe_clinical_comments = clinical_comments["Clinical comments"]
+    def set_fields(self, clinical_comments):
+        self.txe_interpreter_name.setText(clinical_comments["Interpreter name"])
+        self.txe_clinical_comments.setText(clinical_comments["Clinical comments"])
 
 

@@ -1,4 +1,7 @@
-from PyQt5.QtWidgets import QDialog, QLabel, QFormLayout, QHBoxLayout, QLineEdit, QPushButton, QDialogButtonBox, QFileDialog
+from PyQt5.QtWidgets import QDialog, QLabel, QFormLayout, QHBoxLayout, QLineEdit, QPushButton, QDialogButtonBox, \
+    QFileDialog, QMessageBox
+
+import modules.standard_dialogs as dlg
 
 
 class StartSessionDialog(QDialog):
@@ -46,6 +49,7 @@ class StartSessionDialog(QDialog):
             browse_dir = QFileDialog.getExistingDirectory(self, caption="Select Directory", options=QFileDialog.ShowDirsOnly)
             self.txe_root_output_directory.setText(browse_dir)
         except Exception as e:
+            result = dlg.message_dialog("Exception", "We ran into an error!", QMessageBox.Warning, e)
             print(f"Exception choosing the input directory {e}")
 
     def hdl_browse_specified_paths(self):
@@ -53,4 +57,5 @@ class StartSessionDialog(QDialog):
             browse_txt, _ = QFileDialog.getOpenFileName(self, caption="Select Input Recordings", filter="Text Files (*.txt)")
             self.txe_specified_paths.setText(browse_txt)
         except Exception as e:
+            result = dlg.message_dialog("Exception", "We ran into an error!", QMessageBox.Warning, e)
             print(f"Exception choosing the input recordings {e}")

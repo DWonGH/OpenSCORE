@@ -1,9 +1,8 @@
 import os
 
 from PyQt5.QtCore import QDateTime
-from PyQt5.QtWidgets import QWidget, QTabWidget, QVBoxLayout, QFormLayout, QLabel, QLineEdit, QTimeEdit, QSpinBox, \
+from PyQt5.QtWidgets import QWidget, QFormLayout, QLabel, QLineEdit, QTimeEdit, QSpinBox, \
     QComboBox, QTextEdit, QDateTimeEdit, QDoubleSpinBox, QHBoxLayout, QPushButton, QFileDialog
-from PyQt5 import Qt
 
 
 class RecordingConditionsTab(QWidget):

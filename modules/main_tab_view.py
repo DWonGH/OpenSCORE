@@ -1,10 +1,11 @@
-from PyQt5.QtWidgets import QWidget, QTabWidget, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QTabWidget, QVBoxLayout, QMessageBox
 
-from patient_details import PatientDetailTab
-from recording_conditions import RecordingConditionsTab
-from findings import FindingsTab
-from diagnostic_significance import DiagnosticSignificanceTab
-from clinical_comment import ClinicalComments
+from modules.patient_details import PatientDetailTab
+from modules.recording_conditions import RecordingConditionsTab
+from modules.findings import FindingsTab
+from modules.diagnostic_significance import DiagnosticSignificanceTab
+from modules.clinical_comment import ClinicalComments
+import modules.standard_dialogs as dlg
 
 
 class MainTabWidget(QWidget):
@@ -16,6 +17,8 @@ class MainTabWidget(QWidget):
         :param parent: MainWindow
         """
         super(QWidget, self).__init__(parent)
+
+        self.parent = parent
         self.layout = QVBoxLayout(self)
 
         self.tabs = QTabWidget()
@@ -34,28 +37,30 @@ class MainTabWidget(QWidget):
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
 
-    def get_info(self):
+    def get_fields(self):
         """
         Pulls the data from each input in the UI
         :return: A dictionary describing the 5 main categories and various sub categories of the
                     SCORE EEG reporting standard
         """
         patient_score = {
-            "Patient details": self.patient_details_tab.get_details(),
-            "Recording conditions": self.recording_conditions.get_details(),
+            "Patient details": self.patient_details_tab.get_fields(),
+            "Recording conditions": self.recording_conditions.get_fields(),
             "Findings": {
-                "Background Activity": self.findings_tab.background_activity_tab.get_details()
+                "Background Activity": self.findings_tab.background_activity_tab.get_fields()
             },
-            "Diagnostic significance": self.diagnostic_significance_tab.get_details(),
-            "Clinical comments": self.clinical_comments.get_details()
+            "Diagnostic significance": self.diagnostic_significance_tab.get_fields(),
+            "Clinical comments": self.clinical_comments.get_fields()
         }
         return patient_score
 
-    def reset_score(self):
-        """
-        Make each box in score empty for fresh report
-        :return:
-        """
-        items = (self.layout.itemAt(i) for i in range(self.layout.count()))
-        for widget in items:
-            print(widget)
+    def set_fields(self, report):
+        try:
+            self.patient_details_tab.set_fields(report["Patient details"])
+            self.recording_conditions.set_fields(report["Recording conditions"])
+            self.findings_tab.set_fields(report["Findings"])
+            self.diagnostic_significance_tab.set_fields(report["Diagnostic significance"])
+            self.clinical_comments.set_fields(report["Clinical comments"])
+        except Exception as e:
+            result = dlg.message_dialog("Exception", "We ran into an error!", QMessageBox.Critical, e)
+            print(e)

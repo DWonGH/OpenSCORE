@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QTabWidget,QVBoxLayout
-from patient_info_tab import PatientInfoTab
-from patient_referral_tab import PatientReferralTab
+from modules.patient_info_tab import PatientInfoTab
+from modules.patient_referral_tab import PatientReferralTab
 
 
 class PatientDetailTab(QWidget):
@@ -18,22 +18,23 @@ class PatientDetailTab(QWidget):
 
         self.setLayout(self.layout)
 
-    def get_details(self):
-        patient_info = self.patient_info_tab.get_details()
-        patient_referral = self.patient_referral_tab.get_details()
+    def get_fields(self):
+        patient_info = self.patient_info_tab.get_fields()
+        patient_referral = self.patient_referral_tab.get_fields()
         patient_details = {
             "Patient info": patient_info,
             "Patient referral": patient_referral
         }
         return patient_details
 
-    def load_details(self, patient_details):
+    def set_fields(self, patient_details):
         """
         Pass the corresponding sub-section of patient details to its tab for loading into the UI fields
         :param patient_details: A dictionary containing both a patient_info sub dict and patient_referral sub dict
         :return: True / False on success
         """
-        self.patient_info_tab.load_details(patient_details)
+        self.patient_info_tab.set_fields(patient_details)
+        self.patient_referral_tab.set_fields(patient_details)
 
     def get_check_list(self, chlist):
         results = {}

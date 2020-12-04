@@ -37,7 +37,7 @@ class PatientInfoTab(QWidget):
 
         self.setLayout(self.layout)
 
-    def get_details(self):
+    def get_fields(self):
         patient_info = {
             "Name": self.txe_name.text(),
             "ID": self.txe_id.text(),
@@ -48,11 +48,11 @@ class PatientInfoTab(QWidget):
         }
         return patient_info
 
-    def load_details(self, patient_info):
-        print(patient_info)
-        self.txe_name.setText(patient_info["Patient info"]["Name"])
-        self.txe_id.setText(patient_info["Patient info"]["ID"])
-        self.txe_dob.setText(patient_info["Patient info"]["Date of Birth"])
-        self.txe_address.setText(patient_info["Patient info"]["Address"])
-        self.txe_medication.setText(patient_info["Patient info"]["Medication"])
-        self.txe_history.setText(patient_info["Patient info"]["History"])
+    def set_fields(self, patient_details):
+        patient_info = patient_details["Patient info"]
+        self.txe_name.setText(patient_info["Name"])
+        self.txe_id.setText(patient_info["ID"])
+        self.txe_dob.setText(patient_info["Date of Birth"])
+        self.txe_address.setText(patient_info["Address"])
+        self.txe_medication.setText(patient_info["Medication"])
+        self.txe_history.setText(patient_info["History"])

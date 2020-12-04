@@ -9,6 +9,8 @@ __pycache__/
 report.json
 specified_recordings.txt
 root output directory
+s003_2012_04_06
+00000768_s003.json
 
 # C extensions
 *.so

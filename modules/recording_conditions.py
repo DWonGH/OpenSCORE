@@ -1,6 +1,9 @@
+import os
+
 from PyQt5.QtCore import QDateTime
 from PyQt5.QtWidgets import QWidget, QTabWidget, QVBoxLayout, QFormLayout, QLabel, QLineEdit, QTimeEdit, QSpinBox, \
-    QComboBox, QTextEdit, QDateTimeEdit, QDoubleSpinBox
+    QComboBox, QTextEdit, QDateTimeEdit, QDoubleSpinBox, QHBoxLayout, QPushButton, QFileDialog
+from PyQt5 import Qt
 
 
 class RecordingConditionsTab(QWidget):
@@ -10,6 +13,7 @@ class RecordingConditionsTab(QWidget):
         # TODO: Add some form of loader to load EDF details into boxes e.g. EDF ID -> study id
         #  EDF time / date -> study time & date, edf recording duration -> Recording duration etc
 
+        self.parent = parent
         self.layout = QFormLayout()
 
         self.layout.addRow(QLabel("Admin"))
@@ -104,9 +108,18 @@ class RecordingConditionsTab(QWidget):
         self.txe_tech_description = QTextEdit()
         self.layout.addRow(self.lbl_tech_description, self.txe_tech_description)
 
+        self.lbl_recording_data = QLabel("Recorded data")
+        self.hbx_recording_data = QHBoxLayout()
+        self.txe_recording_data = QLineEdit()
+        self.hbx_recording_data.addWidget(self.txe_recording_data)
+        self.btn_recording_data = QPushButton("Browse")
+        self.btn_recording_data.clicked.connect(self.hdl_recording_data)
+        self.hbx_recording_data.addWidget(self.btn_recording_data)
+        self.layout.addRow(self.lbl_recording_data, self.hbx_recording_data)
+
         self.setLayout(self.layout)
 
-    def get_details(self):
+    def get_fields(self):
         recording_conditions = {
             "Study ID": self.txe_study_id.text(),
             "Date & Time": self.dtm_study_date.text(),
@@ -121,6 +134,37 @@ class RecordingConditionsTab(QWidget):
             "Latest meal": self.dtm_latest_meal.text(),
             "Skull defect": self.cmb_skull_defect.currentText(),
             "Brain surgery": self.cmb_brain_surgery.currentText(),
-            "Additional technical description": self.txe_tech_description.toPlainText()
+            "Additional technical description": self.txe_tech_description.toPlainText(),
+            "Recording data": self.txe_recording_data.text()
         }
         return recording_conditions
+
+    def set_fields(self, data):
+        print(data)
+        self.txe_study_id.setText(data["Study ID"])
+        self.dtm_study_date.setDateTime(QDateTime.fromString(data["Date & Time"]))
+        if data["Recording duration"] != ' ': self.spb_duration.setValue(float(data["Recording duration"]))
+        self.txe_technologist.setText(data["Technologist name"])
+        self.txe_physician.setText(data["Physician name"])
+        self.cmb_sensor_group.setCurrentIndex(self.txt_sensor_group.index(data["Sensor group"]))
+        self.cmb_recording_type.setCurrentIndex(self.txt_recording_type.index(data["Recording type"]))
+        self.cmb_alertness.setCurrentIndex(self.txt_alertness.index(data["Alertness"]))
+        self.cmb_cooperation.setCurrentIndex(self.txt_cooperation.index(data["Cooperation"]))
+        if data["Patient age"] != ' ': self.spb_age.setValue(int(data["Patient age"]))
+        self.dtm_latest_meal.setDateTime(QDateTime.fromString(data["Latest meal"]))
+        self.cmb_skull_defect.setCurrentIndex(self.txt_skull_defect.index(data["Skull defect"]))
+        self.cmb_brain_surgery.setCurrentIndex(self.txt_brain_surgery.index(data["Brain surgery"]))
+        self.txe_tech_description.setText(data["Additional technical description"])
+        self.txe_recording_data.setText(data["Recording data"])
+        self.parent.parent.current_edf_path = data["Recording data"]
+        self.parent.parent.toolbar.lbl_current_eeg_name.setText(os.path.basename(data["Recording data"]).strip('.edf'))
+
+    def hdl_recording_data(self):
+        try:
+            browse_data, _ = QFileDialog.getOpenFileName(self, caption="Select associated recording", filter="EDF files (*.edf)")
+            if browse_data:
+                self.txe_recording_data.setText(browse_data)
+                self.parent.parent.current_edf_path = browse_data
+                self.parent.parent.toolbar.lbl_current_eeg_name.setText(os.path.basename(self.txe_recording_data.text()).strip('.edf'))
+        except Exception as e:
+            print(f"Exception choosing the associated recording {e}")

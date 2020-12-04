@@ -44,7 +44,7 @@ class PatientReferralTab(QWidget):
             "Monitoring of seizure frequency",
             "Presurgical evaluation",
             "Considering stopping AED therapy",
-            "Driver’s license or flight certificate"
+            "Drivers license or flight certificate"
         ]
         self.chlist_epilepsy = self.add_check_list("Epilepsy-related indications", self.epilepsy_related_conditions)
 
@@ -83,9 +83,10 @@ class PatientReferralTab(QWidget):
 
         self.setLayout(self.layout)
 
-    def get_details(self):
+    def get_fields(self):
         referral_details = {
             "Referrer name": self.txe_referrer_name.text(),
+            "Diagnosis at referral": self.txe_diagnosis.text(),
             "Seizure frequency": self.cmb_seizure_freq.currentText(),
             "Time since last seizure": self.cmb_last_seizure.currentText(),
             "Epilepsy-related indications": self.get_check_list(self.chlist_epilepsy),
@@ -94,6 +95,31 @@ class PatientReferralTab(QWidget):
             "Other indications": self.get_check_list(self.chlist_other)
         }
         return referral_details
+
+    def set_fields(self, patient_details):
+        patient_referral = patient_details["Patient referral"]
+        print(patient_referral)
+        self.txe_referrer_name.setText(patient_referral["Referrer name"])
+        self.txe_diagnosis.setText(patient_referral["Diagnosis at referral"])
+        self.cmb_seizure_freq.setCurrentIndex(self.txt_seizure_freq.index(patient_referral["Seizure frequency"]))
+        self.cmb_last_seizure.setCurrentIndex(self.txt_last_seizure.index(patient_referral["Time since last seizure"]))
+
+        erc = patient_referral["Epilepsy-related indications"]
+        self.set_check_list(self.chlist_epilepsy, erc)
+
+        oddq = patient_referral["Other differential diagnostic questions"]
+        self.set_check_list(self.chlist_other_diagnostic, oddq)
+
+        spi = patient_referral["Specific paediatric indication"]
+        self.set_check_list(self.chlist_peadiatric, spi)
+
+        other = patient_referral["Other indications"]
+        self.set_check_list(self.chlist_other, other)
+
+    def set_check_list(self, chlist, dict):
+        for i in range(chlist.rowCount()):
+            print(chlist.item(i).checkState())
+            chlist.item(i).setCheckState(dict[chlist.item(i).text()])
 
     def get_check_list(self, chlist):
         results = {}

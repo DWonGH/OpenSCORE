@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QWidget, QTabWidget,QVBoxLayout
+
 from modules.patient_info_tab import PatientInfoTab
 from modules.patient_referral_tab import PatientReferralTab
 

@@ -1,8 +1,7 @@
 import json
-import os
 
 from PyQt5.QtWidgets import QMenuBar, QAction, QFileDialog, QDialog, QMessageBox
-from PyQt5.Qt import Qt
+
 from modules.start_session_dialog import StartSessionDialog
 import modules.standard_dialogs as dlg
 

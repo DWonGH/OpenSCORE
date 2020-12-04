@@ -1,7 +1,6 @@
 import os
 
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QStatusBar
-import mne
 
 from modules.main_tab_view import MainTabWidget
 from modules.main_toolbar import MainToolBar

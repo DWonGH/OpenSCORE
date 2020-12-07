@@ -8,7 +8,13 @@ import modules.standard_dialogs as dlg
 
 
 class MainMenuBar(QMenuBar):
+
     def __init__(self, parent, ui_model):
+        """
+        Options for opening/ closing files
+        :param parent:
+        :param ui_model:
+        """
         super().__init__(parent)
 
         self.parent = parent
@@ -53,7 +59,7 @@ class MainMenuBar(QMenuBar):
 
     def hdl_new_report(self):
         """
-        Clears the viewer and parameters
+        Clears the viewer and input data
         :return:
         """
         result = dlg.confirmation_dialog("Save", "Unsaved progress will be lost, do you want to continue?", QMessageBox.Warning)
@@ -64,7 +70,8 @@ class MainMenuBar(QMenuBar):
 
     def hdl_save_report(self):
         """
-        Save the current score report to a json file
+        Saves the current score report to the current report file. If there is no report file specified show the user
+        a file browser dialog to choose.
         :return:
         """
         try:
@@ -81,7 +88,7 @@ class MainMenuBar(QMenuBar):
 
     def hdl_save_report_as(self):
         """
-        Save the current score report to a json file
+        Ask the user for a location to save the current report
         :return:
         """
         try:

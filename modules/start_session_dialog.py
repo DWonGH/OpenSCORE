@@ -5,7 +5,12 @@ import modules.standard_dialogs as dlg
 
 
 class StartSessionDialog(QDialog):
+
     def __init__(self, parent=None):
+        """
+        A pop-up used when the user wants to load a sequence/ list of EEG's to report / analyse
+        :param parent:
+        """
         super().__init__(parent)
 
         self.setWindowTitle("Load sequence of EEGs")

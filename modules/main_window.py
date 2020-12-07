@@ -56,6 +56,7 @@ class MainWindow(QMainWindow):
             with open(self.ui_model.current_txt_path, 'r') as f:
                 self.main_tab_view.patient_details_tab.patient_info_tab.txe_history.setText(f.read())
         self.main_tab_view.clinical_comments.txe_interpreter_name.setText(self.ui_model.interpreter_name)
+        self.main_tab_view.recording_conditions.txe_recording_data.setText(self.ui_model.current_edf_path)
 
     def clear_tabview(self):
         """

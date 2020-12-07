@@ -2,16 +2,17 @@ import json
 import os
 
 from PyQt5.QtWidgets import QMenuBar, QAction, QFileDialog, QDialog, QMessageBox
-from PyQt5.Qt import Qt
+
 from modules.start_session_dialog import StartSessionDialog
 import modules.standard_dialogs as dlg
 
 
 class MainMenuBar(QMenuBar):
-    def __init__(self, parent):
+    def __init__(self, parent, ui_model):
         super().__init__(parent)
 
         self.parent = parent
+        self.ui_model = ui_model
 
         self.file_menu = self.addMenu("&File")
 
@@ -27,12 +28,12 @@ class MainMenuBar(QMenuBar):
 
         self.bt_save_file = QAction("&Save", self)
         self.bt_save_file.setStatusTip("Save to current file")
-        #self.bt_save_file.triggered.connect(self.hdl_save_report)
+        self.bt_save_file.triggered.connect(self.hdl_save_report)
         self.file_menu.addAction(self.bt_save_file)
 
         self.bt_save_file = QAction("&Save as", self)
         self.bt_save_file.setStatusTip("Save to new file")
-        self.bt_save_file.triggered.connect(self.hdl_save_report)
+        self.bt_save_file.triggered.connect(self.hdl_save_report_as)
         self.file_menu.addAction(self.bt_save_file)
 
         self.bt_load_single_eeg = QAction("&Load EEG", self)
@@ -58,10 +59,27 @@ class MainMenuBar(QMenuBar):
         result = dlg.confirmation_dialog("Save", "Unsaved progress will be lost, do you want to continue?", QMessageBox.Warning)
         if result == 1024:
             self.parent.clear_tabview()
-            self.parent.clear_session()
+            self.ui_model.clear_session()
             self.parent.toolbar.lbl_current_eeg_name.setText("")
 
     def hdl_save_report(self):
+        """
+        Save the current score report to a json file
+        :return:
+        """
+        try:
+            score = self.parent.main_tab_view.get_fields()
+            print(score)
+            if os.path.exists(self.ui_model.report_path):
+                with open(self.ui_model.report_path, 'w') as f:
+                    json.dump(score, f, indent=4)
+            else:
+                self.hdl_save_report_as()
+        except Exception as e:
+            result = dlg.message_dialog("Exception", "We ran into an error!", QMessageBox.Warning, e)
+            print(e)
+
+    def hdl_save_report_as(self):
         """
         Save the current score report to a json file
         :return:
@@ -73,6 +91,7 @@ class MainMenuBar(QMenuBar):
             if save_file:
                 score = self.parent.main_tab_view.get_fields()
                 print(score)
+                self.ui_model.report_path = save_file
                 with open(save_file, 'w') as f:
                     json.dump(score, f, indent=4)
         except Exception as e:
@@ -121,20 +140,28 @@ class MainMenuBar(QMenuBar):
         try:
             dialog = StartSessionDialog(self)
             if dialog.exec_():
-                self.parent.interpreter_name = dialog.txe_interpreter_name.text()
-                self.parent.eeg_sequence_list_location = dialog.txe_specified_paths.text()
-                self.parent.root_output_directory = dialog.txe_root_output_directory.text()
-                with open(self.parent.eeg_sequence_list_location, 'r') as f:
-                    self.parent.eeg_list = f.read().splitlines()
-                self.parent.current_eeg_directory = self.parent.eeg_list[0]
-                self.parent.load_eeg()
+
+                # Load the input directories
+                self.ui_model.input_directories_path_file = dialog.txe_specified_paths.text()
+                with open(self.ui_model.input_directories_path_file, 'r') as f:
+                    self.ui_model.input_directories = f.read().splitlines()
+                self.ui_model.current_input_index = 0
+
+                # Setup the output directories
+                self.ui_model.root_output_directory = dialog.txe_root_output_directory.text()
+                self.ui_model.setup_output_directories()
+                self.ui_model.current_output_index = 0
+
+                # Update the current working file names and directories
+                self.ui_model.set_current_names_and_directories()
+                self.ui_model.interpreter_name = dialog.txe_interpreter_name.text()
+
+                # Update the UI with the new file names and directories
+                self.parent.update()
             else:
                 print("It didnt work :(")
         except Exception as e:
             result = dlg.message_dialog("Exception", "We ran into an error!", QMessageBox.Critical, e)
             print(f"Exception starting a new analysis session {e}")
-
-
-
 
 

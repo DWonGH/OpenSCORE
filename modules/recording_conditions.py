@@ -1,9 +1,8 @@
 import os
 
 from PyQt5.QtCore import QDateTime
-from PyQt5.QtWidgets import QWidget, QTabWidget, QVBoxLayout, QFormLayout, QLabel, QLineEdit, QTimeEdit, QSpinBox, \
+from PyQt5.QtWidgets import QWidget, QFormLayout, QLabel, QLineEdit, QTimeEdit, QSpinBox, \
     QComboBox, QTextEdit, QDateTimeEdit, QDoubleSpinBox, QHBoxLayout, QPushButton, QFileDialog
-from PyQt5 import Qt
 
 
 class RecordingConditionsTab(QWidget):
@@ -164,7 +163,7 @@ class RecordingConditionsTab(QWidget):
             browse_data, _ = QFileDialog.getOpenFileName(self, caption="Select associated recording", filter="EDF files (*.edf)")
             if browse_data:
                 self.txe_recording_data.setText(browse_data)
-                self.parent.parent.current_edf_path = browse_data
+                self.parent.parent.ui_model.current_edf_path = browse_data
                 self.parent.parent.toolbar.lbl_current_eeg_name.setText(os.path.basename(self.txe_recording_data.text()).strip('.edf'))
         except Exception as e:
             print(f"Exception choosing the associated recording {e}")

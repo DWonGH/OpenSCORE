@@ -1,5 +1,6 @@
 import os
 import subprocess
+import json
 
 from PyQt5.QtWidgets import QToolBar, QAction, QLabel, QDialog, QMessageBox
 
@@ -7,10 +8,11 @@ import modules.standard_dialogs as dlg
 
 
 class MainToolBar(QToolBar):
-    def __init__(self, parent):
+    def __init__(self, parent, ui_model):
         super().__init__()
 
         self.parent = parent
+        self.ui_model = ui_model
 
         self.lbl_current_eeg = QLabel("Current EEG: ")
         self.addWidget(self.lbl_current_eeg)
@@ -40,43 +42,65 @@ class MainToolBar(QToolBar):
         self.addAction(self.stop_analysis)
 
     def hdl_next_recording(self):
-        # First check if the user has saved
-        # Then check if its the last in the list
-        # If the user hasnt saved then show pop up dialog warning about lost work
-        # If its the last in the list show a pop up
-        # Change the main windows current index to + 1
-        # Call the main windows load recording
         try:
-            if self.parent.progress_saved is False:
-                print("you should have saved your progress, we lost it all now")
-            if self.parent.current_eeg_index < len(self.parent.eeg_list) - 1:
-                print("Moving to next eeg")
-                self.parent.current_eeg_index += 1
-                self.parent.current_eeg_directory = self.parent.eeg_list[self.parent.current_eeg_index]
-                self.parent.load_eeg()
+            if os.path.exists(self.ui_model.report_path):
+                print(f"report path 1 {self.ui_model.report_path}")
+                result = dlg.confirmation_dialog("Change Report",
+                                                 f"Do you want to save changes to this report in {self.ui_model.report_path}",
+                                                 QMessageBox.Warning)
+                if result == 1024:
+                    self.parent.menu.hdl_save_report()
+            elif os.path.exists(self.ui_model.current_output_directory):
+                self.ui_model.report_path = f"{os.path.join(self.ui_model.current_output_directory, self.ui_model.current_output_filename)}.json"
+                print(f"report path 2 {self.ui_model.report_path}")
+                result = dlg.confirmation_dialog("Change Report",
+                                                 f"Do you want to save changes to this report in {self.ui_model.report_path}",
+                                                 QMessageBox.Warning)
+                if result == 1024:
+                    with open(self.ui_model.report_path, 'w') as f:
+                        report = self.parent.main_tab_view.get_fields()
+                        json.dump(report, f, indent=4)
+
+            if self.ui_model.current_input_index < len(self.ui_model.input_directories) - 1:
+                self.ui_model.current_input_index += 1
+                self.ui_model.current_output_index += 1
+                self.ui_model.set_current_names_and_directories()
+                self.parent.update()
             else:
-                print("Thats the last eeg in the list")
+                result = dlg.message_dialog("End of input files", "You have reached the end of the specified eeg recordings", QMessageBox.Warning)
+
         except Exception as e:
             result = dlg.message_dialog("Exception", "We ran into an error!", QMessageBox.Critical, str(e))
             print(f"Exception {e}")
 
     def hdl_previous_recording(self):
-        # First check if the user has saved
-        # Then check if its the last in the list
-        # If the user hasnt saved then show pop up dialog warning about lost work
-        # If its the last in the list show a pop up
-        # Change the main windows current index to + 1
-        # Call the main windows load recording
         try:
-            if self.parent.progress_saved is False:
-                print("you should have saved your progress, we lost it all now")
-            if self.parent.current_eeg_index > 0:
-                print("Moving to previous eeg")
-                self.parent.current_eeg_index -= 1
-                self.parent.current_eeg_directory = self.parent.eeg_list[self.parent.current_eeg_index]
-                self.parent.load_eeg()
+            if os.path.exists(self.ui_model.report_path):
+                print(f"report path 1 {self.ui_model.report_path}")
+                result = dlg.confirmation_dialog("Change Report",
+                                                 f"Do you want to save changes to this report in {self.ui_model.report_path}",
+                                                 QMessageBox.Warning)
+                if result == 1024:
+                    self.parent.menu.hdl_save_report()
+            elif os.path.exists(self.ui_model.current_output_directory):
+                self.ui_model.report_path = f"{os.path.join(self.ui_model.current_output_directory, self.ui_model.current_output_filename)}.json"
+                print(f"report path 2 {self.ui_model.report_path}")
+                result = dlg.confirmation_dialog("Change Report",
+                                                 f"Do you want to save changes to this report in {self.ui_model.report_path}",
+                                                 QMessageBox.Warning)
+                if result == 1024:
+                    with open(self.ui_model.report_path, 'w') as f:
+                        report = self.parent.main_tab_view.get_fields()
+                        json.dump(report, f, indent=4)
+            if self.ui_model.current_input_index > 0:
+                self.ui_model.current_input_index -= 1
+                self.ui_model.current_output_index -= 1
+                self.ui_model.set_current_names_and_directories()
+                self.parent.update()
             else:
-                print("Thats the last eeg in the list")
+                result = dlg.message_dialog("End of input files",
+                                            "You have reached the end of the specified eeg recordings",
+                                            QMessageBox.Warning)
         except Exception as e:
             result = dlg.message_dialog("Exception", "We ran into an error!", QMessageBox.Critical, str(e))
             print(f"Exception {e}")
@@ -85,8 +109,15 @@ class MainToolBar(QToolBar):
         # C:\Program Files\EDFbrowser\edfbrowser.exe
         edfbrowser_path = os.path.join('C:\\Program Files\\EDFbrowser\\edfbrowser.exe')
         try:
-            if os.path.exists(self.parent.current_edf_path):
-                subprocess.Popen([edfbrowser_path, self.parent.current_edf_path])
+            if os.path.exists(self.ui_model.current_edf_path):
+                subprocess.Popen([edfbrowser_path, self.ui_model.current_edf_path])
+            #elif os.path.exists(self.parent.main_tab_view.recording_conditions.)
+            else:
+                print(f"EDF Path {self.ui_model.current_edf_path}")
+                result = dlg.message_dialog("Open in EDFBrowser", "OpenSCORE cannot find a valid EDF file. To open an EDF "
+                                                                  "in EDFBroswer, either use the load EEG / load EEG "
+                                                                  "sequence; or specify the path to the EDF recording in "
+                                                                  "the recording conditions tab.", QMessageBox.Warning)
         except Exception as e:
             result = dlg.message_dialog("Exception", "We ran into an error!", QMessageBox.Critical, str(e))
             print(e)

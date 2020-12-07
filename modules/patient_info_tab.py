@@ -4,6 +4,10 @@ from PyQt5.QtWidgets import QLineEdit, QFormLayout, QLabel, QWidget, QTextEdit
 class PatientInfoTab(QWidget):
 
     def __init__(self, parent):
+        """
+        Sub-tab describing patient info/ admin info
+        :param parent:
+        """
         super(QWidget, self).__init__(parent)
 
         self.layout = QFormLayout()

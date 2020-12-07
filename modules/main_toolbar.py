@@ -1,14 +1,20 @@
+import json
 import os
 import subprocess
-import json
 
-from PyQt5.QtWidgets import QToolBar, QAction, QLabel, QDialog, QMessageBox
+from PyQt5.QtWidgets import QToolBar, QAction, QLabel, QMessageBox
 
 import modules.standard_dialogs as dlg
 
 
 class MainToolBar(QToolBar):
+
     def __init__(self, parent, ui_model):
+        """
+        Options for navigating a list of recordings/ reports and opening the corresponding EDF files in EDFBrowser
+        :param parent: MainWindow
+        :param ui_model: Manges the paths
+        """
         super().__init__()
 
         self.parent = parent
@@ -42,6 +48,10 @@ class MainToolBar(QToolBar):
         self.addAction(self.stop_analysis)
 
     def hdl_next_recording(self):
+        """
+        Used when a list of EEG recordings have been specified. Loads the next recording and report (if exists).
+        :return:
+        """
         try:
             if os.path.exists(self.ui_model.report_path):
                 print(f"report path 1 {self.ui_model.report_path}")
@@ -74,6 +84,10 @@ class MainToolBar(QToolBar):
             print(f"Exception {e}")
 
     def hdl_previous_recording(self):
+        """
+        Used when a list of EEG recordings have been specified. Loads the previous recording and report (if exists).
+        :return:
+        """
         try:
             if os.path.exists(self.ui_model.report_path):
                 print(f"report path 1 {self.ui_model.report_path}")
@@ -106,12 +120,16 @@ class MainToolBar(QToolBar):
             print(f"Exception {e}")
 
     def hdl_open_in_edfbrowser(self):
+        """
+        Opens the current EDF file in the external EDFBrowser application.
+        TODO: Pass the current output path to EDFBrowsers arguments so that it saves the log file to the correct output location
+        :return:
+        """
         # C:\Program Files\EDFbrowser\edfbrowser.exe
         edfbrowser_path = os.path.join('C:\\Program Files\\EDFbrowser\\edfbrowser.exe')
         try:
             if os.path.exists(self.ui_model.current_edf_path):
                 subprocess.Popen([edfbrowser_path, self.ui_model.current_edf_path])
-            #elif os.path.exists(self.parent.main_tab_view.recording_conditions.)
             else:
                 print(f"EDF Path {self.ui_model.current_edf_path}")
                 result = dlg.message_dialog("Open in EDFBrowser", "OpenSCORE cannot find a valid EDF file. To open an EDF "
@@ -121,12 +139,3 @@ class MainToolBar(QToolBar):
         except Exception as e:
             result = dlg.message_dialog("Exception", "We ran into an error!", QMessageBox.Critical, str(e))
             print(e)
-
-    def hdl_start_analysis(self):
-        # get the specified output directory
-        # get the input directory path
-        # starting from root of tueg directory,
-        # if the next directory isnt there, create it and change into it
-        # otherwise change into the next one
-        #
-        pass

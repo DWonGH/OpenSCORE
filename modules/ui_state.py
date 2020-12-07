@@ -4,7 +4,10 @@ import os
 class UiModel:
 
     def __init__(self, parent):
-
+        """
+        Keeps track of the current required file names and paths
+        :param parent:
+        """
         self.parent = parent
 
         self.current_input_directory = ""
@@ -31,7 +34,8 @@ class UiModel:
 
     def set_current_names_and_directories(self):
         """
-        :param eeg_path:
+        Updates the required paths and file names for the current recording / report. Called after e.g. "Next", "Previous"
+        or when a new report is loaded.
         :return:
         """
         self.current_input_directory = self.input_directories[self.current_input_index]
@@ -54,6 +58,10 @@ class UiModel:
         self.report_path = f"{os.path.join(self.current_output_directory, self.current_output_filename)}.json"
 
     def setup_output_directories(self):
+        """
+        Builds a mirror output directory structure in a user specified root directory using a list of specified input directories
+        :return:
+        """
         for p in self.input_directories:
             mirror = p.split('v2.0.0')[1]
             mirror = os.path.normpath(mirror)
@@ -76,6 +84,10 @@ class UiModel:
             print(current_dir)
 
     def clear_session(self):
+        """
+        Reset the paths
+        :return:
+        """
         self.interpreter_name = ""
         self.input_directories_path_file = ""  # The path to a txt file describing a list of specified input directories
         self.root_output_directory = ""  # A directory path to save the mirror directories

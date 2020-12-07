@@ -42,6 +42,10 @@ class MainWindow(QMainWindow):
         self.setStatusBar(self.statusBar)
 
     def update(self):
+        """
+        Called when a new score report is loaded
+        :return:
+        """
         self.clear_tabview()
         self.toolbar.lbl_current_eeg_name.setText(self.ui_model.current_output_filename)
         if os.path.exists(self.ui_model.report_path):
@@ -54,6 +58,10 @@ class MainWindow(QMainWindow):
         self.main_tab_view.clinical_comments.txe_interpreter_name.setText(self.ui_model.interpreter_name)
 
     def clear_tabview(self):
+        """
+        Resets the UI and input fields
+        :return:
+        """
         for i in reversed(range(self.main_layout.count())):
             self.main_layout.itemAt(i).widget().deleteLater()
         del self.main_tab_view

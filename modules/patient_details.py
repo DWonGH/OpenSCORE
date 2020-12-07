@@ -5,7 +5,12 @@ from modules.patient_referral_tab import PatientReferralTab
 
 
 class PatientDetailTab(QWidget):
+
     def __init__(self, parent):
+        """
+        A top-level tab containing sub patient info tabs
+        :param parent:
+        """
         super(QWidget, self).__init__(parent)
 
         self.layout = QVBoxLayout()

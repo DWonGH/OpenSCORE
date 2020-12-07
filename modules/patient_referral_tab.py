@@ -3,7 +3,12 @@ from PyQt5.QtGui import QStandardItemModel, QStandardItem
 
 
 class PatientReferralTab(QWidget):
+
     def __init__(self, parent):
+        """
+        Sub-tab describing the patient referral information
+        :param parent:
+        """
         super(QWidget, self).__init__(parent)
 
         self.layout = QFormLayout()

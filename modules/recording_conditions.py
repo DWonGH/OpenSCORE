@@ -6,11 +6,13 @@ from PyQt5.QtWidgets import QWidget, QFormLayout, QLabel, QLineEdit, QTimeEdit, 
 
 
 class RecordingConditionsTab(QWidget):
-    def __init__(self, parent):
-        super(QWidget, self).__init__(parent)
 
-        # TODO: Add some form of loader to load EDF details into boxes e.g. EDF ID -> study id
-        #  EDF time / date -> study time & date, edf recording duration -> Recording duration etc
+    def __init__(self, parent):
+        """
+        Top-level tab describing the EEG recording conditions
+        :param parent:
+        """
+        super(QWidget, self).__init__(parent)
 
         self.parent = parent
         self.layout = QFormLayout()

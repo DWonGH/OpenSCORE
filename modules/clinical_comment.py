@@ -3,12 +3,12 @@ from PyQt5.QtWidgets import QWidget, QFormLayout, QLabel, QLineEdit, QTextEdit
 
 class ClinicalComments(QWidget):
 
-    def __init__(self, parent):
+    def __init__(self, main_tab):
         """
         Top-level tab for interpreter name and clinical comments
-        :param parent:
+        :param main_tab:
         """
-        super(QWidget, self).__init__(parent)
+        super(QWidget, self).__init__(main_tab)
 
         self.layout = QFormLayout()
 

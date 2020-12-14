@@ -5,20 +5,24 @@ from PyQt5.QtWidgets import QMenuBar, QAction, QFileDialog, QDialog, QMessageBox
 
 from modules.start_session_dialog import StartSessionDialog
 import modules.standard_dialogs as dlg
+#from modules.main_window import MainWindow
+from modules.ui_state import UiModel
 
 
 class MainMenuBar(QMenuBar):
 
-    def __init__(self, parent, ui_model):
+    def __init__(self, main_window):
         """
         Options for opening/ closing files
-        :param parent:
+        :param main_window:
         :param ui_model:
         """
-        super().__init__(parent)
+        super().__init__(main_window)
 
-        self.parent = parent
-        self.ui_model = ui_model
+        self.main_window = main_window
+        self.ui_model = self.main_window.ui_model
+
+        self.dialog = QFileDialog()
 
         self.file_menu = self.addMenu("&File")
 
@@ -37,9 +41,9 @@ class MainMenuBar(QMenuBar):
         self.bt_save_file.triggered.connect(self.hdl_save_report)
         self.file_menu.addAction(self.bt_save_file)
 
-        self.bt_save_file = QAction("&Save as", self)
-        self.bt_save_file.setStatusTip("Save to new file")
-        self.bt_save_file.triggered.connect(self.hdl_save_report_as)
+        self.bt_save_as_file = QAction("&Save as", self)
+        self.bt_save_as_file.setStatusTip("Save to new file")
+        self.bt_save_as_file.triggered.connect(self.hdl_save_report_as)
         self.file_menu.addAction(self.bt_save_file)
 
         self.bt_load_single_eeg = QAction("&Load EEG", self)
@@ -64,9 +68,9 @@ class MainMenuBar(QMenuBar):
         """
         result = dlg.confirmation_dialog("Save", "Unsaved progress will be lost, do you want to continue?", QMessageBox.Warning)
         if result == 1024:
-            self.parent.clear_tabview()
+            self.main_window.clear()
             self.ui_model.clear_session()
-            self.parent.toolbar.lbl_current_eeg_name.setText("")
+            self.main_window.toolbar.lbl_current_eeg_name.setText("")
 
     def hdl_save_report(self):
         """
@@ -75,7 +79,7 @@ class MainMenuBar(QMenuBar):
         :return:
         """
         try:
-            score = self.parent.main_tab_view.get_fields()
+            score = self.main_window.main_tab_view.get_fields()
             print(score)
             if os.path.exists(self.ui_model.report_path):
                 with open(self.ui_model.report_path, 'w') as f:
@@ -92,11 +96,12 @@ class MainMenuBar(QMenuBar):
         :return:
         """
         try:
-            dialog = QFileDialog()
-            dialog.setDefaultSuffix('json')
-            save_file, _ = dialog.getSaveFileName(caption="Save Report", filter="JSON Files (*.json)")
+            self.dialog.setDefaultSuffix('json')
+            # self.dialog.setModal(True)
+            # self.dialog
+            save_file, _ = self.dialog.getSaveFileName(caption="Save Report", filter="JSON Files (*.json)")
             if save_file:
-                score = self.parent.main_tab_view.get_fields()
+                score = self.main_window.main_tab_view.get_fields()
                 print(score)
                 self.ui_model.report_path = save_file
                 with open(save_file, 'w') as f:
@@ -117,7 +122,7 @@ class MainMenuBar(QMenuBar):
             if open_file:
                 with open(open_file, 'r') as f:
                     report = json.load(f)
-                    self.parent.main_tab_view.set_fields(report)
+                    self.main_window.main_tab_view.set_fields(report)
         except Exception as e:
             result = dlg.message_dialog("Exception", "We ran into an error!", QMessageBox.Warning, e)
             print(f"Exception {e}")
@@ -131,8 +136,10 @@ class MainMenuBar(QMenuBar):
         try:
             browse_dir = QFileDialog.getExistingDirectory(self, caption="Select Directory", options=QFileDialog.ShowDirsOnly)
             if browse_dir:
-                self.parent.current_eeg_directory = browse_dir
-                self.parent.load_eeg()
+                print(f"browse directory {browse_dir}")
+                self.ui_model.current_input_directory = browse_dir
+                self.ui_model.update_load_eeg(browse_dir)
+                self.main_window.update()
         except Exception as e:
             result = dlg.message_dialog("Exception", "We ran into an error!", QMessageBox.Warning, e)
             print(f"Exception choosing the input directory {e}")
@@ -147,7 +154,6 @@ class MainMenuBar(QMenuBar):
         try:
             dialog = StartSessionDialog(self)
             if dialog.exec_():
-
                 # Load the input directories
                 self.ui_model.input_directories_path_file = dialog.txe_specified_paths.text()
                 with open(self.ui_model.input_directories_path_file, 'r') as f:
@@ -164,7 +170,7 @@ class MainMenuBar(QMenuBar):
                 self.ui_model.interpreter_name = dialog.txe_interpreter_name.text()
 
                 # Update the UI with the new file names and directories
-                self.parent.update()
+                self.main_window.update()
             else:
                 print("It didnt work :(")
         except Exception as e:

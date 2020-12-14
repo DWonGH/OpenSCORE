@@ -1,0 +1,129 @@
+{
+    "Patient details": {
+        "Patient info": {
+            "Name": "",
+            "ID": "",
+            "Date of Birth": "",
+            "Address": "",
+            "Medication": "",
+            "History": ""
+        },
+        "Patient referral": {
+            "Referrer name": "",
+            "Diagnosis at referral": "",
+            "Seizure frequency": "",
+            "Time since last seizure": "",
+            "Epilepsy-related indications": {
+                "Clinical suspicion of epilepsy or seizure": 0,
+                "Changes in seizure pattern": 0,
+                "Suspicion of non-convulsive status epilepticus": 0,
+                "Reconsider the initial diagnosis of epilepsy": 0,
+                "Monitoring of status epilepticus": 0,
+                "Classification of a patient diagnosed with epilepsy": 0,
+                "Monitoring the effect of medication": 0,
+                "Monitoring of seizure frequency": 0,
+                "Presurgical evaluation": 0,
+                "Considering stopping AED therapy": 0,
+                "Drivers license or flight certificate": 0
+            },
+            "Other differential diagnostic questions": {
+                "Psychogenic non-epileptic seizures": 0,
+                "Encephalopathy": 0,
+                "Loss of consciousness": 0,
+                "Cerebral vascular disease": 0,
+                "Disturbance of consciousness": 0,
+                "Dementia": 0,
+                "Paroxysmal behavioral changes": 0,
+                "Other psychiatric or behavioral symptoms": 0,
+                "Coma": 0,
+                "Brain death": 0
+            },
+            "Specific paediatric indication": {
+                "Genetic syndrome": 0,
+                "Metabolic disorder": 0,
+                "Regression": 0,
+                "Developmental problems": 0
+            },
+            "Other indications": {
+                "Follow up EEG": 0,
+                "Research project": 0,
+                "Assessment of prognosis": 0,
+                "Other indication": 0
+            }
+        }
+    },
+    "Recording conditions": {
+        "Study ID": "",
+        "Date & Time": "13/12/2020 15:30",
+        "Recording duration": " ",
+        "Technologist name": "",
+        "Physician name": "",
+        "Sensor group": "",
+        "Recording type": "",
+        "Alertness": "",
+        "Cooperation": "",
+        "Patient age": " ",
+        "Latest meal": "13/12/2020 15:30",
+        "Skull defect": "",
+        "Brain surgery": "",
+        "Additional technical description": "",
+        "Recording data": ""
+    },
+    "Findings": {
+        "Background Activity": {
+            "Posterior dominant rhythm": {
+                "Significance": "",
+                "Frequency": " ",
+                "Frequency Asymmetry": {
+                    "Symmetrical": true,
+                    "Hz lower on left side": "",
+                    "Hz lower on right side": ""
+                },
+                "Amplitude": "",
+                "Amplitude asymmetry": "",
+                "Reactivity to eye opening": "",
+                "Organisation": "",
+                "Caveat": "",
+                "Absence of PDR": ""
+            },
+            "Mu Rhythm": {
+                "Significance": "",
+                "Spectral frequency": "",
+                "Frequency": " ",
+                "Amplitude": " ",
+                "Modulator effect": ""
+            },
+            "Other organised rhythms": {
+                "Significance": "",
+                "Spectral frequency": "",
+                "Frequency": " ",
+                "Amplitude": " ",
+                "Modulator effect": ""
+            },
+            "Special features": {
+                "Critically ill background activity": ""
+            }
+        }
+    },
+    "Diagnostic significance": {
+        "Normal recording": true,
+        "No Definite Abnormality": false,
+        "Abnormal recording": false,
+        "Abnormal specification": {
+            "Epilepsy": false,
+            "Psychogenic non-epileptic seizures (PNES)": false,
+            "Other non-epileptic clinical episode": false,
+            "Status epilepticus": false,
+            "Focal dysfunction of the central nervous system": false,
+            "Diffuse dysfunction of the central nervous system": false,
+            "Continuous spikes and waves during slow sleep (CSWS) or electrical status epilepticus in sleep (ESES)": false,
+            "Coma": false,
+            "Brain death": false,
+            "EEG abnormality of uncertain clinical significance": false
+        }
+    },
+    "Clinical comments": {
+        "Interpreter name": "",
+        "Clinical comments": ""
+    }
+}

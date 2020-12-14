@@ -6,9 +6,14 @@ import modules.standard_dialogs as dlg
 
 class DiagnosticSignificanceTab(QWidget):
 
-    def __init__(self, parent):
-        super(QWidget, self).__init__(parent)
+    def __init__(self, main_tab):
+        """
+        A top level tab describing diagnostic significance
+        :param main_tab:
+        """
+        super(QWidget, self).__init__(main_tab)
 
+        self.main_tab = main_tab
         self.layout = QVBoxLayout()
         self.diagnosis_options = QFormLayout()
         self.diagnosis_options.addRow(QLabel("Diagnosis"))
@@ -72,6 +77,10 @@ class DiagnosticSignificanceTab(QWidget):
         self.setLayout(self.layout)
 
     def get_fields(self):
+        """
+        Pull user input from the boxes and buttons
+        :return:
+        """
         diagnostic_significance = {
             "Normal recording": self.rbt_normal.isChecked(),
             "No Definite Abnormality": self.rbt_no_definite.isChecked(),
@@ -92,6 +101,11 @@ class DiagnosticSignificanceTab(QWidget):
         return diagnostic_significance
 
     def set_fields(self, details):
+        """
+        Populate the boxes and buttons using given dictionary
+        :param details:
+        :return:
+        """
         try:
             print(details)
             if details["Normal recording"]: self.rbt_normal.setChecked(True)
@@ -113,6 +127,11 @@ class DiagnosticSignificanceTab(QWidget):
             print(e)
 
     def abnormal_toggled(self):
+        """
+        Disable and ignore checks in each of the abnormal specification checkboxes if the recording is not considered
+        abnormal
+        :return:
+        """
         if self.rbt_abnormal.isChecked():
             self.chbx_brain_death.setEnabled(True)
             self.chbx_diffuse_dysfunction.setEnabled(True)

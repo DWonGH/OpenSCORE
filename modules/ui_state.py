@@ -32,6 +32,30 @@ class UiModel:
 
         self.interpreter_name = ""
 
+    def update_load_eeg(self, input_directory):
+        """
+        Used when loading a single edf and txt file from a directory.
+        :param input_directory:
+        :return:
+        """
+        self.clear_session()
+        self.current_input_directory = input_directory
+        print(f"Current input directory {self.current_input_directory}")
+        print(f"Current output directory {self.current_output_directory}")
+        files = next(os.walk(self.current_input_directory))[2]
+        if len(files) == 2:
+            for f in files:
+                print(f)
+                if '.edf' in f:
+                    self.current_edf_filename = f
+                    self.current_edf_path = os.path.join(self.current_input_directory, self.current_edf_filename)
+                    self.current_output_filename = self.current_edf_filename.strip('.edf')
+                if '.txt' in f:
+                    self.current_txt_filename = f
+                    self.current_txt_path = os.path.join(self.current_input_directory, self.current_txt_filename)
+        print(f"Current input directory {self.current_input_directory}")
+        print(f"Current output directory {self.current_output_directory}")
+
     def set_current_names_and_directories(self):
         """
         Updates the required paths and file names for the current recording / report. Called after e.g. "Next", "Previous"

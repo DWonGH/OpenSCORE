@@ -10,15 +10,15 @@ import modules.standard_dialogs as dlg
 
 class MainTabWidget(QWidget):
 
-    def __init__(self, parent):
+    def __init__(self, main_window):
         """
         The MainTabWidget goes in the MainWindow widget and allows the user to browse and access each
         of the 5 main SCORE categories and their subsections
-        :param parent: MainWindow
+        :param main_window: MainWindow
         """
-        super(QWidget, self).__init__(parent)
+        super(QWidget, self).__init__(main_window)
 
-        self.parent = parent
+        self.main_window = main_window
         self.layout = QVBoxLayout(self)
 
         self.tabs = QTabWidget()

@@ -1,5 +1,7 @@
 from PyQt5.QtWidgets import QLineEdit, QFormLayout, QLabel, QWidget, QTextEdit
 
+from modules.standard_dialogs import DateLineEdit
+
 
 class PatientInfoTab(QWidget):
 
@@ -24,7 +26,7 @@ class PatientInfoTab(QWidget):
 
         # TODO: Change to date edit box
         self.lbl_dob = QLabel("Date of Birth")
-        self.txe_dob = QLineEdit()
+        self.txe_dob = DateLineEdit(self)
         self.layout.addRow(self.lbl_dob, self.txe_dob)
 
         self.lbl_address = QLabel("Address")

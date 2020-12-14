@@ -9,15 +9,15 @@ import modules.standard_dialogs as dlg
 
 class MainToolBar(QToolBar):
 
-    def __init__(self, parent, ui_model):
+    def __init__(self, main_window, ui_model):
         """
         Options for navigating a list of recordings/ reports and opening the corresponding EDF files in EDFBrowser
-        :param parent: MainWindow
+        :param main_window: MainWindow
         :param ui_model: Manges the paths
         """
         super().__init__()
 
-        self.parent = parent
+        self.main_window = main_window
         self.ui_model = ui_model
 
         self.lbl_current_eeg = QLabel("Current EEG: ")
@@ -59,7 +59,7 @@ class MainToolBar(QToolBar):
                                                  f"Do you want to save changes to this report in {self.ui_model.report_path}",
                                                  QMessageBox.Warning)
                 if result == 1024:
-                    self.parent.menu.hdl_save_report()
+                    self.main_window.menu.hdl_save_report()
             elif os.path.exists(self.ui_model.current_output_directory):
                 self.ui_model.report_path = f"{os.path.join(self.ui_model.current_output_directory, self.ui_model.current_output_filename)}.json"
                 print(f"report path 2 {self.ui_model.report_path}")
@@ -68,14 +68,14 @@ class MainToolBar(QToolBar):
                                                  QMessageBox.Warning)
                 if result == 1024:
                     with open(self.ui_model.report_path, 'w') as f:
-                        report = self.parent.main_tab_view.get_fields()
+                        report = self.main_window.main_tab_view.get_fields()
                         json.dump(report, f, indent=4)
 
             if self.ui_model.current_input_index < len(self.ui_model.input_directories) - 1:
                 self.ui_model.current_input_index += 1
                 self.ui_model.current_output_index += 1
                 self.ui_model.set_current_names_and_directories()
-                self.parent.update()
+                self.main_window.update()
             else:
                 result = dlg.message_dialog("End of input files", "You have reached the end of the specified eeg recordings", QMessageBox.Warning)
 
@@ -95,7 +95,7 @@ class MainToolBar(QToolBar):
                                                  f"Do you want to save changes to this report in {self.ui_model.report_path}",
                                                  QMessageBox.Warning)
                 if result == 1024:
-                    self.parent.menu.hdl_save_report()
+                    self.main_window.menu.hdl_save_report()
             elif os.path.exists(self.ui_model.current_output_directory):
                 self.ui_model.report_path = f"{os.path.join(self.ui_model.current_output_directory, self.ui_model.current_output_filename)}.json"
                 print(f"report path 2 {self.ui_model.report_path}")
@@ -104,13 +104,13 @@ class MainToolBar(QToolBar):
                                                  QMessageBox.Warning)
                 if result == 1024:
                     with open(self.ui_model.report_path, 'w') as f:
-                        report = self.parent.main_tab_view.get_fields()
+                        report = self.main_window.main_tab_view.get_fields()
                         json.dump(report, f, indent=4)
             if self.ui_model.current_input_index > 0:
                 self.ui_model.current_input_index -= 1
                 self.ui_model.current_output_index -= 1
                 self.ui_model.set_current_names_and_directories()
-                self.parent.update()
+                self.main_window.update()
             else:
                 result = dlg.message_dialog("End of input files",
                                             "You have reached the end of the specified eeg recordings",

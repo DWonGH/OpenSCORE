@@ -22,7 +22,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('OpenSCORE')
         self.resize(558, 500)
 
-        self.menu = MainMenuBar(self, self.ui_model)
+        self.menu = MainMenuBar(self)
         self.setMenuBar(self.menu)
 
         self.toolbar = MainToolBar(self, self.ui_model)
@@ -46,7 +46,7 @@ class MainWindow(QMainWindow):
         Called when a new score report is loaded
         :return:
         """
-        self.clear_tabview()
+        self.clear()
         self.toolbar.lbl_current_eeg_name.setText(self.ui_model.current_output_filename)
         if os.path.exists(self.ui_model.report_path):
             with open(self.ui_model.report_path, 'r') as f:
@@ -58,7 +58,7 @@ class MainWindow(QMainWindow):
         self.main_tab_view.clinical_comments.txe_interpreter_name.setText(self.ui_model.interpreter_name)
         self.main_tab_view.recording_conditions.txe_recording_data.setText(self.ui_model.current_edf_path)
 
-    def clear_tabview(self):
+    def clear(self):
         """
         Resets the UI and input fields
         :return:

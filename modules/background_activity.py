@@ -3,12 +3,12 @@ from PyQt5.QtWidgets import QFormLayout, QLabel, QWidget, QComboBox, QSpinBox, Q
 
 class BackgroundActivityTab(QWidget):
 
-    def __init__(self, parent):
+    def __init__(self, findings_tab):
         """
         Build a widget containing options for scoring background activity and rhythms
-        :param parent: The FindingsTab widget
+        :param findings_tab: The FindingsTab widget
         """
-        super(QWidget, self).__init__(parent)
+        super(QWidget, self).__init__(findings_tab)
 
         """Add options for scoring the posterior dominant rhythm"""
         self.layout = QFormLayout()

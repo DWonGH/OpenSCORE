@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QMessageBox
-
+from PyQt5.QtWidgets import QMessageBox, QLineEdit, QWidget
+import re
 
 def confirmation_dialog(title, message, icon):
     """
@@ -43,3 +43,41 @@ def message_dialog(title, message, icon, detailed_text=None):
     except Exception as e:
         print(e)
 
+
+class DateLineEdit(QLineEdit):
+
+    def __init__(self, parent):
+        super(QWidget, self).__init__(parent)
+
+        self.user_input = ""
+        self.setPlaceholderText("e.g. 13-12-2020")
+        self.textEdited.connect(self.hdl_txt_edited)
+
+    def hdl_txt_edited(self, text):
+        """
+        We want to ignore any other input than numbers
+        There must be 8 digits
+        Take only the first 8 digits
+        If there are
+
+        1. remove any other symbols
+        2. remove any symbols from string longer than 8
+        3. save the number only string to user_input
+        4. generate a display string with dashes
+        5. update the lineedit with the display string
+        :param text:
+        :return:
+        """
+        #print(text)
+        if "--" in text:
+            text = text.replace('--', '-')
+
+        text = re.sub("\d\d^-\d\d")
+        text = re.sub("[^0-9]", "", text)
+
+        if len(text) == 2:
+            text += '-'
+
+
+        self.setText(text)
+        print(text)

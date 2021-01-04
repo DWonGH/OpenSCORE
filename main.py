@@ -1,10 +1,14 @@
 import sys
+
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication
-from modules.main_window import MainWindow
 
+from src.controllers.main_window_controller import MainWindowController
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    main_window = MainWindow()
-    main_window.show()
-    sys.exit(app.exec_())
+app = QApplication(sys.argv)
+app.setApplicationName("OpenSCORE")
+app.setOrganizationName("OpenSCORE")
+app.setAttribute(Qt.AA_UseHighDpiPixmaps)
+main_window_controller = MainWindowController()
+main_window_controller.view.show()
+sys.exit(app.exec_())

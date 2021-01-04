@@ -1,14 +1,11 @@
-from PyQt5.QtWidgets import QListView, QLineEdit, QFormLayout, QLabel, QWidget, QComboBox
+from PyQt5.QtWidgets import QListView, QLineEdit, QFormLayout, QLabel, QWidget, QComboBox, QTextEdit
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 
 
-class PatientReferralTab(QWidget):
+class PatientReferralWidget(QWidget):
 
-    def __init__(self, parent):
-        """
-        Sub-tab describing the patient referral information
-        :param parent:
-        """
+    def __init__(self, parent=None):
+
         super(QWidget, self).__init__(parent)
 
         self.layout = QFormLayout()
@@ -16,12 +13,16 @@ class PatientReferralTab(QWidget):
 
         # TODO: Add Address other contact info for referrer
         self.lbl_referrer_name = QLabel("Physician/ Referrer Name")
-        self.txe_referrer_name = QLineEdit()
-        self.layout.addRow(self.lbl_referrer_name, self.txe_referrer_name)
+        self.lne_referrer_name = QLineEdit()
+        self.layout.addRow(self.lbl_referrer_name, self.lne_referrer_name)
+
+        self.lbl_referrer_details = QLabel("Referrer Details")
+        self.txe_referrer_details = QTextEdit()
+        self.layout.addRow(self.lbl_referrer_details, self.txe_referrer_details)
 
         self.lbl_diagnosis = QLabel("Diagnosis at referral")
-        self.txe_diagnosis = QLineEdit()
-        self.layout.addRow(self.lbl_diagnosis, self.txe_diagnosis)
+        self.lne_diagnosis = QLineEdit()
+        self.layout.addRow(self.lbl_diagnosis, self.lne_diagnosis)
 
         self.txt_seizure_freq = ["", "No Seizure", "Daily", "Bi-Daily", "Weekly", "Bi-Weekly", "Monthly", "Bi-Monthly", "Half Annually", "Yearly", "Previously"]
         self.lbl_seizure_freq = QLabel("Seizure frequency")
@@ -88,10 +89,11 @@ class PatientReferralTab(QWidget):
 
         self.setLayout(self.layout)
 
-    def get_fields(self):
-        referral_details = {
-            "Referrer name": self.txe_referrer_name.text(),
-            "Diagnosis at referral": self.txe_diagnosis.text(),
+    def to_dict(self):
+        data = {
+            "Referrer name": self.lne_referrer_name.text(),
+            "Referrer details": self.txe_referrer_details.toPlainText(),
+            "Diagnosis at referral": self.lne_diagnosis.text(),
             "Seizure frequency": self.cmb_seizure_freq.currentText(),
             "Time since last seizure": self.cmb_last_seizure.currentText(),
             "Epilepsy-related indications": self.get_check_list(self.chlist_epilepsy),
@@ -99,31 +101,47 @@ class PatientReferralTab(QWidget):
             "Specific paediatric indication": self.get_check_list(self.chlist_peadiatric),
             "Other indications": self.get_check_list(self.chlist_other)
         }
-        return referral_details
+        return data
 
-    def set_fields(self, patient_details):
-        patient_referral = patient_details["Patient referral"]
-        print(patient_referral)
-        self.txe_referrer_name.setText(patient_referral["Referrer name"])
-        self.txe_diagnosis.setText(patient_referral["Diagnosis at referral"])
-        self.cmb_seizure_freq.setCurrentIndex(self.txt_seizure_freq.index(patient_referral["Seizure frequency"]))
-        self.cmb_last_seizure.setCurrentIndex(self.txt_last_seizure.index(patient_referral["Time since last seizure"]))
+    def update_from_dict(self, data):
+        self.lne_referrer_name.setText(data["Referrer name"])
+        self.txe_referrer_details.setText(data["Referrer details"])
+        self.lne_diagnosis.setText(data["Diagnosis at referral"])
+        if data["Seizure frequency"] is None:
+            self.cmb_seizure_freq.setCurrentIndex(0)
+        else:
+            self.cmb_seizure_freq.setCurrentIndex(self.txt_seizure_freq.index(data["Seizure frequency"]))
+        if data["Time since last seizure"] is None:
+            self.cmb_last_seizure.setCurrentIndex(0)
+        else:
+            self.cmb_last_seizure.setCurrentIndex(self.txt_last_seizure.index(data["Time since last seizure"]))
 
-        erc = patient_referral["Epilepsy-related indications"]
-        self.set_check_list(self.chlist_epilepsy, erc)
+        erc = data["Epilepsy-related indications"]
+        if erc is None:
+            self.reset_check_list(self.chlist_epilepsy)
+        else:
+            self.set_check_list(self.chlist_epilepsy, erc)
 
-        oddq = patient_referral["Other differential diagnostic questions"]
-        self.set_check_list(self.chlist_other_diagnostic, oddq)
+        oddq = data["Other differential diagnostic questions"]
+        if oddq is None:
+            self.reset_check_list(self.chlist_other_diagnostic)
+        else:
+            self.set_check_list(self.chlist_other_diagnostic, oddq)
 
-        spi = patient_referral["Specific paediatric indication"]
-        self.set_check_list(self.chlist_peadiatric, spi)
+        spi = data["Specific paediatric indication"]
+        if spi is None:
+            self.reset_check_list(self.chlist_peadiatric)
+        else:
+            self.set_check_list(self.chlist_peadiatric, spi)
 
-        other = patient_referral["Other indications"]
-        self.set_check_list(self.chlist_other, other)
+        other = data["Other indications"]
+        if other is None:
+            self.reset_check_list(self.chlist_other)
+        else:
+            self.set_check_list(self.chlist_other, other)
 
     def set_check_list(self, chlist, dict):
         for i in range(chlist.rowCount()):
-            print(chlist.item(i).checkState())
             chlist.item(i).setCheckState(dict[chlist.item(i).text()])
 
     def get_check_list(self, chlist):
@@ -131,6 +149,10 @@ class PatientReferralTab(QWidget):
         for i in range(chlist.rowCount()):
             results[chlist.item(i).text()] = chlist.item(i).checkState()
         return results
+
+    def reset_check_list(self, chlist):
+        for i in range(chlist.rowCount()):
+            chlist.item(i).setCheckState(0)
 
     def add_check_list(self, list_title, option_list):
         self.layout.addRow(QLabel(""))

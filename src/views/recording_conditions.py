@@ -1,17 +1,13 @@
 import os
 
-from PyQt5.QtCore import QDateTime
-from PyQt5.QtWidgets import QWidget, QFormLayout, QLabel, QLineEdit, QTimeEdit, QSpinBox, \
-    QComboBox, QTextEdit, QDateTimeEdit, QDoubleSpinBox, QHBoxLayout, QPushButton, QFileDialog
+from PyQt5.QtWidgets import QWidget, QFormLayout, QLabel, QLineEdit, QSpinBox, \
+    QComboBox, QTextEdit, QDoubleSpinBox, QHBoxLayout, QPushButton, QFileDialog
 
 
-class RecordingConditionsTab(QWidget):
+class RecordingConditionsWidget(QWidget):
 
-    def __init__(self, parent):
-        """
-        Top-level tab describing the EEG recording conditions
-        :param parent:
-        """
+    def __init__(self, parent=None):
+
         super(QWidget, self).__init__(parent)
 
         self.parent = parent
@@ -20,14 +16,13 @@ class RecordingConditionsTab(QWidget):
         self.layout.addRow(QLabel("Admin"))
 
         self.lbl_study_id = QLabel("Study ID")
-        self.txe_study_id = QLineEdit()
-        self.layout.addRow(self.lbl_study_id, self.txe_study_id)
+        self.lne_study_id = QLineEdit()
+        self.layout.addRow(self.lbl_study_id, self.lne_study_id)
 
         self.lbl_study_date = QLabel("Date & Time")
-        self.dtm_study_date = QDateTimeEdit()
-        self.dtm_study_date.setDateTime(QDateTime.currentDateTime())
-        self.dtm_study_date.setSpecialValueText(" ")
-        self.layout.addRow(self.lbl_study_date, self.dtm_study_date)
+        self.lne_study_date = QLineEdit()
+        self.lne_study_date.setPlaceholderText("e.g. 30/09/2012")
+        self.layout.addRow(self.lbl_study_date, self.lne_study_date)
 
         self.lbl_duration = QLabel("Recording Duration")
         self.spb_duration = QDoubleSpinBox()
@@ -35,12 +30,12 @@ class RecordingConditionsTab(QWidget):
         self.layout.addRow(self.lbl_duration, self.spb_duration)
 
         self.lbl_technologist = QLabel("Technologist Name")
-        self.txe_technologist = QLineEdit()
-        self.layout.addRow(self.lbl_technologist, self.txe_technologist)
+        self.lne_technologist = QLineEdit()
+        self.layout.addRow(self.lbl_technologist, self.lne_technologist)
 
         self.lbl_physician = QLabel("Physician Name")
-        self.txe_physician = QLineEdit()
-        self.layout.addRow(self.lbl_physician, self.txe_physician)
+        self.lne_physician = QLineEdit()
+        self.layout.addRow(self.lbl_physician, self.lne_physician)
 
         self.layout.addRow(QLabel(""))
         self.layout.addRow(QLabel("Technical Description"))
@@ -87,9 +82,9 @@ class RecordingConditionsTab(QWidget):
         self.layout.addRow(self.lbl_age, self.spb_age)
 
         self.lbl_latest_meal = QLabel("Latest meal")
-        self.dtm_latest_meal = QDateTimeEdit()
-        self.dtm_latest_meal.setDateTime(QDateTime.currentDateTime())
-        self.layout.addRow(self.lbl_latest_meal, self.dtm_latest_meal)
+        self.lne_latest_meal = QLineEdit()
+        self.lne_latest_meal.setPlaceholderText("e.g. 30/09/2012")
+        self.layout.addRow(self.lbl_latest_meal, self.lne_latest_meal)
 
         # TODO: Find standard terms for skull defect locations
         self.txt_skull_defect = ["", "None", "Top", "Right", "Left", "Front", "Back"]
@@ -109,63 +104,83 @@ class RecordingConditionsTab(QWidget):
         self.txe_tech_description = QTextEdit()
         self.layout.addRow(self.lbl_tech_description, self.txe_tech_description)
 
-        self.lbl_recording_data = QLabel("Recorded data")
-        self.hbx_recording_data = QHBoxLayout()
-        self.txe_recording_data = QLineEdit()
-        self.hbx_recording_data.addWidget(self.txe_recording_data)
-        self.btn_recording_data = QPushButton("Browse")
-        self.btn_recording_data.clicked.connect(self.hdl_recording_data)
-        self.hbx_recording_data.addWidget(self.btn_recording_data)
-        self.layout.addRow(self.lbl_recording_data, self.hbx_recording_data)
+        self.lbl_edf_location = QLabel("EDF location")
+        self.hbx_edf_location = QHBoxLayout()
+        self.lne_edf_location = QLineEdit()
+        self.hbx_edf_location.addWidget(self.lne_edf_location)
+        self.btn_edf_location = QPushButton("Browse")
+        #self.btn_recording_data.clicked.connect(self.hdl_recording_data)
+        self.hbx_edf_location.addWidget(self.btn_edf_location)
+        self.layout.addRow(self.lbl_edf_location, self.hbx_edf_location)
 
         self.setLayout(self.layout)
 
-    def get_fields(self):
-        recording_conditions = {
-            "Study ID": self.txe_study_id.text(),
-            "Date & Time": self.dtm_study_date.text(),
+    def to_dict(self):
+        data = {
+            "Study ID": self.lne_study_id.text(),
+            "Date & Time": self.lne_study_date.text(),
             "Recording duration": self.spb_duration.text(),
-            "Technologist name": self.txe_technologist.text(),
-            "Physician name": self.txe_physician.text(),
+            "Technologist name": self.lne_technologist.text(),
+            "Physician name": self.lne_physician.text(),
             "Sensor group": self.cmb_sensor_group.currentText(),
             "Recording type": self.cmb_recording_type.currentText(),
             "Alertness": self.cmb_alertness.currentText(),
             "Cooperation": self.cmb_cooperation.currentText(),
             "Patient age": self.spb_age.text(),
-            "Latest meal": self.dtm_latest_meal.text(),
+            "Latest meal": self.lne_latest_meal.text(),
             "Skull defect": self.cmb_skull_defect.currentText(),
             "Brain surgery": self.cmb_brain_surgery.currentText(),
             "Additional technical description": self.txe_tech_description.toPlainText(),
-            "Recording data": self.txe_recording_data.text()
+            "EDF location": self.lne_edf_location.text()
         }
-        return recording_conditions
+        return data
 
-    def set_fields(self, data):
-        print(data)
-        self.txe_study_id.setText(data["Study ID"])
-        self.dtm_study_date.setDateTime(QDateTime.fromString(data["Date & Time"]))
-        if data["Recording duration"] != ' ': self.spb_duration.setValue(float(data["Recording duration"]))
-        self.txe_technologist.setText(data["Technologist name"])
-        self.txe_physician.setText(data["Physician name"])
-        self.cmb_sensor_group.setCurrentIndex(self.txt_sensor_group.index(data["Sensor group"]))
-        self.cmb_recording_type.setCurrentIndex(self.txt_recording_type.index(data["Recording type"]))
-        self.cmb_alertness.setCurrentIndex(self.txt_alertness.index(data["Alertness"]))
-        self.cmb_cooperation.setCurrentIndex(self.txt_cooperation.index(data["Cooperation"]))
-        if data["Patient age"] != ' ': self.spb_age.setValue(int(data["Patient age"]))
-        self.dtm_latest_meal.setDateTime(QDateTime.fromString(data["Latest meal"]))
-        self.cmb_skull_defect.setCurrentIndex(self.txt_skull_defect.index(data["Skull defect"]))
-        self.cmb_brain_surgery.setCurrentIndex(self.txt_brain_surgery.index(data["Brain surgery"]))
+    def update_from_dict(self, data):
+        self.lne_study_id.setText(data["Study ID"])
+        self.lne_study_date.setText(data["Date & Time"])
+        if data["Recording duration"] != ' ' and data['Recording duration'] is not None:
+            self.spb_duration.setValue(float(data["Recording duration"]))
+        self.lne_technologist.setText(data["Technologist name"])
+        self.lne_physician.setText(data["Physician name"])
+        if data["Sensor group"] is None:
+            self.cmb_sensor_group.setCurrentIndex(0)
+        else:
+            self.cmb_sensor_group.setCurrentIndex(self.txt_sensor_group.index(data["Sensor group"]))
+        if data["Recording type"] is None:
+            self.cmb_recording_type.setCurrentIndex(0)
+        else:
+            self.cmb_recording_type.setCurrentIndex(self.txt_recording_type.index(data["Recording type"]))
+        if data['Alertness'] is None:
+            self.cmb_alertness.setCurrentIndex(0)
+        else:
+            self.cmb_alertness.setCurrentIndex(self.txt_alertness.index(data["Alertness"]))
+        if data['Cooperation'] is None:
+            self.cmb_cooperation.setCurrentIndex(0)
+        else:
+            self.cmb_cooperation.setCurrentIndex(self.txt_cooperation.index(data["Cooperation"]))
+        if data["Patient age"] != ' ' and data['Patient age'] is not None:
+            self.spb_age.setValue(int(data["Patient age"]))
+        self.lne_latest_meal.setText(data["Latest meal"])
+        if data['Skull defect'] is None:
+            self.cmb_skull_defect.setCurrentIndex(0)
+        else:
+            self.cmb_skull_defect.setCurrentIndex(self.txt_skull_defect.index(data["Skull defect"]))
+        if data['Brain surgery'] is None:
+            self.cmb_brain_surgery.setCurrentIndex(0)
+        else:
+            self.cmb_brain_surgery.setCurrentIndex(self.txt_brain_surgery.index(data["Brain surgery"]))
         self.txe_tech_description.setText(data["Additional technical description"])
-        self.txe_recording_data.setText(data["Recording data"])
-        self.parent.parent.current_edf_path = data["Recording data"]
-        self.parent.parent.toolbar.lbl_current_eeg_name.setText(os.path.basename(data["Recording data"]).strip('.edf'))
+        self.lne_edf_location.setText(data["EDF location"])
+        # self.lne_recording_data.setText(data["Recording data"])
+        # self.parent.parent.current_edf_path = data["Recording data"]
+        # self.parent.parent.toolbar.lbl_current_eeg_name.setText(os.path.basename(data["Recording data"]).strip('.edf'))
 
     def hdl_recording_data(self):
         try:
             browse_data, _ = QFileDialog.getOpenFileName(self, caption="Select associated recording", filter="EDF files (*.edf)")
             if browse_data:
-                self.txe_recording_data.setText(browse_data)
+                self.lne_edf_location.setText(browse_data)
                 self.parent.parent.ui_model.current_edf_path = browse_data
-                self.parent.parent.toolbar.lbl_current_eeg_name.setText(os.path.basename(self.txe_recording_data.text()).strip('.edf'))
+                self.parent.parent.toolbar.lbl_current_eeg_name.setText(os.path.basename(self.lne_edf_location.text()).strip('.edf'))
         except Exception as e:
             print(f"Exception choosing the associated recording {e}")

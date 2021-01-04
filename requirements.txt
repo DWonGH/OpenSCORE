@@ -1,2 +1,10 @@
+requests
+# For eegreportparser
+fuzzysearch
+pandas
+winsound
+nltk
+tqdm
+
+# For OpenSCORE
 PyQt5
-mne

@@ -11,9 +11,6 @@ record description.
 - Option for recording eye tracking data with tobii
 
 ## Installation
-### Requirements
-We will assume the following requirements have been met:
-- Anaconda python installed
 
 1. Download code
 ```shell script
@@ -23,7 +20,7 @@ cd OpenSCORE
 
 2. Setup virtual / conda environment e.g.
 ```shell script
-conda create -y -n openscore python=3.7
+conda create -y -n openscore python=3.6
 conda activate openscore
 ```
 
@@ -33,9 +30,12 @@ pip install -r requirements.txt
 ```
 
 4. Install EDFBrowser
-```shell script
+Go to https://github.com/d3-worgan/edfbrowser/releases/tag/v1.0
+Download the zip file and unzip into the root of this project directory.
+There should now be a directory called 'release' in the root of the project directory.
+Inside is the EDFBrowser application.
 
-```
+5. Install Eye Tracker Manager
 
 4. Run
 ```shell script

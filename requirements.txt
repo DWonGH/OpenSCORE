@@ -2,9 +2,12 @@ requests
 # For eegreportparser
 fuzzysearch
 pandas
-winsound
 nltk
 tqdm
 
 # For OpenSCORE
 PyQt5
+psutil
+
+# For eye tracker
+tobii_research

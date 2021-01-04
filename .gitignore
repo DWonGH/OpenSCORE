@@ -14,6 +14,9 @@ s003_2012_04_06
 root_output_directory
 participant_1
 edfbrowser_1
+data/dummy_root
+data/gaze_recordings
+release
 
 # C extensions
 *.so

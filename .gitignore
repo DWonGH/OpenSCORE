@@ -13,6 +13,7 @@ s003_2012_04_06
 00000768_s003.json
 root_output_directory
 participant_1
+edfbrowser_1
 
 # C extensions
 *.so

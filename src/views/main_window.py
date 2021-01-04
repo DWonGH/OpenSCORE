@@ -4,7 +4,7 @@ from src.views.tool_bar import MainToolBar
 from src.views.patient_details import PatientDetailsWidget
 from src.views.patient_referral import PatientReferralWidget
 from src.views.recording_conditions import RecordingConditionsWidget
-
+from src.views.tobii_toolbar import TobiiToolBar
 
 class MainWindow(QMainWindow):
 
@@ -25,6 +25,9 @@ class MainWindow(QMainWindow):
 
         self.toolbar = MainToolBar(self)
         self.addToolBar(self.toolbar)
+        self.tobii_toolbar = TobiiToolBar()
+        self.addToolBarBreak()
+        self.addToolBar(self.tobii_toolbar)
 
         self.main_layout = QVBoxLayout()
         self.tabs = QTabWidget()

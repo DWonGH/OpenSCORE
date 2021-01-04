@@ -1,13 +1,17 @@
+from datetime import datetime
 import os
 import subprocess
 import traceback
 
 import psutil
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
+import tobii_research as tr
 
 from src.dialogs.load_multi import StartSessionDialog
 from src.models.main_model import MainModel
 from src.views.main_window import MainWindow
+
+from helpers import eyetracker as eye
 
 
 class MainWindowController:
@@ -28,12 +32,21 @@ class MainWindowController:
         self.view.menu.bt_load_single_eeg.triggered.connect(self.hdl_load_edf)
         self.view.menu.bt_eeg_sequence.triggered.connect(self.hdl_load_edf_multi)
 
-        self.view.toolbar.bt_previous_recording.triggered.connect(self.hdl_previous_recording)
-        self.view.toolbar.bt_next_recording.triggered.connect(self.hdl_next_recording)
-        self.view.toolbar.bt_open_in_edfbrowser.triggered.connect(self.hdl_open_in_edfbrowser)
+        self.view.toolbar.btn_previous_recording.triggered.connect(self.hdl_previous_recording)
+        self.view.toolbar.btn_next_recording.triggered.connect(self.hdl_next_recording)
+        self.view.toolbar.btn_open_in_edfbrowser.triggered.connect(self.hdl_open_in_edfbrowser)
+        # self.view.toolbar.btn_eye_tracker_manager.triggered.connect(self.hdl_call_calibrator)
+
+        self.view.tobii_toolbar.btn_start_analysis.triggered.connect(self.hdl_record_gaze)
+        self.view.tobii_toolbar.btn_stop_analysis.triggered.connect(self.hdl_stop_gaze)
+        self.view.tobii_toolbar.btn_eye_tracker_manager.triggered.connect(self.hdl_call_calibrator)
+
+
         self.view.recording_conditions.btn_edf_location.clicked.connect(self.hdl_edf_location_bt_press)
 
         self.edfbrowser_p = None
+        found_eyetrackers = tr.find_all_eyetrackers()
+        self.eyetracker = found_eyetrackers[0]
 
     def hdl_new_report(self):
         """
@@ -176,8 +189,22 @@ class MainWindowController:
         """
         try:
             self.update_model_from_view()
-            if self.model.previous_recording() is False:
+            if len(self.model.input_paths) == 0:
+                dialog = QMessageBox()
+                dialog.setWindowTitle("Previous recording")
+                dialog.setText("There are no EEG's to navigate.")
+                dialog.setStandardButtons(QMessageBox.Ok)
+                dialog.setIcon(QMessageBox.Information)
+                answer = dialog.exec_()
+            elif self.model.previous_recording() is False:
                 print("At the beginning of the list")
+                if len(self.model.input_paths) == 0:
+                    dialog = QMessageBox()
+                    dialog.setWindowTitle("Previous recording")
+                    dialog.setText("You are at the beginning of the list. You can specify a sequence of EEGs using the load sequence option in the menu.")
+                    dialog.setStandardButtons(QMessageBox.Ok)
+                    dialog.setIcon(QMessageBox.Information)
+                    answer = dialog.exec_()
             else:
                 self.update_view_from_model()
         except Exception as e:
@@ -192,8 +219,22 @@ class MainWindowController:
         """
         try:
             self.update_model_from_view()
-            if self.model.next_recording() is False:
+            if len(self.model.input_paths) == 0:
+                dialog = QMessageBox()
+                dialog.setWindowTitle("Previous recording")
+                dialog.setText("There are no EEG's to navigate. You can specify a sequence of EEGs using the load sequence option in the menu.")
+                dialog.setStandardButtons(QMessageBox.Ok)
+                dialog.setIcon(QMessageBox.Information)
+                answer = dialog.exec_()
+            elif self.model.next_recording() is False:
                 print("At the end of the list")
+                if len(self.model.input_paths) == 0:
+                    dialog = QMessageBox()
+                    dialog.setWindowTitle("Previous recording")
+                    dialog.setText("You are at the end of the list.")
+                    dialog.setStandardButtons(QMessageBox.Ok)
+                    dialog.setIcon(QMessageBox.Information)
+                    answer = dialog.exec_()
             else:
                 self.update_view_from_model()
         except Exception as e:
@@ -205,7 +246,7 @@ class MainWindowController:
         EDFBrowser will start writing a UI log to the output directory.
         :return:
         """
-        edfbrowser_path = os.path.join(os.getcwd(), 'edfbrowser_1', 'release', 'edfbrowser.exe')
+        edfbrowser_path = os.path.join(os.getcwd(), 'release', 'edfbrowser.exe')
         if not os.path.exists(edfbrowser_path):
             dialog = QMessageBox()
             dialog.setWindowTitle("Open in EDFBrowser")
@@ -238,7 +279,7 @@ class MainWindowController:
                 dialog.setIcon(QMessageBox.Information)
                 answer = dialog.exec_()
         except Exception as e:
-            print(f"Exception {e}")
+            traceback.print_exc()
 
     def edfbrowser_is_open(self):
         """
@@ -258,8 +299,40 @@ class MainWindowController:
             if file_path:
                 self.view.recording_conditions.lne_edf_location.setText(file_path)
                 self.model.set_edf(file_path)
+                self.update_view_from_model()
         except Exception as e:
             traceback.print_exc()
+
+    def hdl_call_calibrator(self):
+        eye.call_calibrator(self.eyetracker)
+
+    def hdl_record_gaze(self):
+        try:
+            if self.edfbrowser_is_open() is False:
+                dialog = QMessageBox()
+                dialog.setWindowTitle("Record Gaze")
+                dialog.setText("Please open the eeg in EDFBrowser before recording gaze data.")
+                dialog.setStandardButtons(QMessageBox.Ok)
+                dialog.setIcon(QMessageBox.Information)
+                answer = dialog.exec_()
+            else:
+                if len(self.model.output_paths) > 0:
+                    gaze_path = os.path.join(self.model.output_paths[self.model.output_idx], 'gaze_data.txt')
+                else:
+                    gaze_path = os.path.join(os.getcwd(), 'data', 'gaze_recordings')
+                    if not os.path.exists(gaze_path):
+                        os.makedirs(gaze_path)
+                    now = datetime.now()
+                    now = now.strftime("%d-%m-%Y-%H-%M-%S")
+                    gaze_path = os.path.join(gaze_path, f"{now}.txt")
+                eye.gaze_file = open(gaze_path, 'w')
+                self.eyetracker.subscribe_to(tr.EYETRACKER_GAZE_DATA, eye.gaze_data_callback, as_dictionary=True)
+        except Exception as e:
+            traceback.print_exc()
+
+    def hdl_stop_gaze(self):
+        self.eyetracker.unsubscribe_from(tr.EYETRACKER_GAZE_DATA, eye.gaze_data_callback)
+        eye.gaze_file.close()
 
     def update_model_from_view(self):
         self.model.report.patient_details.update_from_dict(self.view.patient_details.to_dict())
@@ -268,7 +341,7 @@ class MainWindowController:
 
     def update_view_from_model(self):
         self.view.setWindowTitle(f"OpenSCORE - {self.model.report_file_name}")
-#        self.view.toolbar.lbl_current_eeg_name.setText(self.model.edf_file_name.split('.')[0])
+        self.view.toolbar.lbl_current_eeg_name.setText(self.model.edf_file_name.split('.')[0])
         self.view.patient_details.update_from_dict(self.model.report.patient_details.to_dict())
         self.view.patient_referral.update_from_dict(self.model.report.patient_referral.to_dict())
         self.view.recording_conditions.update_from_dict(self.model.report.recording_conditions.to_dict())

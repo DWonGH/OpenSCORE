@@ -20,22 +20,20 @@ class MainToolBar(QToolBar):
         self.lbl_current_eeg_name.setMinimumWidth(110)
         self.addWidget(self.lbl_current_eeg_name)
 
-        self.bt_previous_recording = QAction("&Previous", self)
-        # self.bt_previous_recording.triggered.connect(self.hdl_previous_recording)
-        self.addAction(self.bt_previous_recording)
+        self.btn_open_in_edfbrowser = QAction("&Open in EDFBrowser", self)
+        self.addAction(self.btn_open_in_edfbrowser)
 
-        self.bt_next_recording = QAction("&Next", self)
-        # self.bt_next_recording.triggered.connect(self.hdl_next_recording)
-        self.addAction(self.bt_next_recording)
+        self.btn_previous_recording = QAction("&Previous", self)
+        self.addAction(self.btn_previous_recording)
 
-        self.bt_open_in_edfbrowser = QAction("&Open in EDFBrowser", self)
-        # self.bt_open_in_edfbrowser.triggered.connect(self.hdl_open_in_edfbrowser)
-        self.addAction(self.bt_open_in_edfbrowser)
+        self.btn_next_recording = QAction("&Next", self)
+        self.addAction(self.btn_next_recording)
 
-        self.start_analysis = QAction("&Start Analysis", self)
-        # self.next_recording.triggered.connect(self.eeg_graph.start_analysis)
-        self.addAction(self.start_analysis)
-
-        self.stop_analysis = QAction("&Stop Analysis", self)
-        # self.next_recording.triggered.connect(self.eeg_graph.stop_analysis)
-        self.addAction(self.stop_analysis)
+        # self.btn_start_analysis = QAction("&Start Analysis", self)
+        # self.addAction(self.btn_start_analysis)
+        #
+        # self.btn_stop_analysis = QAction("&Stop Analysis", self)
+        # self.addAction(self.btn_stop_analysis)
+        #
+        # self.btn_eye_tracker_manager = QAction("&Calibrate Tobii")
+        # self.addAction(self.btn_eye_tracker_manager)

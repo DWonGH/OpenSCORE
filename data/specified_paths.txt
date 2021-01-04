@@ -1,0 +1,8 @@
+E:\computer_science\living_lab\2020TEETACSI\Data\tueg-tools\data\v2.0.0\edf\eval\abnormal\01_tcp_ar\007\00000768\s003_2012_04_06\00000768_s003_t000.edf
+E:\computer_science\living_lab\2020TEETACSI\Data\tueg-tools\data\v2.0.0\edf\eval\abnormal\01_tcp_ar\011\00001154\s007_2012_07_25\00001154_s007_t000.edf
+E:\computer_science\living_lab\2020TEETACSI\Data\tueg-tools\data\v2.0.0\edf\eval\abnormal\01_tcp_ar\012\00001217\s002_2012_09_17\00001217_s002_t000.edf
+E:\computer_science\living_lab\2020TEETACSI\Data\tueg-tools\data\v2.0.0\edf\train\abnormal\01_tcp_ar\064\00006479\s002_2010_05_18
+E:\computer_science\living_lab\2020TEETACSI\Data\tueg-tools\data\v2.0.0\edf\train\abnormal\01_tcp_ar\064\00006476\s001_2010_05_10\00006476_s001_t000.edf
+E:\computer_science\living_lab\2020TEETACSI\Data\tueg-tools\data\v2.0.0\edf\train\abnormal\01_tcp_ar\046\00004619\s005_2013_05_20\00004619_s005_t000.edf
+E:\computer_science\living_lab\2020TEETACSI\Data\tueg-tools\data\v2.0.0\edf\train\abnormal\01_tcp_ar\015\00001593\s005_2013_07_02\00001593_s005_t000.edf
+E:\computer_science\living_lab\2020TEETACSI\Data\tueg-tools\data\v2.0.0\edf\train\abnormal\01_tcp_ar\015\00001593\s003_2011_04_22\00001593_s003_t002.edf

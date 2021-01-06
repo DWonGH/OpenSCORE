@@ -2,10 +2,10 @@ import json
 import os
 
 from src.models.report import Report
-from helpers import eegreportparser as rp
+from src.helpers import eegreportparser as rp
 
 
-class MainModel:
+class MainWindowModel:
 
     def __init__(self):
 
@@ -59,6 +59,8 @@ class MainModel:
         with open(self.report_file_path, 'r') as f:
             data = json.load(f)
             self.report.from_dict(data)
+        if os.path.exists(self.report.recording_conditions.edf_location):
+            self.set_edf(self.report.recording_conditions.edf_location)
 
     def save_report(self):
         """

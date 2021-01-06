@@ -36,13 +36,17 @@ There should now be a directory called 'release' in the root of the project dire
 Inside is the EDFBrowser application.
 
 5. Install Eye Tracker Manager
+Download the [eye tracker manager](https://www.tobiipro.com/product-listing/eye-tracker-manager/#Download)
+from the tobii website.
 
 4. Run
 ```shell script
 python main.py
 ```
 
-
+## Multi EDF / EEG Sequence
+- This feature currently relies on the structure of the TUEG dataset and
+will not work otherwise
 
 ## Development
 - Loosely follows the MVC design pattern
@@ -50,7 +54,5 @@ python main.py
 - User interaction code is separated into controller files
 - The controller then manages the updating and passing data between model and view.
 - Data is persisted using json files.
-- It was important to separate the MVC code especially when changing between reports
 - MainWindowController is root controller for application and loads the main model and view
 - Unit tests created following same directory structure as source code.
-

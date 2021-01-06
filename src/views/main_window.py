@@ -32,13 +32,13 @@ class MainWindow(QMainWindow):
         self.main_layout = QVBoxLayout()
         self.tabs = QTabWidget()
 
-        self.patient_details = PatientDetailsWidget(self)
-        self.patient_referral = PatientReferralWidget(self)
-        self.recording_conditions = RecordingConditionsWidget(self)
+        # self.patient_details = PatientDetailsWidget(self)
+        # self.patient_referral = PatientReferralWidget(self)
+        # self.recording_conditions = RecordingConditionsWidget(self)
 
-        self.tabs.addTab(self.patient_details, "Patient Details")
-        self.tabs.addTab(self.patient_referral, "Patient Referral")
-        self.tabs.addTab(self.recording_conditions, "Recording Conditions")
+        # self.tabs.addTab(self.patient_details, "Patient Details")
+        # self.tabs.addTab(self.patient_referral, "Patient Referral")
+        # self.tabs.addTab(self.recording_conditions, "Recording Conditions")
 
         self.main_layout.addWidget(self.tabs)
 

@@ -4,14 +4,19 @@ import subprocess
 import traceback
 
 import psutil
-from PyQt5.QtWidgets import QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QTabWidget
 import tobii_research as tr
 
+from src.controllers.clinical_comments_controller import ClinicalCommentsController
+from src.controllers.diagnostic_significance_controller import DiagnosticSignificanceController
+from src.controllers.patient_details_controller import PatientDetailsController
+from src.controllers.patient_referral_controller import PatientReferralController
+from src.controllers.recording_conditions_controller import RecordingConditionsController
 from src.dialogs.load_multi import StartSessionDialog
-from src.models.main_model import MainModel
+from src.models.main_window_model import MainWindowModel
 from src.views.main_window import MainWindow
 
-from helpers import eyetracker as eye
+from src.helpers import eyetracker as eye
 
 
 class MainWindowController:
@@ -20,10 +25,23 @@ class MainWindowController:
         """
         MainWindowController is basically the main/root container/class which holds the whole application.
         """
-        # Connecting the model to the controller
-        self.model = MainModel()
 
-        # Connecting the view to the controller
+        # Initialise secondary controllers
+        self.patient_details_controller = PatientDetailsController()
+        self.patient_referral_controller = PatientReferralController()
+        self.recording_conditions_controller = RecordingConditionsController(self)
+        self.diagnostic_significance_controller = DiagnosticSignificanceController()
+        self.clinical_comments_controller = ClinicalCommentsController()
+
+        # Connecting the models
+        self.model = MainWindowModel()
+        self.model.report.patient_details = self.patient_details_controller.model
+        self.model.report.patient_referral = self.patient_referral_controller.model
+        self.model.report.recording_conditions = self.recording_conditions_controller.model
+        self.model.report.diagnostic_significance = self.diagnostic_significance_controller.model
+        self.model.report.clinical_comments = self.clinical_comments_controller.model
+
+        # Connecting the main window view
         self.view = MainWindow(self.model)
         self.view.menu.bt_new_report.triggered.connect(self.hdl_new_report)
         self.view.menu.bt_open_file.triggered.connect(self.hdl_open_report)
@@ -35,18 +53,30 @@ class MainWindowController:
         self.view.toolbar.btn_previous_recording.triggered.connect(self.hdl_previous_recording)
         self.view.toolbar.btn_next_recording.triggered.connect(self.hdl_next_recording)
         self.view.toolbar.btn_open_in_edfbrowser.triggered.connect(self.hdl_open_in_edfbrowser)
-        # self.view.toolbar.btn_eye_tracker_manager.triggered.connect(self.hdl_call_calibrator)
 
         self.view.tobii_toolbar.btn_start_analysis.triggered.connect(self.hdl_record_gaze)
         self.view.tobii_toolbar.btn_stop_analysis.triggered.connect(self.hdl_stop_gaze)
         self.view.tobii_toolbar.btn_eye_tracker_manager.triggered.connect(self.hdl_call_calibrator)
 
+        # Connecting the widgets to the tab system
+        self.patient_info_tab = QTabWidget()
+        self.patient_info_tab.addTab(self.patient_details_controller.view, "Patient Details")
+        self.patient_info_tab.addTab(self.patient_referral_controller.view, "Patient Referral")
+        self.view.tabs.addTab(self.patient_info_tab, "Patient Info")
+        self.view.tabs.addTab(self.recording_conditions_controller.view, "Recording Conditions")
+        self.view.tabs.addTab(self.diagnostic_significance_controller.view, "Diagnostic Significance")
+        self.view.tabs.addTab(self.clinical_comments_controller.view, "Clinical Comments")
 
-        self.view.recording_conditions.btn_edf_location.clicked.connect(self.hdl_edf_location_bt_press)
-
+        self.edfbrowser_path = os.path.join(os.getcwd(), 'release', 'edfbrowser.exe')
+        if not os.path.exists(self.edfbrowser_path):
+            print(f"EDFBrowser is not installed")
         self.edfbrowser_p = None
-        found_eyetrackers = tr.find_all_eyetrackers()
-        self.eyetracker = found_eyetrackers[0]
+        self.eyetracker = None
+        try:
+            found_eyetrackers = tr.find_all_eyetrackers()
+            self.eyetracker = found_eyetrackers[0]
+        except IndexError as e:
+            print("No eye trackers were found")
 
     def hdl_new_report(self):
         """
@@ -57,13 +87,14 @@ class MainWindowController:
         try:
             dialog = QMessageBox()
             dialog.setWindowTitle("New Score Report")
-            dialog.setText("You will lose any changes you haven't saved. Do you want to create a new report?")
+            dialog.setText("You will lose any changes you haven't saved. Do you want to open a new report?")
             dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
             dialog.setIcon(QMessageBox.Question)
             answer = dialog.exec_()
             if answer == QMessageBox.Yes:
                 self.model.reset()
                 self.view.setWindowTitle(f"OpenSCORE - {self.model.report_file_name}")
+                self.view.toolbar.lbl_current_eeg_name.setText("")
                 self.update_view_from_model()
         except Exception as e:
             traceback.print_exc()
@@ -86,8 +117,11 @@ class MainWindowController:
                 dialog.setDefaultSuffix('json')
                 file_path, _ = dialog.getOpenFileName(caption="Open SCORE Report", filter="JSON Files (*.json)")
                 if file_path:
+                    self.model.reset()
                     self.model.open_report(file_path)
                     self.update_view_from_model()
+        except KeyError as e:
+            print(f"The file is not a valid OpenSCORE report. There was a key error when loading: {e}")
         except Exception as e:
             traceback.print_exc()
 
@@ -175,6 +209,7 @@ class MainWindowController:
             if answer == QMessageBox.Yes:
                 dialog = StartSessionDialog()
                 if dialog.exec_():
+                    self.model.reset()
                     self.model.open_multi_edf(dialog.txe_specified_paths.text(), dialog.txe_root_output_directory.text(), dialog.txe_interpreter_name.text())
                     self.update_view_from_model()
         except Exception as e:
@@ -246,8 +281,8 @@ class MainWindowController:
         EDFBrowser will start writing a UI log to the output directory.
         :return:
         """
-        edfbrowser_path = os.path.join(os.getcwd(), 'release', 'edfbrowser.exe')
-        if not os.path.exists(edfbrowser_path):
+
+        if not os.path.exists(self.edfbrowser_path):
             dialog = QMessageBox()
             dialog.setWindowTitle("Open in EDFBrowser")
             dialog.setText("EDFBrowser has not been installed in the OpenSCORE directory")
@@ -255,14 +290,20 @@ class MainWindowController:
             dialog.setIcon(QMessageBox.Information)
             answer = dialog.exec_()
             return False
-        #edfbrowser_path = os.path.join('E:\\computer_science\\living_lab\\2020TEETACSI\\Analyzer\\REDFBrowser\\build-edfbrowser-Desktop_Qt_5_14_2_MinGW_64_bit-Release\\release\\edfbrowser.exe')
         try:
             if not self.edfbrowser_is_open():
                 if self.model.edf_file_path is not None and os.path.exists(self.model.edf_file_path):
                     if len(self.model.output_paths) > 0 and os.path.exists(self.model.output_paths[self.model.output_idx]):
-                        self.edfbrowser_p = subprocess.Popen([edfbrowser_path, self.model.edf_file_path, self.model.output_paths[self.model.output_idx]])
+                        self.edfbrowser_p = subprocess.Popen([self.edfbrowser_path, self.model.edf_file_path, self.model.output_paths[self.model.output_idx]])
                     else:
-                        self.edfbrowser_p = subprocess.Popen([edfbrowser_path, self.model.edf_file_path])
+                        self.edfbrowser_p = subprocess.Popen([self.edfbrowser_path, self.model.edf_file_path])
+                elif self.model.report.recording_conditions.edf_location is not None and os.path.exists(self.model.report.recording_conditions.edf_location):
+                    self.model.set_edf(self.model.report.recording_conditions.edf_location)
+                    if len(self.model.output_paths) > 0 and os.path.exists(self.model.output_paths[self.model.output_idx]):
+                        self.edfbrowser_p = subprocess.Popen([self.edfbrowser_path, self.model.edf_file_path, self.model.output_paths[self.model.output_idx]])
+                    else:
+                        self.edfbrowser_p = subprocess.Popen([self.edfbrowser_path, self.model.edf_file_path])
+
                 else:
                     print(f"EDF Path {self.model.edf_file_path}")
                     dialog = QMessageBox()
@@ -292,17 +333,6 @@ class MainWindowController:
         else:
             return psutil.pid_exists(self.edfbrowser_p.pid)
 
-    #TODO: Move to separate controller for recording conditions
-    def hdl_edf_location_bt_press(self):
-        try:
-            file_path, _ = QFileDialog.getOpenFileName(caption="Select associated recording", filter="EDF files (*.edf)")
-            if file_path:
-                self.view.recording_conditions.lne_edf_location.setText(file_path)
-                self.model.set_edf(file_path)
-                self.update_view_from_model()
-        except Exception as e:
-            traceback.print_exc()
-
     def hdl_call_calibrator(self):
         eye.call_calibrator(self.eyetracker)
 
@@ -331,18 +361,31 @@ class MainWindowController:
             traceback.print_exc()
 
     def hdl_stop_gaze(self):
-        self.eyetracker.unsubscribe_from(tr.EYETRACKER_GAZE_DATA, eye.gaze_data_callback)
-        eye.gaze_file.close()
+        if eye.gaze_file is not None:
+            self.eyetracker.unsubscribe_from(tr.EYETRACKER_GAZE_DATA, eye.gaze_data_callback)
+            eye.gaze_file.close()
+            eye.gaze_file = None
+        else:
+            dialog = QMessageBox()
+            dialog.setWindowTitle("Record Gaze")
+            dialog.setText("You need to start recording gaze data first.")
+            dialog.setStandardButtons(QMessageBox.Ok)
+            dialog.setIcon(QMessageBox.Information)
+            answer = dialog.exec_()
 
     def update_model_from_view(self):
-        self.model.report.patient_details.update_from_dict(self.view.patient_details.to_dict())
-        self.model.report.patient_referral.update_from_dict(self.view.patient_referral.to_dict())
-        self.model.report.recording_conditions.update_from_dict(self.view.recording_conditions.to_dict())
+        self.patient_details_controller.update_model()
+        self.patient_referral_controller.update_model()
+        self.recording_conditions_controller.update_model()
+        self.diagnostic_significance_controller.update_model()
+        self.clinical_comments_controller.update_model()
 
     def update_view_from_model(self):
         self.view.setWindowTitle(f"OpenSCORE - {self.model.report_file_name}")
-        self.view.toolbar.lbl_current_eeg_name.setText(self.model.edf_file_name.split('.')[0])
-        self.view.patient_details.update_from_dict(self.model.report.patient_details.to_dict())
-        self.view.patient_referral.update_from_dict(self.model.report.patient_referral.to_dict())
-        self.view.recording_conditions.update_from_dict(self.model.report.recording_conditions.to_dict())
-
+        if self.model.edf_file_name is not None:
+            self.view.toolbar.lbl_current_eeg_name.setText(self.model.edf_file_name.split('.')[0])
+        self.patient_details_controller.update_view()
+        self.patient_referral_controller.update_view()
+        self.recording_conditions_controller.update_view()
+        self.diagnostic_significance_controller.update_view()
+        self.clinical_comments_controller.update_view()

@@ -1,21 +1,5 @@
 
 
-class EpilepsyIndications:
-
-    def __init__(self):
-        self.suspicion_of_epilepsy = None
-        self.seizure_change = None
-        self.status_elipticus = None
-        self.reconsider_diagnosis = None
-        self.monitor_epilepticus = None
-        self.classify_epilepsy = None
-        self.monitor_medication = None
-        self.monitor_seizure_freq = None
-        self.pre_surgery_evaluation = None
-        self.consider_aed_therapy = None
-        self.licences = None
-
-
 class Referral:
 
     def __init__(self):

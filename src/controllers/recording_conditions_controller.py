@@ -22,7 +22,7 @@ class RecordingConditionsController:
                 self.view.lne_edf_location.setText(file_path)
                 self.update_model()
                 self.parent.model.set_edf(file_path)
-                self.parent.view.toolbar.lbl_current_eeg_name.setText(os.path.basename(file_path))
+                self.parent.view.toolbar.lbl_current_eeg_name.setText(os.path.basename(file_path).strip('.')[0])
         except Exception as e:
             traceback.print_exc()
 

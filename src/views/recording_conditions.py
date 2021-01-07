@@ -13,7 +13,7 @@ class RecordingConditionsWidget(QWidget):
         self.parent = parent
         self.layout = QFormLayout()
 
-        self.layout.addRow(QLabel("Admin"))
+        #self.layout.addRow(QLabel("Admin"))
 
         self.lbl_study_id = QLabel("Study ID")
         self.lne_study_id = QLineEdit()
@@ -38,7 +38,7 @@ class RecordingConditionsWidget(QWidget):
         self.layout.addRow(self.lbl_physician, self.lne_physician)
 
         self.layout.addRow(QLabel(""))
-        self.layout.addRow(QLabel("Technical Description"))
+        #self.layout.addRow(QLabel("Technical Description"))
 
         self.txt_sensor_group = ["",
                                  "Bipolar old longitudinal",
@@ -109,7 +109,6 @@ class RecordingConditionsWidget(QWidget):
         self.lne_edf_location = QLineEdit()
         self.hbx_edf_location.addWidget(self.lne_edf_location)
         self.btn_edf_location = QPushButton("Browse")
-        #self.btn_recording_data.clicked.connect(self.hdl_recording_data)
         self.hbx_edf_location.addWidget(self.btn_edf_location)
         self.layout.addRow(self.lbl_edf_location, self.hbx_edf_location)
 
@@ -171,16 +170,3 @@ class RecordingConditionsWidget(QWidget):
             self.cmb_brain_surgery.setCurrentIndex(self.txt_brain_surgery.index(data["Brain surgery"]))
         self.txe_tech_description.setText(data["Additional technical description"])
         self.lne_edf_location.setText(data["EDF location"])
-        # self.lne_recording_data.setText(data["Recording data"])
-        # self.parent.parent.current_edf_path = data["Recording data"]
-        # self.parent.parent.toolbar.lbl_current_eeg_name.setText(os.path.basename(data["Recording data"]).strip('.edf'))
-
-    def hdl_recording_data(self):
-        try:
-            browse_data, _ = QFileDialog.getOpenFileName(self, caption="Select associated recording", filter="EDF files (*.edf)")
-            if browse_data:
-                self.lne_edf_location.setText(browse_data)
-                self.parent.parent.ui_model.current_edf_path = browse_data
-                self.parent.parent.toolbar.lbl_current_eeg_name.setText(os.path.basename(self.lne_edf_location.text()).strip('.edf'))
-        except Exception as e:
-            print(f"Exception choosing the associated recording {e}")

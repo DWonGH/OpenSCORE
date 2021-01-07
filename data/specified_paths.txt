@@ -1,1 +1,4 @@
-D:\teetacsi_local\fix_merge_openscore\OpenSCORE\data\eeg_sample\00000768_s003_t000.edf
+D:\teetacsi_local\data\v2.0.0\edf\eval\abnormal\01_tcp_ar\007\00000768\s003_2012_04_06\00000768_s003_t000.edf
+D:\teetacsi_local\data\v2.0.0\edf\eval\abnormal\01_tcp_ar\012\00001217\s002_2012_09_17\00001217_s002_t000.edf
+D:\teetacsi_local\data\v2.0.0\edf\eval\abnormal\01_tcp_ar\066\00006611\s001_2010_03_02\00006611_s001_t000.edf
+D:\teetacsi_local\data\v2.0.0\edf\eval\abnormal\01_tcp_ar\071\00007117\s001_2010_01_29\00007117_s001_t000.edf

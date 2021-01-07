@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime
 
 from src.models.report import Report
 from src.helpers import eegreportparser as rp
@@ -44,6 +45,8 @@ class MainWindowModel:
         self.output_paths = []
         self.output_idx = 0
 
+        self.interpreter_name = None
+
         # TODO: Listen for changes in report and ask user if they need to save
         self.report_edited = False
 
@@ -57,8 +60,12 @@ class MainWindowModel:
         with open(self.report_file_path, 'r') as f:
             data = json.load(f)
             self.report.from_dict(data)
-        if os.path.exists(self.report.recording_conditions.edf_location):
-            self.set_edf(self.report.recording_conditions.edf_location)
+        if self.interpreter_name is not None:
+            self.report.clinical_comments.interpreter_name = self.interpreter_name
+        # if os.path.exists(self.report.recording_conditions.edf_location):
+        #     self.set_edf(self.report.recording_conditions.edf_location)
+        self.set_edf(self.report.recording_conditions.edf_location)
+        print(self.report.recording_conditions.edf_location)
 
     def save_report(self):
         """
@@ -115,10 +122,9 @@ class MainWindowModel:
         :return:
         """
         try:
+            self.set_edf_list(list_path)
             self.mirror_root = os.path.normpath(root_location)
-            self.edf_list_directory = os.path.dirname(os.path.normpath(list_path))
-            self.edf_list_file_name = os.path.basename(list_path)
-            self.edf_list_file_path = os.path.normpath(list_path)
+            self.interpreter_name = interpreter_name
             with open(self.edf_list_file_path, 'r') as f:
                 self.input_paths = f.read().splitlines()
             # Throw away invalid paths
@@ -127,10 +133,11 @@ class MainWindowModel:
                     self.input_paths.remove(line)
             self.setup_mirror()
             self.open_edf(self.input_paths[0])
-
             self.report_directory = self.output_paths[self.output_idx]
             self.report_file_name = f"{self.edf_file_name.split('.')[0]}.json"
             self.report_file_path = os.path.join(self.report_directory, self.report_file_name)
+            if os.path.exists(self.report_file_path):
+                self.open_report(self.report_file_path)
             self.save_report()
 
         except Exception as e:
@@ -203,6 +210,18 @@ class MainWindowModel:
         self.eeg_description_directory = os.path.dirname(os.path.normpath(file_path))
         self.eeg_description_file_name = os.path.basename(os.path.normpath(file_path))
 
+    def set_edf_list(self, file_path):
+        self.edf_list_directory = os.path.dirname(os.path.normpath(file_path))
+        self.edf_list_file_name = os.path.basename(file_path)
+        self.edf_list_file_path = os.path.normpath(file_path)
+
+    def set_ui_eye(self):
+        now = datetime.now()
+        now = now.strftime("%d-%m-%Y-%H-%M-%S")
+        self.ui_log_directory = os.path.join(self.output_paths[self.output_idx], now)
+        self.eye_directory = self.ui_log_directory
+        os.makedirs(self.ui_log_directory)
+
     def reset(self):
         self.report.reset()
 
@@ -235,3 +254,6 @@ class MainWindowModel:
 
         self.mirror_root = None
         self.output_paths = []
+        self.output_idx = 0
+
+        self.interpreter_name = None

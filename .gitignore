@@ -17,6 +17,8 @@ edfbrowser_1
 data/dummy_root
 data/gaze_recordings
 release
+data/analysis_sessions/*
+data/session_*
 
 # C extensions
 *.so

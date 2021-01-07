@@ -185,17 +185,9 @@ class MainWindowController:
 
     def hdl_load_edf_multi(self):
         """
-        This function is tightly coupled with requirements for TEETACSI. Although, the basic idea
-        is pre-specify a set of paths to EDF files, and then have the option to navigate through
-        the list as required. Some issues here include:
-         - Should there be an option to make a separate mirror directory? Or should it be fixed?
-         - When creating the mirror directory, should we generate the report files then? Or only
-            after they have been edited?
-         - Should the user be forced to specify where to save each report? Should they have the option?
-            or should it just be done automatic to the mirror directory?
-        Anyway... At the moment, it will load the list of specified EDFs, create a mirror output
-        directory structure, load the list of output directories, load the first report and save the first
-        report.
+        Will load a list of paths to edf recordings according to a pre-defined text file (see the specified_paths.txt
+        file in the data folder for an example). Can then use the next/back buttons to navigate the edf recordings and
+        reports.
         :return:
         """
         try:
@@ -207,10 +199,10 @@ class MainWindowController:
             dialog.setIcon(QMessageBox.Question)
             answer = dialog.exec_()
             if answer == QMessageBox.Yes:
-                dialog = StartSessionDialog()
+                dialog = StartSessionDialog(self)
                 if dialog.exec_():
                     self.model.reset()
-                    self.model.open_multi_edf(dialog.txe_specified_paths.text(), dialog.txe_root_output_directory.text(), dialog.txe_interpreter_name.text())
+                    self.model.open_multi_edf(dialog.lne_specified_paths.text(), dialog.lne_root_output_directory.text(), dialog.lne_interpreter_name.text())
                     self.update_view_from_model()
         except Exception as e:
             traceback.print_exc()
@@ -227,19 +219,32 @@ class MainWindowController:
             if len(self.model.input_paths) == 0:
                 dialog = QMessageBox()
                 dialog.setWindowTitle("Previous recording")
-                dialog.setText("There are no EEG's to navigate.")
+                dialog.setText("There are no EEG's to navigate. You can specify a sequence of EEGs using the load sequence option in the menu.")
+                dialog.setStandardButtons(QMessageBox.Ok)
+                dialog.setIcon(QMessageBox.Information)
+                answer = dialog.exec_()
+            elif self.edfbrowser_is_open():
+                dialog = QMessageBox()
+                dialog.setWindowTitle("Previous recording")
+                dialog.setText("Please close the current EDFBrowser before clicking previous.")
+                dialog.setStandardButtons(QMessageBox.Ok)
+                dialog.setIcon(QMessageBox.Information)
+                answer = dialog.exec_()
+            elif eye.gaze_file is not None:
+                dialog = QMessageBox()
+                dialog.setWindowTitle("Previous recording")
+                dialog.setText("Please stop the eye tracker before continuing.")
                 dialog.setStandardButtons(QMessageBox.Ok)
                 dialog.setIcon(QMessageBox.Information)
                 answer = dialog.exec_()
             elif self.model.previous_recording() is False:
                 print("At the beginning of the list")
-                if len(self.model.input_paths) == 0:
-                    dialog = QMessageBox()
-                    dialog.setWindowTitle("Previous recording")
-                    dialog.setText("You are at the beginning of the list. You can specify a sequence of EEGs using the load sequence option in the menu.")
-                    dialog.setStandardButtons(QMessageBox.Ok)
-                    dialog.setIcon(QMessageBox.Information)
-                    answer = dialog.exec_()
+                dialog = QMessageBox()
+                dialog.setWindowTitle("Previous recording")
+                dialog.setText("You are at the beginning of the list.")
+                dialog.setStandardButtons(QMessageBox.Ok)
+                dialog.setIcon(QMessageBox.Information)
+                answer = dialog.exec_()
             else:
                 self.update_view_from_model()
         except Exception as e:
@@ -261,15 +266,28 @@ class MainWindowController:
                 dialog.setStandardButtons(QMessageBox.Ok)
                 dialog.setIcon(QMessageBox.Information)
                 answer = dialog.exec_()
+            elif self.edfbrowser_is_open():
+                dialog = QMessageBox()
+                dialog.setWindowTitle("Previous recording")
+                dialog.setText("Please close the current EDFBrowser before clicking next.")
+                dialog.setStandardButtons(QMessageBox.Ok)
+                dialog.setIcon(QMessageBox.Information)
+                answer = dialog.exec_()
+            elif eye.gaze_file is not None:
+                dialog = QMessageBox()
+                dialog.setWindowTitle("Previous recording")
+                dialog.setText("Please stop the eye tracker before continuing.")
+                dialog.setStandardButtons(QMessageBox.Ok)
+                dialog.setIcon(QMessageBox.Information)
+                answer = dialog.exec_()
             elif self.model.next_recording() is False:
                 print("At the end of the list")
-                if len(self.model.input_paths) == 0:
-                    dialog = QMessageBox()
-                    dialog.setWindowTitle("Previous recording")
-                    dialog.setText("You are at the end of the list.")
-                    dialog.setStandardButtons(QMessageBox.Ok)
-                    dialog.setIcon(QMessageBox.Information)
-                    answer = dialog.exec_()
+                dialog = QMessageBox()
+                dialog.setWindowTitle("Previous recording")
+                dialog.setText("You are at the end of the list.")
+                dialog.setStandardButtons(QMessageBox.Ok)
+                dialog.setIcon(QMessageBox.Information)
+                answer = dialog.exec_()
             else:
                 self.update_view_from_model()
         except Exception as e:
@@ -281,7 +299,6 @@ class MainWindowController:
         EDFBrowser will start writing a UI log to the output directory.
         :return:
         """
-
         if not os.path.exists(self.edfbrowser_path):
             dialog = QMessageBox()
             dialog.setWindowTitle("Open in EDFBrowser")
@@ -293,17 +310,18 @@ class MainWindowController:
         try:
             if not self.edfbrowser_is_open():
                 if self.model.edf_file_path is not None and os.path.exists(self.model.edf_file_path):
+                    self.model.set_ui_eye()
                     if len(self.model.output_paths) > 0 and os.path.exists(self.model.output_paths[self.model.output_idx]):
-                        self.edfbrowser_p = subprocess.Popen([self.edfbrowser_path, self.model.edf_file_path, self.model.output_paths[self.model.output_idx]])
+                        self.edfbrowser_p = subprocess.Popen([self.edfbrowser_path, self.model.edf_file_path, self.model.ui_log_directory])
                     else:
                         self.edfbrowser_p = subprocess.Popen([self.edfbrowser_path, self.model.edf_file_path])
                 elif self.model.report.recording_conditions.edf_location is not None and os.path.exists(self.model.report.recording_conditions.edf_location):
                     self.model.set_edf(self.model.report.recording_conditions.edf_location)
+                    self.model.set_ui_eye()
                     if len(self.model.output_paths) > 0 and os.path.exists(self.model.output_paths[self.model.output_idx]):
-                        self.edfbrowser_p = subprocess.Popen([self.edfbrowser_path, self.model.edf_file_path, self.model.output_paths[self.model.output_idx]])
+                        self.edfbrowser_p = subprocess.Popen([self.edfbrowser_path, self.model.edf_file_path, self.model.ui_log_directory])
                     else:
                         self.edfbrowser_p = subprocess.Popen([self.edfbrowser_path, self.model.edf_file_path])
-
                 else:
                     print(f"EDF Path {self.model.edf_file_path}")
                     dialog = QMessageBox()
@@ -334,7 +352,15 @@ class MainWindowController:
             return psutil.pid_exists(self.edfbrowser_p.pid)
 
     def hdl_call_calibrator(self):
-        eye.call_calibrator(self.eyetracker)
+        if self.eyetracker is None:
+            dialog = QMessageBox()
+            dialog.setWindowTitle("Eye Tracker Manager")
+            dialog.setText("The eye tracker is not connected.")
+            dialog.setStandardButtons(QMessageBox.Ok)
+            dialog.setIcon(QMessageBox.Information)
+            answer = dialog.exec_()
+        else:
+            eye.call_calibrator(self.eyetracker)
 
     def hdl_record_gaze(self):
         try:
@@ -347,7 +373,9 @@ class MainWindowController:
                 answer = dialog.exec_()
             else:
                 if len(self.model.output_paths) > 0:
-                    gaze_path = os.path.join(self.model.output_paths[self.model.output_idx], 'gaze_data.txt')
+                    if self.model.ui_log_directory is not None:
+                        gaze_path = os.path.join(self.model.ui_log_directory, 'gaze_data.txt')
+                        eye.gaze_file = open(gaze_path, 'w')
                 else:
                     gaze_path = os.path.join(os.getcwd(), 'data', 'gaze_recordings')
                     if not os.path.exists(gaze_path):
@@ -355,7 +383,7 @@ class MainWindowController:
                     now = datetime.now()
                     now = now.strftime("%d-%m-%Y-%H-%M-%S")
                     gaze_path = os.path.join(gaze_path, f"{now}.txt")
-                eye.gaze_file = open(gaze_path, 'w')
+                    eye.gaze_file = open(gaze_path, 'w')
                 self.eyetracker.subscribe_to(tr.EYETRACKER_GAZE_DATA, eye.gaze_data_callback, as_dictionary=True)
         except Exception as e:
             traceback.print_exc()

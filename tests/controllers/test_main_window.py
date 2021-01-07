@@ -33,13 +33,24 @@ class TestMainWindowController(unittest.TestCase):
         self.assert_model_is_default()
         self.assert_view_is_default()
         test_report = os.path.join(os.getcwd(), 'data', 'test_report.json')
+        with open(test_report, 'r') as f:
+            report = json.load(f)
+            report["Recording conditions"]["EDF location"] = os.path.join(os.getcwd(), 'data', 'eeg_sample', '00000768_s003_t000.edf')
+        with open(test_report, 'w') as f:
+            json.dump(report, f, indent=4)
         self.controller.model.open_report(test_report)
         self.controller.update_view_from_model()
         with open(test_report, 'r') as f:
             test_report_dict = json.load(f)
         self.assertEqual(self.controller.model.report.to_dict(), test_report_dict)
+        self.assertIsNotNone(self.controller.model.report.recording_conditions.edf_location)
         self.assertEqual(self.controller.recording_conditions_controller.view.lne_edf_location.text(), self.controller.model.edf_file_path)
-        self.assertEqual(self.controller.view.toolbar.lbl_current_eeg_name.text(), self.controller.model.edf_file_path)
+        self.assertEqual(self.controller.view.toolbar.lbl_current_eeg_name.text(), self.controller.model.edf_file_name.split('.')[0])
+        with open(test_report, 'r') as f:
+            report = json.load(f)
+            report["Recording conditions"]["EDF location"] = "1"
+        with open(test_report, 'w') as f:
+            json.dump(report, f, indent=4)
 
     def test_update_model_from_view(self):
         self.assert_model_is_default()

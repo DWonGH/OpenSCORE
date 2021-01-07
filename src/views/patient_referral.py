@@ -9,7 +9,7 @@ class PatientReferralWidget(QWidget):
         super(QWidget, self).__init__(parent)
 
         self.layout = QFormLayout()
-        self.layout.addRow(QLabel(""))
+        #self.layout.addRow(QLabel(""))
 
         # TODO: Add Address other contact info for referrer
         self.lbl_referrer_name = QLabel("Physician/ Referrer Name")
@@ -36,8 +36,8 @@ class PatientReferralWidget(QWidget):
         self.cmb_last_seizure.addItems(self.txt_last_seizure)
         self.layout.addRow(self.lbl_last_seizure, self.cmb_last_seizure)
 
-        self.layout.addRow(QLabel(""))
-        self.layout.addRow(QLabel("Indication for EEG"))
+        #self.layout.addRow(QLabel(""))
+        #self.layout.addRow(QLabel("Indication for EEG"))
 
         self.epilepsy_related_conditions = [
             "Clinical suspicion of epilepsy or seizure",

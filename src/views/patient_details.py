@@ -24,7 +24,6 @@ class PatientDetailsWidget(QWidget):
         self.lne_dob = QLineEdit(self)
         self.layout.addRow(self.lbl_dob, self.lne_dob)
 
-        # TODO: Add gender
         self.txt_gender = ["", "Male", "Female"]
         self.lbl_gender = QLabel("Gender")
         self.cmb_gender = QComboBox()
@@ -39,10 +38,12 @@ class PatientDetailsWidget(QWidget):
 
         self.lbl_address = QLabel("Address")
         self.txe_address = QTextEdit()
+        self.txe_address.setMaximumHeight(100)
         self.layout.addRow(self.lbl_address, self.txe_address)
 
         self.lbl_medication = QLabel("Medication")
         self.txe_medication = QTextEdit()
+        self.txe_medication.setMaximumHeight(100)
         self.layout.addRow(self.lbl_medication, self.txe_medication)
 
         self.lbl_history = QLabel("Patient History")

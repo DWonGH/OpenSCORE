@@ -8,8 +8,8 @@ class TobiiToolBar(QToolBar):
 
         self.main_window = main_window
 
-        self.lbl_toolbar_label = QLabel("Eye Tracker ")
-        self.addWidget(self.lbl_toolbar_label)
+        # self.lbl_toolbar_label = QLabel("Eye Tracker ")
+        # self.addWidget(self.lbl_toolbar_label)
 
         self.btn_start_analysis = QAction("&Record Gaze", self)
         self.addAction(self.btn_start_analysis)

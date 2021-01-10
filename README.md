@@ -1,7 +1,10 @@
 # OpenSCORE
 An EEG reporting tool according to the SCORE standard.
 
-![OpenSCORE](OpenSCORE.png)
+<p align="center">
+  <img height="300" src="OpenSCORE.png">
+</p>
+
 - Create score reports
 - Load and edit existing score reports
 - Link EDF files to score reports

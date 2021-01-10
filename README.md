@@ -2,7 +2,7 @@
 An EEG reporting tool according to the SCORE standard.
 
 <p align="center">
-  <img height="300" src="OpenSCORE.png">
+  <img height="700" src="OpenSCORE.png">
 </p>
 
 - Create score reports

@@ -1,16 +1,19 @@
 import unittest
 
+from tests.controllers.test_background_activity_controller import TestBackgroundActivityController
 from tests.controllers.test_clinical_comments import TestClinicalCommentsController
 from tests.controllers.test_diagnostic_significance import TestClinicalDiagnosticSignificanceController
 from tests.controllers.test_patient_details import TestPatientDetailsController
 from tests.controllers.test_patient_referral import TestPatientReferralController
 from tests.controllers.test_recording_conditions import TestRecordingConditionsController
+from tests.models.test_background_activity import TestBackgroundActivity
 from tests.models.test_clinical_comments import TestClinicalComments
 from tests.models.test_diagnostic_significance import TestDiagnosticSignificance
 from tests.models.test_main_window import TestMainModel
 from tests.models.test_patient_details import TestPatientDetails
 from tests.models.test_patient_referral import TestPatientReferral
 from tests.models.test_recording_conditions import TestRecordingConditions
+from tests.views.test_background_activity import TestBackgroundActivityWidget
 from tests.views.test_clinical_comments import TestClinicalCommentsWidget
 from tests.views.test_diagnostic_significance import TestDiagnosticSignificanceWidget
 
@@ -20,6 +23,7 @@ from tests.views.test_patient_referral import TestPatientReferralView
 from tests.views.test_recording_conditions import TestRecordingConditionsView
 
 from tests.controllers.test_main_window import TestMainWindowController
+from tests.views.test_rhythm_table import TestRhythmTableWidget
 
 
 class MasterTest(unittest.TestCase):
@@ -30,6 +34,7 @@ class MasterTest(unittest.TestCase):
         self.test_patient_details = TestPatientDetails()
         self.test_patient_referral = TestPatientReferral()
         self.test_recording_conditions = TestRecordingConditions()
+        self.test_background_activity = TestBackgroundActivity()
         self.test_diagnostic_significance = TestDiagnosticSignificance()
         self.test_clinical_comments_view = TestClinicalComments()
 
@@ -38,6 +43,8 @@ class MasterTest(unittest.TestCase):
         self.test_patient_details_view = TestPatientDetailsView()
         self.test_patient_referral_view = TestPatientReferralView()
         self.test_recording_conditions_view = TestRecordingConditionsView()
+        self.test_background_activity_widget = TestBackgroundActivityWidget()
+        self.test_rhythm_table_widget = TestRhythmTableWidget()
         self.test_diagnostic_significance_view = TestDiagnosticSignificanceWidget()
         self.test_clinical_comments_view = TestClinicalCommentsWidget()
 
@@ -45,6 +52,7 @@ class MasterTest(unittest.TestCase):
         self.test_main_window_controller = TestMainWindowController()
         self.test_patient_details_controller = TestPatientDetailsController()
         self.test_patient_referral_controller = TestPatientReferralController()
+        self.test_background_activity_controller = TestBackgroundActivityController()
         self.test_recording_conditions_controller = TestRecordingConditionsController()
         self.test_diagnostic_significance_controller = TestClinicalDiagnosticSignificanceController()
         self.test_clinical_comments_controller = TestClinicalCommentsController()

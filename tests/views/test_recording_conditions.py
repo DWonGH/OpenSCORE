@@ -15,7 +15,7 @@ class TestRecordingConditionsView(unittest.TestCase):
     def test_init(self):
         self.assertIsNotNone(self.recording_conditions.lne_study_id)
         self.assertIsNotNone(self.recording_conditions.lne_study_date)
-        self.assertIsNotNone(self.recording_conditions.spb_duration)
+        self.assertIsNotNone(self.recording_conditions.lne_duration)
         self.assertIsNotNone(self.recording_conditions.lne_technologist)
         self.assertIsNotNone(self.recording_conditions.lne_physician)
         self.assertIsNotNone(self.recording_conditions.cmb_sensor_group)
@@ -31,14 +31,14 @@ class TestRecordingConditionsView(unittest.TestCase):
         target_dict = {
             "Study ID": '',
             "Date & Time": '',
-            "Recording duration": ' ',
+            "Recording duration": '',
             "Technologist name": '',
             "Physician name": '',
             "Sensor group": '',
             "Recording type": '',
             "Alertness": '',
             "Cooperation": '',
-            "Patient age": ' ',
+            "Patient age": '',
             "Latest meal": '',
             "Skull defect": '',
             "Brain surgery": '',
@@ -53,7 +53,7 @@ class TestRecordingConditionsView(unittest.TestCase):
         target_dict = {
             "Study ID": '1',
             "Date & Time": '1',
-            "Recording duration": '1.00',
+            "Recording duration": '1',
             "Technologist name": '1',
             "Physician name": '1',
             "Sensor group": self.recording_conditions.txt_sensor_group[1],
@@ -73,14 +73,14 @@ class TestRecordingConditionsView(unittest.TestCase):
     def set_to_ones(self):
         self.recording_conditions.lne_study_id.setText("1")
         self.recording_conditions.lne_study_date.setText("1")
-        self.recording_conditions.spb_duration.setValue(1)
+        self.recording_conditions.lne_duration.setText("1")
         self.recording_conditions.lne_technologist.setText("1")
         self.recording_conditions.lne_physician.setText("1")
         self.recording_conditions.cmb_sensor_group.setCurrentIndex(1)
         self.recording_conditions.cmb_recording_type.setCurrentIndex(1)
         self.recording_conditions.cmb_alertness.setCurrentIndex(1)
         self.recording_conditions.cmb_cooperation.setCurrentIndex(1)
-        self.recording_conditions.spb_age.setValue(1)
+        self.recording_conditions.lne_age.setText("1")
         self.recording_conditions.lne_latest_meal.setText("1")
         self.recording_conditions.cmb_skull_defect.setCurrentIndex(1)
         self.recording_conditions.cmb_brain_surgery.setCurrentIndex(1)

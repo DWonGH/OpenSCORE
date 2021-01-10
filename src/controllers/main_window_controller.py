@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 import os
 import subprocess
@@ -7,6 +8,7 @@ import psutil
 from PyQt5.QtWidgets import QFileDialog, QMessageBox, QTabWidget
 import tobii_research as tr
 
+from src.controllers.background_activity_controller import BackgroundActivityController
 from src.controllers.clinical_comments_controller import ClinicalCommentsController
 from src.controllers.diagnostic_significance_controller import DiagnosticSignificanceController
 from src.controllers.patient_details_controller import PatientDetailsController
@@ -30,6 +32,7 @@ class MainWindowController:
         self.patient_details_controller = PatientDetailsController()
         self.patient_referral_controller = PatientReferralController()
         self.recording_conditions_controller = RecordingConditionsController(self)
+        self.background_activity_controller = BackgroundActivityController()
         self.diagnostic_significance_controller = DiagnosticSignificanceController()
         self.clinical_comments_controller = ClinicalCommentsController()
 
@@ -38,6 +41,7 @@ class MainWindowController:
         self.model.report.patient_details = self.patient_details_controller.model
         self.model.report.patient_referral = self.patient_referral_controller.model
         self.model.report.recording_conditions = self.recording_conditions_controller.model
+        self.model.report.background_activity = self.background_activity_controller.model
         self.model.report.diagnostic_significance = self.diagnostic_significance_controller.model
         self.model.report.clinical_comments = self.clinical_comments_controller.model
 
@@ -64,6 +68,9 @@ class MainWindowController:
         self.patient_info_tab.addTab(self.patient_referral_controller.view, "Patient Referral")
         self.view.tabs.addTab(self.patient_info_tab, "Patient Info")
         self.view.tabs.addTab(self.recording_conditions_controller.view, "Recording Conditions")
+        self.findings_tab = QTabWidget()
+        self.findings_tab.addTab(self.background_activity_controller.view, "Background Activity")
+        self.view.tabs.addTab(self.findings_tab, "Findings")
         self.view.tabs.addTab(self.diagnostic_significance_controller.view, "Diagnostic Significance")
         self.view.tabs.addTab(self.clinical_comments_controller.view, "Clinical Comments")
 
@@ -77,6 +84,8 @@ class MainWindowController:
             self.eyetracker = found_eyetrackers[0]
         except IndexError as e:
             print("No eye trackers were found")
+
+        #self.view..connect(self.hdl_close_event)
 
     def hdl_new_report(self):
         """
@@ -97,6 +106,14 @@ class MainWindowController:
                 self.view.toolbar.lbl_current_eeg_name.setText("")
                 self.update_view_from_model()
         except Exception as e:
+            dialog = QMessageBox()
+            dialog.setWindowTitle("New Score Report")
+            dialog.setText(
+                f"Something went wrong making a new report.\n\n {e}")
+            dialog.setDetailedText(traceback.format_exc())
+            dialog.setStandardButtons(QMessageBox.Ok)
+            dialog.setIcon(QMessageBox.Warning)
+            dialog.exec_()
             traceback.print_exc()
 
     def hdl_open_report(self):
@@ -114,14 +131,28 @@ class MainWindowController:
             answer = dialog.exec_()
             if answer == QMessageBox.Yes:
                 dialog = QFileDialog()
-                dialog.setDefaultSuffix('json')
-                file_path, _ = dialog.getOpenFileName(caption="Open SCORE Report", filter="JSON Files (*.json)")
+                dialog.setDefaultSuffix('score')
+                file_path, _ = dialog.getOpenFileName(caption="Open SCORE Report", filter="SCORE Files (*.score)")
                 if file_path:
                     self.model.reset()
                     self.model.open_report(file_path)
                     self.update_view_from_model()
         except KeyError as e:
-            print(f"The file is not a valid OpenSCORE report. There was a key error when loading: {e}")
+            dialog = QMessageBox()
+            dialog.setWindowTitle("Open Score Report")
+            dialog.setText(f"The file is not a valid OpenSCORE report. There was a key error when loading: {e}")
+            dialog.setDetailedText(traceback.format_exc())
+            dialog.setStandardButtons(QMessageBox.Ok)
+            dialog.setIcon(QMessageBox.Warning)
+            dialog.exec_()
+        except json.decoder.JSONDecodeError as e:
+            dialog = QMessageBox()
+            dialog.setWindowTitle("Open Score Report")
+            dialog.setText(f"The file is not a valid OpenSCORE report. \n\nIt might be incorrectly formatted or is incompatible.\n\n {e}")
+            dialog.setDetailedText(traceback.format_exc())
+            dialog.setStandardButtons(QMessageBox.Ok)
+            dialog.setIcon(QMessageBox.Warning)
+            dialog.exec_()
         except Exception as e:
             traceback.print_exc()
 
@@ -139,6 +170,14 @@ class MainWindowController:
                 self.model.save_report()
                 self.view.setWindowTitle(f"OpenSCORE - {self.model.report_file_name}")
         except Exception as e:
+            dialog = QMessageBox()
+            dialog.setWindowTitle("Save Score Report")
+            dialog.setText(
+                f"Something went wrong saving the report.\n\n {e}")
+            dialog.setDetailedText(traceback.format_exc())
+            dialog.setStandardButtons(QMessageBox.Ok)
+            dialog.setIcon(QMessageBox.Warning)
+            dialog.exec_()
             traceback.print_exc()
 
     def hdl_save_report_as(self):
@@ -149,13 +188,21 @@ class MainWindowController:
         """
         try:
             dialog = QFileDialog()
-            dialog.setDefaultSuffix('.json')
-            file_path, _ = dialog.getSaveFileName(caption="Save Report", filter="JSON Files (*.json)")
+            dialog.setDefaultSuffix('.score')
+            file_path, _ = dialog.getSaveFileName(caption="Save Report", filter="SCORE Files (*.score)")
             if file_path:
                 self.update_model_from_view()
-                self.model.save_report_as(file_path)
+                result = self.model.save_report_as(file_path)
                 self.view.setWindowTitle(f"OpenSCORE - {self.model.report_file_name}")
         except Exception as e:
+            dialog = QMessageBox()
+            dialog.setWindowTitle("Save Score Report As")
+            dialog.setText(
+                f"Something went wrong saving the report.\n\n {e}")
+            dialog.setDetailedText(traceback.format_exc())
+            dialog.setStandardButtons(QMessageBox.Ok)
+            dialog.setIcon(QMessageBox.Warning)
+            dialog.exec_()
             traceback.print_exc()
 
     def hdl_load_edf(self):
@@ -181,6 +228,14 @@ class MainWindowController:
                     self.model.open_edf(file_path)
                     self.update_view_from_model()
         except Exception as e:
+            dialog = QMessageBox()
+            dialog.setWindowTitle("Open Report from EDF")
+            dialog.setText(
+                f"Something went wrong trying to build a new report from the EDF an text file.\n\n {e}")
+            dialog.setDetailedText(traceback.format_exc())
+            dialog.setStandardButtons(QMessageBox.Ok)
+            dialog.setIcon(QMessageBox.Warning)
+            dialog.exec_()
             traceback.print_exc()
 
     def hdl_load_edf_multi(self):
@@ -199,12 +254,20 @@ class MainWindowController:
             dialog.setIcon(QMessageBox.Question)
             answer = dialog.exec_()
             if answer == QMessageBox.Yes:
-                dialog = StartSessionDialog(self)
+                dialog = StartSessionDialog()
                 if dialog.exec_():
                     self.model.reset()
                     self.model.open_multi_edf(dialog.lne_specified_paths.text(), dialog.lne_root_output_directory.text(), dialog.lne_interpreter_name.text())
                     self.update_view_from_model()
         except Exception as e:
+            dialog = QMessageBox()
+            dialog.setWindowTitle("Open EEG Sequence")
+            dialog.setText(
+                f"Something went wrong starting a new session.\n\n {e}")
+            dialog.setDetailedText(traceback.format_exc())
+            dialog.setStandardButtons(QMessageBox.Ok)
+            dialog.setIcon(QMessageBox.Warning)
+            dialog.exec_()
             traceback.print_exc()
 
     def hdl_previous_recording(self):
@@ -248,6 +311,14 @@ class MainWindowController:
             else:
                 self.update_view_from_model()
         except Exception as e:
+            dialog = QMessageBox()
+            dialog.setWindowTitle("Previous EEG")
+            dialog.setText(
+                f"Something went wrong navigating to the next report.\n\n {e}")
+            dialog.setDetailedText(traceback.format_exc())
+            dialog.setStandardButtons(QMessageBox.Ok)
+            dialog.setIcon(QMessageBox.Warning)
+            dialog.exec_()
             traceback.print_exc()
 
     def hdl_next_recording(self):
@@ -291,6 +362,14 @@ class MainWindowController:
             else:
                 self.update_view_from_model()
         except Exception as e:
+            dialog = QMessageBox()
+            dialog.setWindowTitle("Next EEG")
+            dialog.setText(
+                f"Something went wrong navigating to the next report.\n\n {e}")
+            dialog.setDetailedText(traceback.format_exc())
+            dialog.setStandardButtons(QMessageBox.Ok)
+            dialog.setIcon(QMessageBox.Warning)
+            dialog.exec_()
             traceback.print_exc()
 
     def hdl_open_in_edfbrowser(self):
@@ -310,15 +389,15 @@ class MainWindowController:
         try:
             if not self.edfbrowser_is_open():
                 if self.model.edf_file_path is not None and os.path.exists(self.model.edf_file_path):
-                    self.model.set_ui_eye()
                     if len(self.model.output_paths) > 0 and os.path.exists(self.model.output_paths[self.model.output_idx]):
+                        self.model.set_ui_eye()
                         self.edfbrowser_p = subprocess.Popen([self.edfbrowser_path, self.model.edf_file_path, self.model.ui_log_directory])
                     else:
                         self.edfbrowser_p = subprocess.Popen([self.edfbrowser_path, self.model.edf_file_path])
                 elif self.model.report.recording_conditions.edf_location is not None and os.path.exists(self.model.report.recording_conditions.edf_location):
                     self.model.set_edf(self.model.report.recording_conditions.edf_location)
-                    self.model.set_ui_eye()
                     if len(self.model.output_paths) > 0 and os.path.exists(self.model.output_paths[self.model.output_idx]):
+                        self.model.set_ui_eye()
                         self.edfbrowser_p = subprocess.Popen([self.edfbrowser_path, self.model.edf_file_path, self.model.ui_log_directory])
                     else:
                         self.edfbrowser_p = subprocess.Popen([self.edfbrowser_path, self.model.edf_file_path])
@@ -338,6 +417,14 @@ class MainWindowController:
                 dialog.setIcon(QMessageBox.Information)
                 answer = dialog.exec_()
         except Exception as e:
+            dialog = QMessageBox()
+            dialog.setWindowTitle("Open in EDFBrowser")
+            dialog.setText(
+                f"There was a problem opening the file in EDFBrowser.\n\n {e}")
+            dialog.setDetailedText(traceback.format_exc())
+            dialog.setStandardButtons(QMessageBox.Ok)
+            dialog.setIcon(QMessageBox.Warning)
+            dialog.exec_()
             traceback.print_exc()
 
     def edfbrowser_is_open(self):
@@ -364,7 +451,14 @@ class MainWindowController:
 
     def hdl_record_gaze(self):
         try:
-            if self.edfbrowser_is_open() is False:
+            if self.model.eye_file_path is None:
+                dialog = QMessageBox()
+                dialog.setWindowTitle("Record Gaze")
+                dialog.setText("This feature is only available in EEG Sequence mode.")
+                dialog.setStandardButtons(QMessageBox.Ok)
+                dialog.setIcon(QMessageBox.Information)
+                answer = dialog.exec_()
+            elif self.edfbrowser_is_open() is False:
                 dialog = QMessageBox()
                 dialog.setWindowTitle("Record Gaze")
                 dialog.setText("Please open the eeg in EDFBrowser before recording gaze data.")
@@ -386,6 +480,14 @@ class MainWindowController:
                     eye.gaze_file = open(gaze_path, 'w')
                 self.eyetracker.subscribe_to(tr.EYETRACKER_GAZE_DATA, eye.gaze_data_callback, as_dictionary=True)
         except Exception as e:
+            dialog = QMessageBox()
+            dialog.setWindowTitle("Open Score Report")
+            dialog.setText(
+                f"There was a problem recording the eye tracker.\n\n Is it connected? \n\n Is the ete tracker manager installed? {e}")
+            dialog.setDetailedText(traceback.format_exc())
+            dialog.setStandardButtons(QMessageBox.Ok)
+            dialog.setIcon(QMessageBox.Warning)
+            dialog.exec_()
             traceback.print_exc()
 
     def hdl_stop_gaze(self):
@@ -405,6 +507,7 @@ class MainWindowController:
         self.patient_details_controller.update_model()
         self.patient_referral_controller.update_model()
         self.recording_conditions_controller.update_model()
+        self.background_activity_controller.update_model()
         self.diagnostic_significance_controller.update_model()
         self.clinical_comments_controller.update_model()
 
@@ -415,5 +518,9 @@ class MainWindowController:
         self.patient_details_controller.update_view()
         self.patient_referral_controller.update_view()
         self.recording_conditions_controller.update_view()
+        self.background_activity_controller.update_view()
         self.diagnostic_significance_controller.update_view()
         self.clinical_comments_controller.update_view()
+
+    def hdl_close_event(self):
+        print("Closed OpenSCORE")

@@ -32,24 +32,24 @@ class TestMainWindowController(unittest.TestCase):
     def test_update_from_open(self):
         self.assert_model_is_default()
         self.assert_view_is_default()
-        test_report = os.path.join(os.getcwd(), 'data', 'test_report.json')
-        with open(test_report, 'r') as f:
+        test_report = os.path.join(os.getcwd(), 'data', 'test_report.score')
+        with open(test_report, 'r', encoding='utf8') as f:
             report = json.load(f)
             report["Recording conditions"]["EDF location"] = os.path.join(os.getcwd(), 'data', 'eeg_sample', '00000768_s003_t000.edf')
-        with open(test_report, 'w') as f:
+        with open(test_report, 'w', encoding='utf8') as f:
             json.dump(report, f, indent=4)
         self.controller.model.open_report(test_report)
         self.controller.update_view_from_model()
-        with open(test_report, 'r') as f:
+        with open(test_report, 'r', encoding='utf8') as f:
             test_report_dict = json.load(f)
         self.assertEqual(self.controller.model.report.to_dict(), test_report_dict)
         self.assertIsNotNone(self.controller.model.report.recording_conditions.edf_location)
         self.assertEqual(self.controller.recording_conditions_controller.view.lne_edf_location.text(), self.controller.model.edf_file_path)
         self.assertEqual(self.controller.view.toolbar.lbl_current_eeg_name.text(), self.controller.model.edf_file_name.split('.')[0])
-        with open(test_report, 'r') as f:
+        with open(test_report, 'r', encoding='utf8') as f:
             report = json.load(f)
             report["Recording conditions"]["EDF location"] = "1"
-        with open(test_report, 'w') as f:
+        with open(test_report, 'w', encoding='utf8') as f:
             json.dump(report, f, indent=4)
 
     def test_update_model_from_view(self):
@@ -161,7 +161,7 @@ class TestMainWindowController(unittest.TestCase):
 
         self.controller.model.report.recording_conditions.study_id = "1"
         self.controller.model.report.recording_conditions.study_date = "1"
-        self.controller.model.report.recording_conditions.recording_duration = "1.00"
+        self.controller.model.report.recording_conditions.recording_duration = "1"
         self.controller.model.report.recording_conditions.technologist_name = "1"
         self.controller.model.report.recording_conditions.physician_name = "1"
         self.controller.model.report.recording_conditions.sensor_group = \
@@ -258,7 +258,7 @@ class TestMainWindowController(unittest.TestCase):
         )
         self.assertEqual(self.controller.model.report.recording_conditions.study_id, "1")
         self.assertEqual(self.controller.model.report.recording_conditions.study_date, "1")
-        self.assertEqual(self.controller.model.report.recording_conditions.recording_duration, "1.00")
+        self.assertEqual(self.controller.model.report.recording_conditions.recording_duration, "1")
         self.assertEqual(self.controller.model.report.recording_conditions.technologist_name, "1")
         self.assertEqual(self.controller.model.report.recording_conditions.physician_name, "1")
         self.assertEqual(self.controller.model.report.recording_conditions.sensor_group,
@@ -307,14 +307,14 @@ class TestMainWindowController(unittest.TestCase):
 
         self.assertEqual(self.recording_conditions.view.lne_study_id.text(), '')
         self.assertEqual(self.recording_conditions.view.lne_study_date.text(), '')
-        self.assertEqual(self.recording_conditions.view.spb_duration.text(), ' ')
+        self.assertEqual(self.recording_conditions.view.lne_duration.text(), '')
         self.assertEqual(self.recording_conditions.view.lne_technologist.text(), '')
         self.assertEqual(self.recording_conditions.view.lne_physician.text(), '')
         self.assertEqual(self.recording_conditions.view.cmb_sensor_group.currentText(), '')
         self.assertEqual(self.recording_conditions.view.cmb_recording_type.currentText(), '')
         self.assertEqual(self.recording_conditions.view.cmb_alertness.currentText(), '')
         self.assertEqual(self.recording_conditions.view.cmb_cooperation.currentText(), '')
-        self.assertEqual(self.recording_conditions.view.spb_age.text(), ' ')
+        self.assertEqual(self.recording_conditions.view.lne_age.text(), '')
         self.assertEqual(self.recording_conditions.view.lne_latest_meal.text(), '')
         self.assertEqual(self.recording_conditions.view.cmb_skull_defect.currentText(), '')
         self.assertEqual(self.recording_conditions.view.cmb_brain_surgery.currentText(), '')
@@ -362,14 +362,14 @@ class TestMainWindowController(unittest.TestCase):
 
         self.recording_conditions.view.lne_study_id.setText("1")
         self.recording_conditions.view.lne_study_date.setText("1")
-        self.recording_conditions.view.spb_duration.setValue(1)
+        self.recording_conditions.view.lne_duration.setText("1")
         self.recording_conditions.view.lne_technologist.setText("1")
         self.recording_conditions.view.lne_physician.setText("1")
         self.recording_conditions.view.cmb_sensor_group.setCurrentIndex(1)
         self.recording_conditions.view.cmb_recording_type.setCurrentIndex(1)
         self.recording_conditions.view.cmb_alertness.setCurrentIndex(1)
         self.recording_conditions.view.cmb_cooperation.setCurrentIndex(1)
-        self.recording_conditions.view.spb_age.setValue(1)
+        self.recording_conditions.view.lne_age.setText("1")
         self.recording_conditions.view.lne_latest_meal.setText("1")
         self.recording_conditions.view.cmb_skull_defect.setCurrentIndex(1)
         self.recording_conditions.view.cmb_brain_surgery.setCurrentIndex(1)
@@ -414,7 +414,7 @@ class TestMainWindowController(unittest.TestCase):
 
         self.assertEqual(self.recording_conditions.view.lne_study_id.text(), "1")
         self.assertEqual(self.recording_conditions.view.lne_study_date.text(), "1")
-        self.assertEqual(self.recording_conditions.view.spb_duration.text(), "1.00")
+        self.assertEqual(self.recording_conditions.view.lne_duration.text(), "1")
         self.assertEqual(self.recording_conditions.view.lne_technologist.text(), "1")
         self.assertEqual(self.recording_conditions.view.lne_physician.text(), "1")
         self.assertEqual(self.recording_conditions.view.cmb_sensor_group.currentText(),
@@ -425,7 +425,7 @@ class TestMainWindowController(unittest.TestCase):
                          self.recording_conditions.view.txt_alertness[1])
         self.assertEqual(self.recording_conditions.view.cmb_cooperation.currentText(),
                          self.recording_conditions.view.txt_cooperation[1])
-        self.assertEqual(self.recording_conditions.view.spb_age.text(), "1")
+        self.assertEqual(self.recording_conditions.view.lne_age.text(), "1")
         self.assertEqual(self.recording_conditions.view.lne_latest_meal.text(), "1")
         self.assertEqual(self.recording_conditions.view.cmb_skull_defect.currentText(),
                          self.recording_conditions.view.txt_skull_defect[1])

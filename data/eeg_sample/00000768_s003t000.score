@@ -1,0 +1,106 @@
+{
+    "Patient details": {
+        "Patient name": "",
+        "Patient ID": "",
+        "Patient DOB": "",
+        "Patient gender": "Female",
+        "Patient handedness": "Right",
+        "Patient address": "",
+        "Patient medication": "MEDICATIONS:  Topamax.",
+        "Patient history": "CLINICAL HISTORY:  75 year old woman admitted on the 04/04/2012, EEG requested on the 04/06/2012.  The patient well known to our service, history of carotid stenosis, intracerebral hemorrhage, and refractory epilepsy.  Admitted on the 04/04/2012 with postictal state and left-sided weakness."
+    },
+    "Patient referral": {
+        "Referrer name": "",
+        "Referrer details": "",
+        "Diagnosis at referral": "Postictal state and left-sided weakness.",
+        "Seizure frequency": "Previously",
+        "Time since last seizure": "Previous 2 Days",
+        "Epilepsy-related indications": {
+            "Clinical suspicion of epilepsy or seizure": 2,
+            "Changes in seizure pattern": 0,
+            "Suspicion of non-convulsive status epilepticus": 0,
+            "Reconsider the initial diagnosis of epilepsy": 0,
+            "Monitoring of status epilepticus": 2,
+            "Classification of a patient diagnosed with epilepsy": 0,
+            "Monitoring the effect of medication": 0,
+            "Monitoring of seizure frequency": 0,
+            "Presurgical evaluation": 0,
+            "Considering stopping AED therapy": 0,
+            "Drivers license or flight certificate": 0
+        },
+        "Other differential diagnostic questions": {
+            "Psychogenic non-epileptic seizures": 0,
+            "Encephalopathy": 0,
+            "Loss of consciousness": 0,
+            "Cerebral vascular disease": 0,
+            "Disturbance of consciousness": 2,
+            "Dementia": 0,
+            "Paroxysmal behavioral changes": 0,
+            "Other psychiatric or behavioral symptoms": 0,
+            "Coma": 0,
+            "Brain death": 0
+        },
+        "Specific paediatric indication": {
+            "Genetic syndrome": 0,
+            "Metabolic disorder": 0,
+            "Regression": 0,
+            "Developmental problems": 0
+        },
+        "Other indications": {
+            "Follow up EEG": 0,
+            "Research project": 0,
+            "Assessment of prognosis": 0,
+            "Other indication": 0
+        }
+    },
+    "Recording conditions": {
+        "Study ID": "",
+        "Date & Time": "04/06/2012",
+        "Recording duration": "",
+        "Technologist name": "",
+        "Physician name": "",
+        "Sensor group": "Bipolar old longitudinal",
+        "Recording type": "Short-term video-EEG",
+        "Alertness": "Awake",
+        "Cooperation": "Good cooperation",
+        "Patient age": "75",
+        "Latest meal": "",
+        "Skull defect": "None",
+        "Brain surgery": "None",
+        "Additional technical description": "INTRODUCTION:  Digital video EEG was performed in lab using standard 10-20 system of electrode placement with 1 channel of EKG.  Photic stimulation was completed.",
+        "EDF location": "D:\\teetacsi_local\\fix_merge_openscore\\OpenSCORE\\data\\eeg_sample\\00000768_s003_t000.edf"
+    },
+    "Background activity": {
+        "Posterior dominant rhythm": {
+            "Significance": "No definite abnormality",
+            "Frequency": "7",
+            "Frequency asymmetry": false,
+            "Hz lower left": "",
+            "Hz lower right": "2",
+            "Amplitude": "Medium (20-70\u03bcV)",
+            "Amplitude asymmetry": "Symmetrical",
+            "Reactivity to eye opening": "Yes",
+            "Organisation": "Disorganised",
+            "Caveat": "No",
+            "Absence of PDR": "Is present"
+        },
+        "Other organised rhythms": [
+            {
+                "Significance": "Normal",
+                "Spectral frequency": "Alpha",
+                "Frequency": "7",
+                "Amplitude": "50",
+                "Modulator effect": "Unknown"
+            }
+        ],
+        "Critically ill background activity": "None"
+    },
+    "Diagnostic significance": {
+        "Diagnosis": "Abnormal recording",
+        "Abnormal specification": []
+    },
+    "Clinical comments": {
+        "Interpreter name": "Interpreter",
+        "Clinical comments": "IMPRESSION:  Abnormal EEG due to\nFocal slowing from the right hemisphere particularly occipitotemporal region with disruption of faster frequency activity.\nRight anterior temporal amplitude sharp waves and spikes.\nRare left anterior temporal sharp waves.\n\nCLINICAL CORRELATION:  In this individual with a history of epilepsy, which predates her neurologic complaint, the right-sided sharp waves are ipsilateral to the previous\nstroke, the left-sided sharp waves may be related to the pre-existing history of complex partial epilepsy.\n"
+    }
+}

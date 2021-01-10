@@ -1,6 +1,7 @@
 # OpenSCORE
 An EEG reporting tool according to the SCORE standard.
 
+![OpenSCORE](OpenSCORE.png)
 - Create score reports
 - Load and edit existing score reports
 - Link EDF files to score reports
@@ -8,51 +9,56 @@ An EEG reporting tool according to the SCORE standard.
 - Initialise a score report using and EDF and existing
 record description.
 - Load multiple EDF files for multiple analysis.
-- Option for recording eye tracking data with tobii
 
 ## Installation
 
-1. Download code
+1. Download this repository
 ```shell script
 git clone https://github.com/DWonGH/OpenSCORE.git
 cd OpenSCORE
 ```
 
-2. Setup virtual / conda environment e.g.
+2. Install the python dependencies. They are described in the requirements.txt file.
+We need to use python 3.6 as that is the latest some of the dependencies support. It 
+is recommended to use a conda virtual environment like below:
 ```shell script
 conda create -y -n openscore python=3.6
 conda activate openscore
 ```
 
-3. Install requirements
+3. The requirements can be installed using pip.
 ```shell script
 pip install -r requirements.txt
 ```
 
-4. Install EDFBrowser
-Go to https://github.com/d3-worgan/edfbrowser/releases/tag/v1.0
-Download the zip file and unzip into the root of this project directory.
+4. Install EDFBrowser  
+
+OpenSCORE uses EDFBrowser to analyze EEG recordings. Go to [the repository](https://github.com/d3-worgan/edfbrowser/releases/tag/v1.0)
+, download the zip file from the "Releases" section, and unzip into the root of this project directory.
+Optionally try something like this
+```shell script
+curl https://github.com/d3-worgan/edfbrowser/releases/tag/v1.0
+```
+
 There should now be a directory called 'release' in the root of the project directory.
 Inside is the EDFBrowser application.
-
-5. Install Eye Tracker Manager
-Download the [eye tracker manager](https://www.tobiipro.com/product-listing/eye-tracker-manager/#Download)
-from the tobii website.
 
 4. Run
 ```shell script
 python main.py
 ```
 
-## Multi EDF / EEG Sequence
-- This feature currently relies on the structure of the TUEG dataset and
-will not work otherwise
-
 ## Development
-- Loosely follows the MVC design pattern
-- Data is passed between the model and view using dictionaries.
-- User interaction code is separated into controller files
-- The controller then manages the updating and passing data between model and view.
-- Data is persisted using json files.
-- MainWindowController is root controller for application and loads the main model and view
-- Unit tests created following same directory structure as source code.
+The project structure loosely follows the MVC design pattern:
+- The views in the ```src/views``` directory are essentially Qt Widgets. 
+Files in the views directory should generally only contain code for specifying the 
+widgets and layout.
+- The once the view/ widget is created, it is tied to a controller which is where we
+"connect" the widgets in the view to action code. E.g. tying the push
+buttons to handler (hdl) methods.
+- The controllers take data from the view and update the data model (or vice
+versa). They also control opening dialogs etc.
+- The models are then used to build the report and can be written or opened
+from persisted files.
+- The tests follow the same structure as the source code. Each test case needs
+to be added to the main test file in the project root.

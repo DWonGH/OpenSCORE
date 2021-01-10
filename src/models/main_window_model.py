@@ -52,12 +52,12 @@ class MainWindowModel:
 
     def open_report(self, file_path):
         """
-        Loads a report from an exisiting json file
+        Loads a report from an existing json file
         :param file_path: string - should be an absolute path to a report.json file
         :return:
         """
         self.set_report(file_path)
-        with open(self.report_file_path, 'r') as f:
+        with open(self.report_file_path, 'r', encoding='utf8') as f:
             data = json.load(f)
             self.report.from_dict(data)
         if self.interpreter_name is not None:
@@ -72,7 +72,7 @@ class MainWindowModel:
         Writes the current report to the current specified report path
         :return:
         """
-        with open(self.report_file_path, 'w') as f:
+        with open(self.report_file_path, 'w', encoding='utf8') as f:
             json.dump(self.report.to_dict(), f, indent=4)
 
     def save_report_as(self, file_path):
@@ -107,7 +107,7 @@ class MainWindowModel:
 
     def report_from_text_description(self):
         """Parse text descriptions (e.g. TUEG reports) and try autocomplete report"""
-        with open(self.eeg_description_file_path, 'r') as f:
+        with open(self.eeg_description_file_path, 'r', encoding='utf8') as f:
             text = f.read()
             stripped = rp.strip_interpretation(text)
             self.report.patient_details.history = stripped
@@ -144,6 +144,10 @@ class MainWindowModel:
             print(f"Exception {e}")
 
     def setup_mirror(self):
+        """
+        Creates a directory structure using the current input directories in a specified location
+        :return:
+        """
         for entry in self.input_paths:
             # Eliminate ambiguity with different path slashes
             delim = entry.replace('/', '\\')

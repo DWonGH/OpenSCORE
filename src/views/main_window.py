@@ -6,6 +6,7 @@ from src.views.patient_referral import PatientReferralWidget
 from src.views.recording_conditions import RecordingConditionsWidget
 from src.views.tobii_toolbar import TobiiToolBar
 
+
 class MainWindow(QMainWindow):
 
     def __init__(self, model=None, controller=None):
@@ -31,14 +32,6 @@ class MainWindow(QMainWindow):
 
         self.main_layout = QVBoxLayout()
         self.tabs = QTabWidget()
-
-        # self.patient_details = PatientDetailsWidget(self)
-        # self.patient_referral = PatientReferralWidget(self)
-        # self.recording_conditions = RecordingConditionsWidget(self)
-
-        # self.tabs.addTab(self.patient_details, "Patient Details")
-        # self.tabs.addTab(self.patient_referral, "Patient Referral")
-        # self.tabs.addTab(self.recording_conditions, "Recording Conditions")
 
         self.main_layout.addWidget(self.tabs)
 

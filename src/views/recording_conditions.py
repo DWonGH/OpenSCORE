@@ -3,6 +3,8 @@ import os
 from PyQt5.QtWidgets import QWidget, QFormLayout, QLabel, QLineEdit, QSpinBox, \
     QComboBox, QTextEdit, QDoubleSpinBox, QHBoxLayout, QPushButton, QFileDialog
 
+from src.views.custom_widgets import IntegerLineEdit, FloatLineEdit
+
 
 class RecordingConditionsWidget(QWidget):
 
@@ -24,10 +26,9 @@ class RecordingConditionsWidget(QWidget):
         self.lne_study_date.setPlaceholderText("e.g. 30/09/2012")
         self.layout.addRow(self.lbl_study_date, self.lne_study_date)
 
-        self.lbl_duration = QLabel("Recording Duration")
-        self.spb_duration = QDoubleSpinBox()
-        self.spb_duration.setSpecialValueText(" ")
-        self.layout.addRow(self.lbl_duration, self.spb_duration)
+        self.lbl_duration = QLabel("Recording Duration (mins)")
+        self.lne_duration = FloatLineEdit()
+        self.layout.addRow(self.lbl_duration, self.lne_duration)
 
         self.lbl_technologist = QLabel("Technologist Name")
         self.lne_technologist = QLineEdit()
@@ -77,9 +78,8 @@ class RecordingConditionsWidget(QWidget):
         self.layout.addRow(self.lbl_cooperation, self.cmb_cooperation)
 
         self.lbl_age = QLabel("Age")
-        self.spb_age = QSpinBox()
-        self.spb_age.setSpecialValueText(" ")
-        self.layout.addRow(self.lbl_age, self.spb_age)
+        self.lne_age = IntegerLineEdit()
+        self.layout.addRow(self.lbl_age, self.lne_age)
 
         self.lbl_latest_meal = QLabel("Latest meal")
         self.lne_latest_meal = QLineEdit()
@@ -118,14 +118,14 @@ class RecordingConditionsWidget(QWidget):
         data = {
             "Study ID": self.lne_study_id.text(),
             "Date & Time": self.lne_study_date.text(),
-            "Recording duration": self.spb_duration.text(),
+            "Recording duration": self.lne_duration.text(),
             "Technologist name": self.lne_technologist.text(),
             "Physician name": self.lne_physician.text(),
             "Sensor group": self.cmb_sensor_group.currentText(),
             "Recording type": self.cmb_recording_type.currentText(),
             "Alertness": self.cmb_alertness.currentText(),
             "Cooperation": self.cmb_cooperation.currentText(),
-            "Patient age": self.spb_age.text(),
+            "Patient age": self.lne_age.text(),
             "Latest meal": self.lne_latest_meal.text(),
             "Skull defect": self.cmb_skull_defect.currentText(),
             "Brain surgery": self.cmb_brain_surgery.currentText(),
@@ -137,8 +137,7 @@ class RecordingConditionsWidget(QWidget):
     def update_from_dict(self, data):
         self.lne_study_id.setText(data["Study ID"])
         self.lne_study_date.setText(data["Date & Time"])
-        if data["Recording duration"] != ' ' and data['Recording duration'] is not None:
-            self.spb_duration.setValue(float(data["Recording duration"]))
+        self.lne_duration.setText(data["Recording duration"])
         self.lne_technologist.setText(data["Technologist name"])
         self.lne_physician.setText(data["Physician name"])
         if data["Sensor group"] is None:
@@ -157,8 +156,7 @@ class RecordingConditionsWidget(QWidget):
             self.cmb_cooperation.setCurrentIndex(0)
         else:
             self.cmb_cooperation.setCurrentIndex(self.txt_cooperation.index(data["Cooperation"]))
-        if data["Patient age"] != ' ' and data['Patient age'] is not None:
-            self.spb_age.setValue(int(data["Patient age"]))
+        self.lne_age.setText(data["Patient age"])
         self.lne_latest_meal.setText(data["Latest meal"])
         if data['Skull defect'] is None:
             self.cmb_skull_defect.setCurrentIndex(0)

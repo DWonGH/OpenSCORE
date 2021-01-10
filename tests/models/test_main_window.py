@@ -22,11 +22,13 @@ class TestMainModel(unittest.TestCase):
         self.assert_paths_are_nones()
         self.set_paths_to_ones()
         self.assert_paths_not_nones()
-        test_report = os.path.join(os.getcwd(), 'data', 'test_report.json')
-        with open(test_report, 'r') as f:
+        test_report = os.path.join(os.getcwd(), 'data', 'test_report.score')
+        self.maxDiff = True
+        with open(test_report, 'r', encoding='utf8') as f:
             test_report_dict = json.load(f)
         self.model.open_report(test_report)
         self.assert_report_not_blank()
+        self.maxDiff = None
         self.assertEqual(self.model.report.to_dict(), test_report_dict)
         self.model.reset()
         self.assert_report_is_blank()
@@ -40,7 +42,7 @@ class TestMainModel(unittest.TestCase):
         self.assertFalse(os.path.exists(dummy))
         self.model.save_report()
         self.assertTrue(os.path.exists(dummy))
-        with open(dummy, 'r') as f:
+        with open(dummy, 'r', encoding='utf8') as f:
             dummy_dict = json.load(f)
         self.assertEqual(self.model.report.to_dict(), dummy_dict)
         os.remove(self.model.report_file_path)
@@ -58,7 +60,7 @@ class TestMainModel(unittest.TestCase):
         self.assertEqual(self.model.report_directory, os.path.dirname(dummy))
         self.assertEqual(self.model.report_file_name, os.path.basename(dummy))
         self.assertEqual(self.model.report_file_path, dummy)
-        with open(dummy, 'r') as f:
+        with open(dummy, 'r', encoding='utf8') as f:
             dummy_dict = json.load(f)
         self.assertEqual(self.model.report.to_dict(), dummy_dict)
         os.remove(self.model.report_file_path)
@@ -67,29 +69,29 @@ class TestMainModel(unittest.TestCase):
     def test_open_report(self):
         self.assert_report_is_blank()
         self.assert_paths_are_nones()
-        test_report = os.path.join(os.getcwd(), 'data', 'test_report.json')
+        test_report = os.path.join(os.getcwd(), 'data', 'test_report.score')
         self.assertTrue(os.path.exists(test_report))
         # Adjust the file for the test - we want to test we can set edf path correctly
-        with open(test_report, 'r') as f:
+        with open(test_report, 'r', encoding='utf8') as f:
             report = json.load(f)
             report["Recording conditions"]["EDF location"] = os.path.join(os.getcwd(), 'data', 'eeg_sample', '00000768_s003_t000.edf')
-        with open(test_report, 'w') as f:
+        with open(test_report, 'w', encoding='utf8') as f:
             json.dump(report, f, indent=4)
         self.model.open_report(test_report)
         self.assert_report_paths_not_none()
         self.assert_edf_paths_not_none()
         self.assert_report_not_blank()
         self.assertEqual(self.model.report_directory, os.path.join(os.getcwd(), 'data'))
-        self.assertEqual(self.model.report_file_name, 'test_report.json')
+        self.assertEqual(self.model.report_file_name, 'test_report.score')
         self.assertTrue(os.path.exists(self.model.report_file_path))
         self.assertEqual(self.model.edf_file_path, os.path.join(os.getcwd(), 'data', 'eeg_sample', '00000768_s003_t000.edf'))
         self.maxDiff = None
         # Reset the file
-        with open(self.model.report_file_path, 'r') as f:
+        with open(self.model.report_file_path, 'r', encoding='utf8') as f:
             report = json.load(f)
             self.assertEqual(report, self.model.report.to_dict())
         report["Recording conditions"]["EDF location"] = "1"
-        with open(test_report, 'w') as f:
+        with open(test_report, 'w', encoding='utf8') as f:
             json.dump(report, f, indent=4)
 
     def test_open_edf(self):
@@ -141,7 +143,7 @@ class TestMainModel(unittest.TestCase):
         self.assertEqual(len(self.model.output_paths), self.num_paths)
 
         # Test the paths and files have been updated/ generated correctly
-        with open(paths_file, 'r') as f:
+        with open(paths_file, 'r', encoding='utf8') as f:
             paths = f.read().splitlines()
         self.assertEqual(self.model.edf_file_name, os.path.basename(paths[0]))
         self.assertEqual(self.model.edf_directory, os.path.dirname(paths[0]))
@@ -155,7 +157,7 @@ class TestMainModel(unittest.TestCase):
         print(self.model.report.patient_details.history)
         self.assertIsNotNone(self.model.report.patient_details.history)
         self.assertTrue('CLINICAL HISTORY' or 'MEDICATIONS' or 'INTRODUCTION' in self.model.report.patient_details.history)
-        with open(self.model.eeg_description_file_path, 'r') as f:
+        with open(self.model.eeg_description_file_path, 'r', encoding='utf8') as f:
             text = f.read()
             self.assertEqual(self.model.report.patient_details.history, rp.strip_interpretation(text))
         if clean:

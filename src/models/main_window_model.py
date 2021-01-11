@@ -134,7 +134,7 @@ class MainWindowModel:
             self.setup_mirror()
             self.open_edf(self.input_paths[0])
             self.report_directory = self.output_paths[self.output_idx]
-            self.report_file_name = f"{self.edf_file_name.split('.')[0]}.json"
+            self.report_file_name = f"{self.edf_file_name.split('.')[0]}.score"
             self.report_file_path = os.path.join(self.report_directory, self.report_file_name)
             if os.path.exists(self.report_file_path):
                 self.open_report(self.report_file_path)
@@ -188,7 +188,7 @@ class MainWindowModel:
             self.report.reset()
             self.set_edf(self.input_paths[self.input_idx])
             self.report_directory = self.output_paths[self.output_idx]
-            self.report_file_name = f"{self.edf_file_name.split('.')[0]}.json"
+            self.report_file_name = f"{self.edf_file_name.split('.')[0]}.score"
             self.report_file_path = os.path.join(self.report_directory, self.report_file_name)
             if os.path.exists(self.report_file_path):
                 self.open_report(self.report_file_path)

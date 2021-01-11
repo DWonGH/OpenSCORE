@@ -35,7 +35,7 @@ class TestMainModel(unittest.TestCase):
         self.assert_paths_are_nones()
 
     def test_save_report(self):
-        dummy = os.path.join(os.getcwd(), 'data', 'dummy.json')
+        dummy = os.path.join(os.getcwd(), 'data', 'dummy.score')
         self.model.set_report(dummy)
         self.assertIsNotNone(self.model.report_file_path)
         self.assertEqual(self.model.report_file_path, dummy)
@@ -51,7 +51,7 @@ class TestMainModel(unittest.TestCase):
     def test_save_report_as(self):
         self.assert_report_is_blank()
         self.assert_paths_are_nones()
-        dummy = os.path.join(os.getcwd(), 'data', 'dummy.json')
+        dummy = os.path.join(os.getcwd(), 'data', 'dummy.score')
         if os.path.exists(dummy):
             os.remove(dummy)
         self.assertFalse(os.path.exists(dummy))
@@ -148,7 +148,7 @@ class TestMainModel(unittest.TestCase):
         self.assertEqual(self.model.edf_file_name, os.path.basename(paths[0]))
         self.assertEqual(self.model.edf_directory, os.path.dirname(paths[0]))
         self.assertEqual(self.model.edf_file_path, paths[0])
-        self.assertEqual(self.model.report_file_name, f"{self.model.edf_file_name.split('.')[0]}.json")
+        self.assertEqual(self.model.report_file_name, f"{self.model.edf_file_name.split('.')[0]}.score")
         self.assertEqual(self.model.report_directory, self.model.output_paths[0])
         self.assertEqual(self.model.report_file_path, os.path.join(self.model.report_directory, self.model.report_file_name))
         self.assertTrue(os.path.exists(self.model.report_file_path))

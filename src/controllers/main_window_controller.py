@@ -101,10 +101,18 @@ class MainWindowController:
             dialog.setIcon(QMessageBox.Question)
             answer = dialog.exec_()
             if answer == QMessageBox.Yes:
-                self.model.reset()
-                self.view.setWindowTitle(f"OpenSCORE - {self.model.report_file_name}")
-                self.view.toolbar.lbl_current_eeg_name.setText("")
-                self.update_view_from_model()
+                if self.edfbrowser_is_open():
+                    dialog = QMessageBox()
+                    dialog.setWindowTitle("Previous recording")
+                    dialog.setText("Please close the current EDFBrowser before clicking previous.")
+                    dialog.setStandardButtons(QMessageBox.Ok)
+                    dialog.setIcon(QMessageBox.Information)
+                    answer = dialog.exec_()
+                else:
+                    self.model.reset()
+                    self.view.setWindowTitle(f"OpenSCORE - {self.model.report_file_name}")
+                    self.view.toolbar.lbl_current_eeg_name.setText("")
+                    self.update_view_from_model()
         except Exception as e:
             dialog = QMessageBox()
             dialog.setWindowTitle("New Score Report")
@@ -130,13 +138,21 @@ class MainWindowController:
             dialog.setIcon(QMessageBox.Question)
             answer = dialog.exec_()
             if answer == QMessageBox.Yes:
-                dialog = QFileDialog()
-                dialog.setDefaultSuffix('score')
-                file_path, _ = dialog.getOpenFileName(caption="Open SCORE Report", filter="SCORE Files (*.score)")
-                if file_path:
-                    self.model.reset()
-                    self.model.open_report(file_path)
-                    self.update_view_from_model()
+                if self.edfbrowser_is_open():
+                    dialog = QMessageBox()
+                    dialog.setWindowTitle("Previous recording")
+                    dialog.setText("Please close the current EDFBrowser before clicking previous.")
+                    dialog.setStandardButtons(QMessageBox.Ok)
+                    dialog.setIcon(QMessageBox.Information)
+                    answer = dialog.exec_()
+                else:
+                    dialog = QFileDialog()
+                    dialog.setDefaultSuffix('score')
+                    file_path, _ = dialog.getOpenFileName(caption="Open SCORE Report", filter="SCORE Files (*.score)")
+                    if file_path:
+                        self.model.reset()
+                        self.model.open_report(file_path)
+                        self.update_view_from_model()
         except KeyError as e:
             dialog = QMessageBox()
             dialog.setWindowTitle("Open Score Report")
@@ -219,14 +235,22 @@ class MainWindowController:
             dialog.setIcon(QMessageBox.Question)
             answer = dialog.exec_()
             if answer == QMessageBox.Yes:
-                dialog = QFileDialog()
-                dialog.setDefaultSuffix('edf')
-                file_path, _ = dialog.getOpenFileName(caption="Create report from EDF", filter="EDF Files (*.edf)")
-                if file_path:
-                    self.model.reset()
-                    self.update_view_from_model()
-                    self.model.open_edf(file_path)
-                    self.update_view_from_model()
+                if self.edfbrowser_is_open():
+                    dialog = QMessageBox()
+                    dialog.setWindowTitle("Previous recording")
+                    dialog.setText("Please close the current EDFBrowser before clicking previous.")
+                    dialog.setStandardButtons(QMessageBox.Ok)
+                    dialog.setIcon(QMessageBox.Information)
+                    answer = dialog.exec_()
+                else:
+                    dialog = QFileDialog()
+                    dialog.setDefaultSuffix('edf')
+                    file_path, _ = dialog.getOpenFileName(caption="Create report from EDF", filter="EDF Files (*.edf)")
+                    if file_path:
+                        self.model.reset()
+                        self.update_view_from_model()
+                        self.model.open_edf(file_path)
+                        self.update_view_from_model()
         except Exception as e:
             dialog = QMessageBox()
             dialog.setWindowTitle("Open Report from EDF")
@@ -254,11 +278,19 @@ class MainWindowController:
             dialog.setIcon(QMessageBox.Question)
             answer = dialog.exec_()
             if answer == QMessageBox.Yes:
-                dialog = StartSessionDialog()
-                if dialog.exec_():
-                    self.model.reset()
-                    self.model.open_multi_edf(dialog.lne_specified_paths.text(), dialog.lne_root_output_directory.text(), dialog.lne_interpreter_name.text())
-                    self.update_view_from_model()
+                if self.edfbrowser_is_open():
+                    dialog = QMessageBox()
+                    dialog.setWindowTitle("Previous recording")
+                    dialog.setText("Please close the current EDFBrowser before continuing.")
+                    dialog.setStandardButtons(QMessageBox.Ok)
+                    dialog.setIcon(QMessageBox.Information)
+                    answer = dialog.exec_()
+                else:
+                    dialog = StartSessionDialog()
+                    if dialog.exec_():
+                        self.model.reset()
+                        self.model.open_multi_edf(dialog.lne_specified_paths.text(), dialog.lne_root_output_directory.text(), dialog.lne_interpreter_name.text())
+                        self.update_view_from_model()
         except Exception as e:
             dialog = QMessageBox()
             dialog.setWindowTitle("Open EEG Sequence")
@@ -451,7 +483,7 @@ class MainWindowController:
 
     def hdl_record_gaze(self):
         try:
-            if self.model.eye_file_path is None:
+            if len(self.model.output_paths) == 0:
                 dialog = QMessageBox()
                 dialog.setWindowTitle("Record Gaze")
                 dialog.setText("This feature is only available in EEG Sequence mode.")

@@ -39,7 +39,7 @@ class BackgroundActivityWidget(QWidget):
         self.hbx_pdr_freq_asymmetry.addWidget(self.lne_pdr_freq_asymmetry_right)
         self.layout.addRow(self.lbl_pdr_freq_asymmetry, self.hbx_pdr_freq_asymmetry)
 
-        self.txt_pdr_amplitude = ["", "Low (<20μV)", "Medium (20-70μV)", "High (>70μV)"]
+        self.txt_pdr_amplitude = ["", "Low (<20 μV)", "Medium (20-70 μV)", "High (>70 μV)"]
         self.lbl_pdr_amplitude = QLabel("Amplitude (μV)")
         self.cmb_pdr_amplitude = QComboBox()
         self.cmb_pdr_amplitude.addItems(self.txt_pdr_amplitude)

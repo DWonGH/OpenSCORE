@@ -423,16 +423,16 @@ class MainWindowController:
                 if self.model.edf_file_path is not None and os.path.exists(self.model.edf_file_path):
                     if len(self.model.output_paths) > 0 and os.path.exists(self.model.output_paths[self.model.output_idx]):
                         self.model.set_ui_eye()
-                        self.edfbrowser_p = subprocess.Popen([self.edfbrowser_path, self.model.edf_file_path, self.model.ui_log_directory])
+                        self.edfbrowser_p = subprocess.Popen([self.edfbrowser_path, os.path.normpath(self.model.edf_file_path), self.model.ui_log_directory])
                     else:
-                        self.edfbrowser_p = subprocess.Popen([self.edfbrowser_path, self.model.edf_file_path])
+                        self.edfbrowser_p = subprocess.Popen([self.edfbrowser_path, os.path.normpath(self.model.edf_file_path)])
                 elif self.model.report.recording_conditions.edf_location is not None and os.path.exists(self.model.report.recording_conditions.edf_location):
                     self.model.set_edf(self.model.report.recording_conditions.edf_location)
                     if len(self.model.output_paths) > 0 and os.path.exists(self.model.output_paths[self.model.output_idx]):
                         self.model.set_ui_eye()
-                        self.edfbrowser_p = subprocess.Popen([self.edfbrowser_path, self.model.edf_file_path, self.model.ui_log_directory])
+                        self.edfbrowser_p = subprocess.Popen([self.edfbrowser_path, os.path.normpath(self.model.edf_file_path), self.model.ui_log_directory])
                     else:
-                        self.edfbrowser_p = subprocess.Popen([self.edfbrowser_path, self.model.edf_file_path])
+                        self.edfbrowser_p = subprocess.Popen([self.edfbrowser_path, os.path.normpath(self.model.edf_file_path)])
                 else:
                     print(f"EDF Path {self.model.edf_file_path}")
                     dialog = QMessageBox()

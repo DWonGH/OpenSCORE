@@ -74,7 +74,7 @@ class MainWindowController:
         self.view.tabs.addTab(self.diagnostic_significance_controller.view, "Diagnostic Significance")
         self.view.tabs.addTab(self.clinical_comments_controller.view, "Clinical Comments")
 
-        self.edfbrowser_path = os.path.join(os.getcwd(), 'release', 'edfbrowser.exe')
+        self.edfbrowser_path = os.path.join(os.getcwd(), 'edfbrowser', 'edfbrowser.exe')
         if not os.path.exists(self.edfbrowser_path):
             print(f"EDFBrowser is not installed")
         self.edfbrowser_p = None

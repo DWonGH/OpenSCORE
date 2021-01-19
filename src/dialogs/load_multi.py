@@ -18,8 +18,8 @@ class StartSessionDialog(QDialog):
 
         now = datetime.now()
         now = now.strftime("%d-%m-%Y_%H-%M")
-        self.suggested_path = suggested_path = os.path.join(os.getcwd(), 'data', 'analysis_sessions', now)
 
+        self.suggested_path = os.path.join(os.getcwd(), 'data', 'analysis_sessions', now)
         self.root_changed = False
 
         self.setWindowTitle("Load sequence of EEGs")

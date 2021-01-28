@@ -1,12 +1,10 @@
 import json
-from datetime import datetime
 import os
 import subprocess
 import traceback
 
 import psutil
 from PyQt5.QtWidgets import QFileDialog, QMessageBox, QTabWidget
-import tobii_research as tr
 
 from src.controllers.background_activity_controller import BackgroundActivityController
 from src.controllers.clinical_comments_controller import ClinicalCommentsController
@@ -14,11 +12,8 @@ from src.controllers.diagnostic_significance_controller import DiagnosticSignifi
 from src.controllers.patient_details_controller import PatientDetailsController
 from src.controllers.patient_referral_controller import PatientReferralController
 from src.controllers.recording_conditions_controller import RecordingConditionsController
-from src.dialogs.load_multi import StartSessionDialog
 from src.models.main_window_model import MainWindowModel
 from src.views.main_window import MainWindow
-
-from src.helpers import eyetracker as eye
 
 
 class MainWindowController:
@@ -52,15 +47,6 @@ class MainWindowController:
         self.view.menu.bt_save_file.triggered.connect(self.hdl_save_report)
         self.view.menu.bt_save_as_file.triggered.connect(self.hdl_save_report_as)
         self.view.menu.bt_load_single_eeg.triggered.connect(self.hdl_load_edf)
-        self.view.menu.bt_eeg_sequence.triggered.connect(self.hdl_load_edf_multi)
-
-        self.view.toolbar.btn_previous_recording.triggered.connect(self.hdl_previous_recording)
-        self.view.toolbar.btn_next_recording.triggered.connect(self.hdl_next_recording)
-        self.view.toolbar.btn_open_in_edfbrowser.triggered.connect(self.hdl_open_in_edfbrowser)
-
-        self.view.tobii_toolbar.btn_start_analysis.triggered.connect(self.hdl_record_gaze)
-        self.view.tobii_toolbar.btn_stop_analysis.triggered.connect(self.hdl_stop_gaze)
-        self.view.tobii_toolbar.btn_eye_tracker_manager.triggered.connect(self.hdl_call_calibrator)
 
         # Connecting the widgets to the tab system
         self.patient_info_tab = QTabWidget()
@@ -77,13 +63,13 @@ class MainWindowController:
         self.edfbrowser_path = os.path.join(os.getcwd(), 'edfbrowser', 'edfbrowser.exe')
         if not os.path.exists(self.edfbrowser_path):
             print(f"EDFBrowser is not installed")
+            dialog = QMessageBox()
+            dialog.setWindowTitle("EDFBrowser")
+            dialog.setText("EDFBrowser is not installed")
+            dialog.setStandardButtons(QMessageBox.Ok)
+            dialog.setIcon(QMessageBox.Warning)
+            dialog.exec_()
         self.edfbrowser_p = None
-        self.eyetracker = None
-        try:
-            found_eyetrackers = tr.find_all_eyetrackers()
-            self.eyetracker = found_eyetrackers[0]
-        except IndexError as e:
-            print("No eye trackers were found")
 
         #self.view..connect(self.hdl_close_event)
 
@@ -262,148 +248,6 @@ class MainWindowController:
             dialog.exec_()
             traceback.print_exc()
 
-    def hdl_load_edf_multi(self):
-        """
-        Will load a list of paths to edf recordings according to a pre-defined text file (see the specified_paths.txt
-        file in the data folder for an example). Can then use the next/back buttons to navigate the edf recordings and
-        reports.
-        :return:
-        """
-        try:
-            print("Loading multiple EDFs")
-            dialog = QMessageBox()
-            dialog.setWindowTitle("Load multiple EDFs")
-            dialog.setText("You will lose any changes you haven't saved. Do you want to continue?")
-            dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-            dialog.setIcon(QMessageBox.Question)
-            answer = dialog.exec_()
-            if answer == QMessageBox.Yes:
-                if self.edfbrowser_is_open():
-                    dialog = QMessageBox()
-                    dialog.setWindowTitle("Previous recording")
-                    dialog.setText("Please close the current EDFBrowser before continuing.")
-                    dialog.setStandardButtons(QMessageBox.Ok)
-                    dialog.setIcon(QMessageBox.Information)
-                    answer = dialog.exec_()
-                else:
-                    dialog = StartSessionDialog()
-                    if dialog.exec_():
-                        self.model.reset()
-                        self.model.open_multi_edf(dialog.lne_specified_paths.text(), dialog.lne_root_output_directory.text(), dialog.lne_interpreter_name.text())
-                        self.update_view_from_model()
-        except Exception as e:
-            dialog = QMessageBox()
-            dialog.setWindowTitle("Open EEG Sequence")
-            dialog.setText(
-                f"Something went wrong starting a new session.\n\n {e}")
-            dialog.setDetailedText(traceback.format_exc())
-            dialog.setStandardButtons(QMessageBox.Ok)
-            dialog.setIcon(QMessageBox.Warning)
-            dialog.exec_()
-            traceback.print_exc()
-
-    def hdl_previous_recording(self):
-        """
-        Called when the "Previous" button is pressed on the toolbar. Idea is to save the current report,
-        then move to the next one in the list. It should either generate a base report from the edf
-        and description, or load the existing json report - if it exists.
-        :return:
-        """
-        try:
-            self.update_model_from_view()
-            if len(self.model.input_paths) == 0:
-                dialog = QMessageBox()
-                dialog.setWindowTitle("Previous recording")
-                dialog.setText("There are no EEG's to navigate. You can specify a sequence of EEGs using the load sequence option in the menu.")
-                dialog.setStandardButtons(QMessageBox.Ok)
-                dialog.setIcon(QMessageBox.Information)
-                answer = dialog.exec_()
-            elif self.edfbrowser_is_open():
-                dialog = QMessageBox()
-                dialog.setWindowTitle("Previous recording")
-                dialog.setText("Please close the current EDFBrowser before clicking previous.")
-                dialog.setStandardButtons(QMessageBox.Ok)
-                dialog.setIcon(QMessageBox.Information)
-                answer = dialog.exec_()
-            elif eye.gaze_file is not None:
-                dialog = QMessageBox()
-                dialog.setWindowTitle("Previous recording")
-                dialog.setText("Please stop the eye tracker before continuing.")
-                dialog.setStandardButtons(QMessageBox.Ok)
-                dialog.setIcon(QMessageBox.Information)
-                answer = dialog.exec_()
-            elif self.model.previous_recording() is False:
-                print("At the beginning of the list")
-                dialog = QMessageBox()
-                dialog.setWindowTitle("Previous recording")
-                dialog.setText("You are at the beginning of the list.")
-                dialog.setStandardButtons(QMessageBox.Ok)
-                dialog.setIcon(QMessageBox.Information)
-                answer = dialog.exec_()
-            else:
-                self.update_view_from_model()
-        except Exception as e:
-            dialog = QMessageBox()
-            dialog.setWindowTitle("Previous EEG")
-            dialog.setText(
-                f"Something went wrong navigating to the next report.\n\n {e}")
-            dialog.setDetailedText(traceback.format_exc())
-            dialog.setStandardButtons(QMessageBox.Ok)
-            dialog.setIcon(QMessageBox.Warning)
-            dialog.exec_()
-            traceback.print_exc()
-
-    def hdl_next_recording(self):
-        """
-        Called when the "Next" button is pressed on the toolbar. Idea is to save the current report,
-        then move to the next one in the list. It should either generate a base report from the edf
-        and description, or load the existing json report - if it exists.
-        :return:
-        """
-        try:
-            self.update_model_from_view()
-            if len(self.model.input_paths) == 0:
-                dialog = QMessageBox()
-                dialog.setWindowTitle("Previous recording")
-                dialog.setText("There are no EEG's to navigate. You can specify a sequence of EEGs using the load sequence option in the menu.")
-                dialog.setStandardButtons(QMessageBox.Ok)
-                dialog.setIcon(QMessageBox.Information)
-                answer = dialog.exec_()
-            elif self.edfbrowser_is_open():
-                dialog = QMessageBox()
-                dialog.setWindowTitle("Previous recording")
-                dialog.setText("Please close the current EDFBrowser before clicking next.")
-                dialog.setStandardButtons(QMessageBox.Ok)
-                dialog.setIcon(QMessageBox.Information)
-                answer = dialog.exec_()
-            elif eye.gaze_file is not None:
-                dialog = QMessageBox()
-                dialog.setWindowTitle("Previous recording")
-                dialog.setText("Please stop the eye tracker before continuing.")
-                dialog.setStandardButtons(QMessageBox.Ok)
-                dialog.setIcon(QMessageBox.Information)
-                answer = dialog.exec_()
-            elif self.model.next_recording() is False:
-                print("At the end of the list")
-                dialog = QMessageBox()
-                dialog.setWindowTitle("Previous recording")
-                dialog.setText("You are at the end of the list.")
-                dialog.setStandardButtons(QMessageBox.Ok)
-                dialog.setIcon(QMessageBox.Information)
-                answer = dialog.exec_()
-            else:
-                self.update_view_from_model()
-        except Exception as e:
-            dialog = QMessageBox()
-            dialog.setWindowTitle("Next EEG")
-            dialog.setText(
-                f"Something went wrong navigating to the next report.\n\n {e}")
-            dialog.setDetailedText(traceback.format_exc())
-            dialog.setStandardButtons(QMessageBox.Ok)
-            dialog.setIcon(QMessageBox.Warning)
-            dialog.exec_()
-            traceback.print_exc()
-
     def hdl_open_in_edfbrowser(self):
         """
         Opens the current specified edf file in the edfbrowser program. If we are in multi-eeg mode then
@@ -469,71 +313,6 @@ class MainWindowController:
             return False
         else:
             return psutil.pid_exists(self.edfbrowser_p.pid)
-
-    def hdl_call_calibrator(self):
-        if self.eyetracker is None:
-            dialog = QMessageBox()
-            dialog.setWindowTitle("Eye Tracker Manager")
-            dialog.setText("The eye tracker is not connected.")
-            dialog.setStandardButtons(QMessageBox.Ok)
-            dialog.setIcon(QMessageBox.Information)
-            answer = dialog.exec_()
-        else:
-            eye.call_calibrator(self.eyetracker)
-
-    def hdl_record_gaze(self):
-        try:
-            if len(self.model.output_paths) == 0:
-                dialog = QMessageBox()
-                dialog.setWindowTitle("Record Gaze")
-                dialog.setText("This feature is only available in EEG Sequence mode.")
-                dialog.setStandardButtons(QMessageBox.Ok)
-                dialog.setIcon(QMessageBox.Information)
-                answer = dialog.exec_()
-            elif self.edfbrowser_is_open() is False:
-                dialog = QMessageBox()
-                dialog.setWindowTitle("Record Gaze")
-                dialog.setText("Please open the eeg in EDFBrowser before recording gaze data.")
-                dialog.setStandardButtons(QMessageBox.Ok)
-                dialog.setIcon(QMessageBox.Information)
-                answer = dialog.exec_()
-            else:
-                if len(self.model.output_paths) > 0:
-                    if self.model.ui_log_directory is not None:
-                        gaze_path = os.path.join(self.model.ui_log_directory, 'gaze_data.txt')
-                        eye.gaze_file = open(gaze_path, 'w')
-                else:
-                    gaze_path = os.path.join(os.getcwd(), 'data', 'gaze_recordings')
-                    if not os.path.exists(gaze_path):
-                        os.makedirs(gaze_path)
-                    now = datetime.now()
-                    now = now.strftime("%d-%m-%Y-%H-%M-%S")
-                    gaze_path = os.path.join(gaze_path, f"{now}.txt")
-                    eye.gaze_file = open(gaze_path, 'w')
-                self.eyetracker.subscribe_to(tr.EYETRACKER_GAZE_DATA, eye.gaze_data_callback, as_dictionary=True)
-        except Exception as e:
-            dialog = QMessageBox()
-            dialog.setWindowTitle("Open Score Report")
-            dialog.setText(
-                f"There was a problem recording the eye tracker.\n\n Is it connected? \n\n Is the ete tracker manager installed? {e}")
-            dialog.setDetailedText(traceback.format_exc())
-            dialog.setStandardButtons(QMessageBox.Ok)
-            dialog.setIcon(QMessageBox.Warning)
-            dialog.exec_()
-            traceback.print_exc()
-
-    def hdl_stop_gaze(self):
-        if eye.gaze_file is not None:
-            self.eyetracker.unsubscribe_from(tr.EYETRACKER_GAZE_DATA, eye.gaze_data_callback)
-            eye.gaze_file.close()
-            eye.gaze_file = None
-        else:
-            dialog = QMessageBox()
-            dialog.setWindowTitle("Record Gaze")
-            dialog.setText("You need to start recording gaze data first.")
-            dialog.setStandardButtons(QMessageBox.Ok)
-            dialog.setIcon(QMessageBox.Information)
-            answer = dialog.exec_()
 
     def update_model_from_view(self):
         self.patient_details_controller.update_model()

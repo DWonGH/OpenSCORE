@@ -33,10 +33,6 @@ class MainMenuBar(QMenuBar):
         self.bt_load_single_eeg.setStatusTip("Start a new report linked to an EDF file.")
         self.file_menu.addAction(self.bt_load_single_eeg)
 
-        # self.bt_eeg_sequence = QAction("&Load EEG sequence", self)
-        # self.bt_eeg_sequence.setStatusTip("Load a set of paths to directories containing EDF's")
-        # self.file_menu.addAction(self.bt_eeg_sequence)
-
         self.bt_close_window = QAction("&Close", self)
         self.bt_close_window.setStatusTip("Exit OpenScore")
         self.file_menu.addAction(self.bt_close_window)

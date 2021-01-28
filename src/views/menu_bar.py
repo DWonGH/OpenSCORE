@@ -29,13 +29,13 @@ class MainMenuBar(QMenuBar):
         self.bt_save_as_file.setStatusTip("Save to new file")
         self.file_menu.addAction(self.bt_save_as_file)
 
-        self.bt_load_single_eeg = QAction("&Load EEG", self)
-        self.bt_load_single_eeg.setStatusTip("Load a directory containing an EDF (and txt file)")
+        self.bt_load_single_eeg = QAction("&Load from EDF", self)
+        self.bt_load_single_eeg.setStatusTip("Start a new report linked to an EDF file.")
         self.file_menu.addAction(self.bt_load_single_eeg)
 
-        self.bt_eeg_sequence = QAction("&Load EEG sequence", self)
-        self.bt_eeg_sequence.setStatusTip("Load a set of paths to directories containing EDF's")
-        self.file_menu.addAction(self.bt_eeg_sequence)
+        # self.bt_eeg_sequence = QAction("&Load EEG sequence", self)
+        # self.bt_eeg_sequence.setStatusTip("Load a set of paths to directories containing EDF's")
+        # self.file_menu.addAction(self.bt_eeg_sequence)
 
         self.bt_close_window = QAction("&Close", self)
         self.bt_close_window.setStatusTip("Exit OpenScore")

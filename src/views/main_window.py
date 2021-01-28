@@ -24,11 +24,11 @@ class MainWindow(QMainWindow):
         self.menu = MainMenuBar(self)
         self.setMenuBar(self.menu)
 
-        self.toolbar = MainToolBar(self)
-        self.addToolBar(self.toolbar)
-        self.tobii_toolbar = TobiiToolBar()
-        self.addToolBarBreak()
-        self.addToolBar(self.tobii_toolbar)
+        # self.toolbar = MainToolBar(self)
+        # self.addToolBar(self.toolbar)
+        # self.tobii_toolbar = TobiiToolBar()
+        # self.addToolBarBreak()
+        # self.addToolBar(self.tobii_toolbar)
 
         self.main_layout = QVBoxLayout()
         self.tabs = QTabWidget()

@@ -1,10 +1,6 @@
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QStatusBar, QPushButton, QTabWidget
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QStatusBar, QTabWidget
+
 from src.views.menu_bar import MainMenuBar
-from src.views.tool_bar import MainToolBar
-from src.views.patient_details import PatientDetailsWidget
-from src.views.patient_referral import PatientReferralWidget
-from src.views.recording_conditions import RecordingConditionsWidget
-from src.views.tobii_toolbar import TobiiToolBar
 
 
 class MainWindow(QMainWindow):
@@ -23,12 +19,6 @@ class MainWindow(QMainWindow):
 
         self.menu = MainMenuBar(self)
         self.setMenuBar(self.menu)
-
-        # self.toolbar = MainToolBar(self)
-        # self.addToolBar(self.toolbar)
-        # self.tobii_toolbar = TobiiToolBar()
-        # self.addToolBarBreak()
-        # self.addToolBar(self.tobii_toolbar)
 
         self.main_layout = QVBoxLayout()
         self.tabs = QTabWidget()

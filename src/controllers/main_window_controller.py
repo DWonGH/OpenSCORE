@@ -52,15 +52,15 @@ class MainWindowController:
         self.view.menu.bt_save_file.triggered.connect(self.hdl_save_report)
         self.view.menu.bt_save_as_file.triggered.connect(self.hdl_save_report_as)
         self.view.menu.bt_load_single_eeg.triggered.connect(self.hdl_load_edf)
-        self.view.menu.bt_eeg_sequence.triggered.connect(self.hdl_load_edf_multi)
+        # self.view.menu.bt_eeg_sequence.triggered.connect(self.hdl_load_edf_multi)
 
-        self.view.toolbar.btn_previous_recording.triggered.connect(self.hdl_previous_recording)
-        self.view.toolbar.btn_next_recording.triggered.connect(self.hdl_next_recording)
-        self.view.toolbar.btn_open_in_edfbrowser.triggered.connect(self.hdl_open_in_edfbrowser)
+        # self.view.toolbar.btn_previous_recording.triggered.connect(self.hdl_previous_recording)
+        # self.view.toolbar.btn_next_recording.triggered.connect(self.hdl_next_recording)
+        # self.view.toolbar.btn_open_in_edfbrowser.triggered.connect(self.hdl_open_in_edfbrowser)
 
-        self.view.tobii_toolbar.btn_start_analysis.triggered.connect(self.hdl_record_gaze)
-        self.view.tobii_toolbar.btn_stop_analysis.triggered.connect(self.hdl_stop_gaze)
-        self.view.tobii_toolbar.btn_eye_tracker_manager.triggered.connect(self.hdl_call_calibrator)
+        # self.view.tobii_toolbar.btn_start_analysis.triggered.connect(self.hdl_record_gaze)
+        # self.view.tobii_toolbar.btn_stop_analysis.triggered.connect(self.hdl_stop_gaze)
+        # self.view.tobii_toolbar.btn_eye_tracker_manager.triggered.connect(self.hdl_call_calibrator)
 
         # Connecting the widgets to the tab system
         self.patient_info_tab = QTabWidget()

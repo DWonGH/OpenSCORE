@@ -105,7 +105,7 @@ class MainWindowController:
             if answer == QMessageBox.Yes:
                 if self.edfbrowser_is_open():
                     dialog = QMessageBox()
-                    dialog.setWindowTitle("Previous recording")
+                    dialog.setWindowTitle("New Score Report")
                     dialog.setText("Please close the current EDFBrowser before clicking previous.")
                     dialog.setStandardButtons(QMessageBox.Ok)
                     dialog.setIcon(QMessageBox.Information)
@@ -115,6 +115,8 @@ class MainWindowController:
                     self.view.setWindowTitle(f"OpenSCORE - {self.model.report_file_name}")
                     self.view.toolbar.lbl_current_eeg_name.setText("")
                     self.update_view_from_model()
+                    self.view.tabs.setCurrentIndex(0)
+                    self.patient_info_tab.setCurrentIndex(0)
         except Exception as e:
             dialog = QMessageBox()
             dialog.setWindowTitle("New Score Report")
@@ -155,6 +157,9 @@ class MainWindowController:
                         self.model.reset()
                         self.model.open_report(file_path)
                         self.update_view_from_model()
+                        self.view.tabs.setCurrentIndex(0)
+                        self.findings_tab.setCurrentIndex(0)
+                        self.patient_info_tab.setCurrentIndex(0)
         except KeyError as e:
             dialog = QMessageBox()
             dialog.setWindowTitle("Open Score Report")
@@ -172,6 +177,14 @@ class MainWindowController:
             dialog.setIcon(QMessageBox.Warning)
             dialog.exec_()
         except Exception as e:
+            dialog = QMessageBox()
+            dialog.setWindowTitle("Open Score Report")
+            dialog.setText(
+                f"The file is not a valid OpenSCORE report. \n\nIt might be incorrectly formatted or is incompatible.\n\n {e}")
+            dialog.setDetailedText(traceback.format_exc())
+            dialog.setStandardButtons(QMessageBox.Ok)
+            dialog.setIcon(QMessageBox.Warning)
+            dialog.exec_()
             traceback.print_exc()
 
     def hdl_save_report(self):
@@ -253,6 +266,9 @@ class MainWindowController:
                         self.update_view_from_model()
                         self.model.open_edf(file_path)
                         self.update_view_from_model()
+                        self.view.tabs.setCurrentIndex(0)
+                        self.findings_tab.setCurrentIndex(0)
+                        self.patient_info_tab.setCurrentIndex(0)
         except Exception as e:
             dialog = QMessageBox()
             dialog.setWindowTitle("Open Report from EDF")

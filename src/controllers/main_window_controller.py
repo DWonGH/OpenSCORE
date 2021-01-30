@@ -47,6 +47,7 @@ class MainWindowController:
         self.view.menu.bt_save_file.triggered.connect(self.hdl_save_report)
         self.view.menu.bt_save_as_file.triggered.connect(self.hdl_save_report_as)
         self.view.menu.bt_load_single_eeg.triggered.connect(self.hdl_load_edf)
+        self.view.toolbar.btn_open_in_edfbrowser.triggered.connect(self.hdl_open_in_edfbrowser)
 
         # Connecting the widgets to the tab system
         self.patient_info_tab = QTabWidget()

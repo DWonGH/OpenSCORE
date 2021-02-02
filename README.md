@@ -1,5 +1,5 @@
 # OpenSCORE
-An EEG reporting tool according to the SCORE standard (work in progress).
+An EEG reporting tool according to the [SCORE standard](https://www.sciencedirect.com/science/article/pii/S1388245717309069) (work in progress).
 
 <br>
 <p align="center">

@@ -17,7 +17,7 @@ class DiagnosticSignificanceWidget(QWidget):
         self.diagnosis_options.addRow(QLabel("Diagnosis"))
 
         self.rbt_normal = QRadioButton("Normal recording")
-        self.rbt_normal.setChecked(False)
+        self.rbt_normal.setChecked(True)
         self.diagnosis_options.addRow(self.rbt_normal)
 
         self.rbt_no_definite = QRadioButton("No Definite Abnormality")
@@ -135,6 +135,8 @@ class DiagnosticSignificanceWidget(QWidget):
 
     def set_default(self):
         self.rbt_normal.setChecked(True)
+        self.rbt_no_definite.setChecked(False)
+        self.rbt_abnormal.setChecked(False)
         self.chbx_pnes.setChecked(False)
         self.chbx_other_nonepileptic.setChecked(False)
         self.chbx_focal_dysfunction.setChecked(False)

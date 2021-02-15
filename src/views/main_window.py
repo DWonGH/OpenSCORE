@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QStatusBar, QTabWidget
 
 from src.views.menu_bar import MainMenuBar
+from src.views.toolbar import MainToolBar
 
 
 class MainWindow(QMainWindow):
@@ -19,6 +20,9 @@ class MainWindow(QMainWindow):
 
         self.menu = MainMenuBar(self)
         self.setMenuBar(self.menu)
+
+        self.toolbar = MainToolBar()
+        self.addToolBar(self.toolbar)
 
         self.main_layout = QVBoxLayout()
         self.tabs = QTabWidget()

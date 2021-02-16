@@ -1,5 +1,6 @@
 import json
 import os
+import traceback
 from datetime import datetime
 
 from src.models.report import Report
@@ -94,7 +95,8 @@ class MainWindowModel:
         """
         try:
             self.set_edf(file_path)
-
+            if not os.path.exists(self.edf_file_path):
+                return False
             # When we open an EDF file, look for a corresponding text report which we can
             # use as a base to convert to score standard
             files = next(os.walk(self.edf_directory))[2]
@@ -102,7 +104,9 @@ class MainWindowModel:
             if files.count(target_text_file_name) == 1:
                 self.set_text_report(os.path.join(self.edf_directory, target_text_file_name))
                 self.report_from_text_description()
+            return True
         except Exception as e:
+            traceback.print_exc()
             print(f"Exception {e}")
 
     def report_from_text_description(self):
@@ -132,13 +136,16 @@ class MainWindowModel:
                 if '.edf' not in line:
                     self.input_paths.remove(line)
             self.setup_mirror()
-            self.open_edf(self.input_paths[0])
-            self.report_directory = self.output_paths[self.output_idx]
-            self.report_file_name = f"{self.edf_file_name.split('.')[0]}.score"
-            self.report_file_path = os.path.join(self.report_directory, self.report_file_name)
-            if os.path.exists(self.report_file_path):
-                self.open_report(self.report_file_path)
-            self.save_report()
+            if self.open_edf(self.input_paths[0]):
+                self.report_directory = self.output_paths[self.output_idx]
+                self.report_file_name = f"{self.edf_file_name.split('.')[0]}.score"
+                self.report_file_path = os.path.join(self.report_directory, self.report_file_name)
+                if os.path.exists(self.report_file_path):
+                    self.open_report(self.report_file_path)
+                self.save_report()
+                return True
+            else:
+                return False
 
         except Exception as e:
             print(f"Exception {e}")

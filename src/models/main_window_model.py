@@ -104,6 +104,11 @@ class MainWindowModel:
             if files.count(target_text_file_name) == 1:
                 self.set_text_report(os.path.join(self.edf_directory, target_text_file_name))
                 self.report_from_text_description()
+            else:
+                self.eeg_description_directory = None
+                self.eeg_description_file_path = None
+                self.eeg_description_file_name = None
+                self.report.patient_details.history = "Could not find patient info."
             return True
         except Exception as e:
             traceback.print_exc()
@@ -137,7 +142,7 @@ class MainWindowModel:
                     self.input_paths.remove(line)
             self.setup_mirror()
             for i in range(len(self.input_paths)):
-                if not self.open_edf(self.input_paths[i]):
+                if not os.path.exists(self.input_paths[i]):
                     return False
             if self.open_edf(self.input_paths[0]):
                 self.report_directory = self.output_paths[self.output_idx]

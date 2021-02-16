@@ -136,6 +136,9 @@ class MainWindowModel:
                 if '.edf' not in line:
                     self.input_paths.remove(line)
             self.setup_mirror()
+            for i in range(len(self.input_paths)):
+                if not self.open_edf(self.input_paths[i]):
+                    return False
             if self.open_edf(self.input_paths[0]):
                 self.report_directory = self.output_paths[self.output_idx]
                 self.report_file_name = f"{self.edf_file_name.split('.')[0]}.score"

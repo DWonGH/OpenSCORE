@@ -307,7 +307,16 @@ class MainWindowController:
                     dialog = StartSessionDialog()
                     if dialog.exec_():
                         self.model.reset()
-                        self.model.open_multi_edf(dialog.lne_specified_paths.text(), dialog.lne_root_output_directory.text(), dialog.lne_interpreter_name.text())
+                        if not self.model.open_multi_edf(dialog.lne_specified_paths.text(), dialog.lne_root_output_directory.text(), dialog.lne_interpreter_name.text()):
+                            dialog = QMessageBox()
+                            dialog.setWindowTitle("Open EEG Sequence")
+                            dialog.setText(
+                                f"OpenSCORE failed opening the specified EDF's. Check the paths were correct in the text file and restart.\n\n")
+                            dialog.setDetailedText(traceback.format_exc())
+                            dialog.setStandardButtons(QMessageBox.Ok)
+                            dialog.setIcon(QMessageBox.Warning)
+                            dialog.exec_()
+                            traceback.print_exc()
                         self.update_view_from_model()
         except Exception as e:
             dialog = QMessageBox()

@@ -20,7 +20,7 @@ class TestRecordingConditionsView(unittest.TestCase):
         self.assertIsNotNone(self.recording_conditions.lne_physician)
         self.assertIsNotNone(self.recording_conditions.cmb_sensor_group)
         self.assertIsNotNone(self.recording_conditions.cmb_recording_type)
-        self.assertIsNotNone(self.recording_conditions.cmb_alertness)
+        self.assertIsNotNone(self.recording_conditions.lst_alertness)
         self.assertIsNotNone(self.recording_conditions.cmb_cooperation)
         self.assertIsNotNone(self.recording_conditions.lne_latest_meal)
         self.assertIsNotNone(self.recording_conditions.cmb_skull_defect)
@@ -36,7 +36,7 @@ class TestRecordingConditionsView(unittest.TestCase):
             "Physician name": '',
             "Sensor group": '',
             "Recording type": '',
-            "Alertness": '',
+            "Alertness": [],
             "Cooperation": '',
             "Patient age": '',
             "Latest meal": '',
@@ -58,7 +58,7 @@ class TestRecordingConditionsView(unittest.TestCase):
             "Physician name": '1',
             "Sensor group": self.recording_conditions.txt_sensor_group[1],
             "Recording type": self.recording_conditions.txt_recording_type[1],
-            "Alertness": self.recording_conditions.txt_alertness[1],
+            "Alertness": [self.recording_conditions.txt_alertness[1]],
             "Cooperation": self.recording_conditions.txt_cooperation[1],
             "Patient age": '1',
             "Latest meal": '1',
@@ -78,7 +78,7 @@ class TestRecordingConditionsView(unittest.TestCase):
         self.recording_conditions.lne_physician.setText("1")
         self.recording_conditions.cmb_sensor_group.setCurrentIndex(1)
         self.recording_conditions.cmb_recording_type.setCurrentIndex(1)
-        self.recording_conditions.cmb_alertness.setCurrentIndex(1)
+        self.recording_conditions.lst_alertness.item(1).setSelected(True)
         self.recording_conditions.cmb_cooperation.setCurrentIndex(1)
         self.recording_conditions.lne_age.setText("1")
         self.recording_conditions.lne_latest_meal.setText("1")

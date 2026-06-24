@@ -10,9 +10,9 @@ EDFBrowser fork, or schema-constrained LLM extraction).
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional
+from typing import Optional, get_origin
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class ScoreModel(BaseModel):
@@ -25,6 +25,25 @@ class ScoreModel(BaseModel):
     """
 
     model_config = ConfigDict(populate_by_name=True, extra="ignore", use_enum_values=False)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _none_to_empty_list(cls, data):
+        """Coerce ``None`` to ``[]`` for plain list fields.
+
+        Legacy OpenSCORE models default unset multi-value fields (indications, alertness)
+        to ``None``; the schema represents them as lists, so accept ``None`` as "empty".
+        """
+        if not isinstance(data, dict):
+            return data
+        out = dict(data)
+        for fname, field in cls.model_fields.items():
+            if get_origin(field.annotation) is not list:
+                continue
+            key = field.alias if (field.alias and field.alias in out) else fname
+            if key in out and out[key] is None:
+                out[key] = []
+        return out
 
 
 class Ternary(str, Enum):

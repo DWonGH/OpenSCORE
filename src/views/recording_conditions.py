@@ -1,9 +1,11 @@
 import os
 
 from PyQt5.QtWidgets import QWidget, QFormLayout, QLabel, QLineEdit, QSpinBox, \
-    QComboBox, QTextEdit, QDoubleSpinBox, QHBoxLayout, QPushButton, QFileDialog
+    QComboBox, QTextEdit, QDoubleSpinBox, QHBoxLayout, QPushButton, QFileDialog, \
+    QListWidget, QAbstractItemView
 
 from src.views.custom_widgets import IntegerLineEdit, FloatLineEdit
+from score_schema import ALERTNESS_CHOICES
 
 
 class RecordingConditionsWidget(QWidget):
@@ -65,11 +67,14 @@ class RecordingConditionsWidget(QWidget):
         self.cmb_recording_type.addItems(self.txt_recording_type)
         self.layout.addRow(self.lbl_recording_type, self.cmb_recording_type)
 
-        self.txt_alertness = ["", "Awake", "Drowsy", "Asleep", "Comatose"]
+        # Issue #17: alertness can vary across a recording -> multiple selection.
+        self.txt_alertness = list(ALERTNESS_CHOICES)
         self.lbl_alertness = QLabel("Alertness")
-        self.cmb_alertness = QComboBox()
-        self.cmb_alertness.addItems(self.txt_alertness)
-        self.layout.addRow(self.lbl_alertness, self.cmb_alertness)
+        self.lst_alertness = QListWidget()
+        self.lst_alertness.addItems(self.txt_alertness)
+        self.lst_alertness.setSelectionMode(QAbstractItemView.MultiSelection)
+        self.lst_alertness.setMaximumHeight(120)
+        self.layout.addRow(self.lbl_alertness, self.lst_alertness)
 
         self.txt_cooperation = ["", "Good cooperation", "Bad cooperation", "Unresponsive", "Comatose"]
         self.lbl_cooperation = QLabel("Cooperation")
@@ -114,6 +119,24 @@ class RecordingConditionsWidget(QWidget):
 
         self.setLayout(self.layout)
 
+    def selected_alertness(self):
+        """Return the list of ticked alertness states, in display order (issue #17)."""
+        return [self.lst_alertness.item(i).text()
+                for i in range(self.lst_alertness.count())
+                if self.lst_alertness.item(i).isSelected()]
+
+    def set_alertness(self, values):
+        """Select the alertness items present in ``values`` (tolerates None / legacy str)."""
+        self.lst_alertness.clearSelection()
+        if values is None:
+            return
+        if isinstance(values, str):  # legacy single-value files
+            values = [values] if values else []
+        for i in range(self.lst_alertness.count()):
+            item = self.lst_alertness.item(i)
+            if item.text() in values:
+                item.setSelected(True)
+
     def to_dict(self):
         data = {
             "Study ID": self.lne_study_id.text(),
@@ -123,7 +146,7 @@ class RecordingConditionsWidget(QWidget):
             "Physician name": self.lne_physician.text(),
             "Sensor group": self.cmb_sensor_group.currentText(),
             "Recording type": self.cmb_recording_type.currentText(),
-            "Alertness": self.cmb_alertness.currentText(),
+            "Alertness": self.selected_alertness(),
             "Cooperation": self.cmb_cooperation.currentText(),
             "Patient age": self.lne_age.text(),
             "Latest meal": self.lne_latest_meal.text(),
@@ -148,10 +171,7 @@ class RecordingConditionsWidget(QWidget):
             self.cmb_recording_type.setCurrentIndex(0)
         else:
             self.cmb_recording_type.setCurrentIndex(self.txt_recording_type.index(data["Recording type"]))
-        if data['Alertness'] is None:
-            self.cmb_alertness.setCurrentIndex(0)
-        else:
-            self.cmb_alertness.setCurrentIndex(self.txt_alertness.index(data["Alertness"]))
+        self.set_alertness(data.get("Alertness"))
         if data['Cooperation'] is None:
             self.cmb_cooperation.setCurrentIndex(0)
         else:

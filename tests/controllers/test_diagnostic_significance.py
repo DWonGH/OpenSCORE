@@ -29,7 +29,7 @@ class TestClinicalDiagnosticSignificanceController(unittest.TestCase):
         self.assertEqual(self.model.diagnosis, "Normal")
         self.view.rbt_abnormal.setChecked(True)
         self.controller.update_model()
-        self.assertEqual(self.model.diagnosis, "Abnormal recording")
+        self.assertEqual(self.model.diagnosis, "Abnormal")
         self.assertEqual(self.model.abnormal_specification, [])
         self.view.chbx_pnes.setChecked(True)
         self.view.chbx_other_nonepileptic.setChecked(True)
@@ -39,7 +39,7 @@ class TestClinicalDiagnosticSignificanceController(unittest.TestCase):
         self.view.chbx_brain_death.setChecked(True)
         self.view.chbx_uncertain.setChecked(True)
         self.controller.update_model()
-        self.assertEqual(self.model.diagnosis, "Abnormal recording")
+        self.assertEqual(self.model.diagnosis, "Abnormal")
         self.assertEqual(self.model.abnormal_specification, [
                 "Psychogenic non-epileptic seizures (PNES)",
                 "Other non-epileptic clinical episode",
@@ -68,7 +68,7 @@ class TestClinicalDiagnosticSignificanceController(unittest.TestCase):
         self.assertFalse(self.view.chbx_brain_death.isEnabled())
         self.assertFalse(self.view.chbx_uncertain.isChecked())
         self.assertFalse(self.view.chbx_uncertain.isEnabled())
-        self.model.diagnosis = "Abnormal recording"
+        self.model.diagnosis = "Abnormal"
         self.model.abnormal_specification = [
                 "Psychogenic non-epileptic seizures (PNES)",
                 "Other non-epileptic clinical episode",

@@ -47,9 +47,9 @@ def test_empty_report_round_trips():
 def test_tristate_default_is_not_assessed():
     """Issue #23: an unconsidered tristate is explicitly NOT_ASSESSED, never false/null."""
     report = EegReport()
-    assert report.recording_conditions.skull_defect == Ternary.NOT_ASSESSED
     assert report.modulators.hyperventilation == Ternary.NOT_ASSESSED
-    assert report.to_score_dict()["Recording conditions"]["Skull defect"] == "not_assessed"
+    assert report.modulators.photic_stimulation == Ternary.NOT_ASSESSED
+    assert report.to_score_dict()["Modulators and procedures"]["Hyperventilation"] == "not_assessed"
 
 
 def test_diagnosis_not_defaulted_to_normal():

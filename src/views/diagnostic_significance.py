@@ -16,8 +16,10 @@ class DiagnosticSignificanceWidget(QWidget):
         self.diagnosis_options = QFormLayout()
         self.diagnosis_options.addRow(QLabel("Diagnosis"))
 
+        # Issue #24: do NOT pre-select a diagnosis. Leaving all options unchecked means
+        # "not assessed" (serialised as None), so a diagnosis is only recorded when the
+        # reporter deliberately chooses one.
         self.rbt_normal = QRadioButton("Normal recording")
-        self.rbt_normal.setChecked(True)
         self.diagnosis_options.addRow(self.rbt_normal)
 
         self.rbt_no_definite = QRadioButton("No Definite Abnormality")
@@ -81,7 +83,7 @@ class DiagnosticSignificanceWidget(QWidget):
         elif self.rbt_no_definite.isChecked():
             diagnosis = "No definite abnormality"
         elif self.rbt_abnormal.isChecked():
-            diagnosis = "Abnormal recording"
+            diagnosis = "Abnormal"
             diagnosis_specification = []
             if self.chbx_pnes.isChecked():
                 diagnosis_specification.append(self.chbx_pnes.text())
@@ -97,8 +99,7 @@ class DiagnosticSignificanceWidget(QWidget):
                 diagnosis_specification.append(self.chbx_brain_death.text())
             if self.chbx_uncertain.isChecked():
                 diagnosis_specification.append(self.chbx_uncertain.text())
-        else:
-            print("Error getting the diagnosis")
+        # else: nothing selected -> diagnosis stays None ("not assessed", issue #24).
         data = {
             "Diagnosis": diagnosis,
             "Abnormal specification": diagnosis_specification
@@ -106,13 +107,15 @@ class DiagnosticSignificanceWidget(QWidget):
         return data
 
     def update_from_dict(self, data):
-        if data["Diagnosis"] is None:
-            self.set_default()
-        elif data["Diagnosis"] == "Normal":
+        self.set_default()
+        diagnosis = data.get("Diagnosis")
+        if diagnosis is None:
+            return
+        elif diagnosis == "Normal":
             self.rbt_normal.setChecked(True)
-        elif data["Diagnosis"] == "No Definite Abnormality":
+        elif diagnosis == "No definite abnormality":
             self.rbt_no_definite.setChecked(True)
-        elif data["Diagnosis"] == "Abnormal recording":
+        elif diagnosis in ("Abnormal", "Abnormal recording"):
             self.rbt_abnormal.setChecked(True)
             # self.abnormal_toggled()
             if data["Abnormal specification"]:
@@ -134,9 +137,12 @@ class DiagnosticSignificanceWidget(QWidget):
                         self.chbx_uncertain.setChecked(True)
 
     def set_default(self):
-        self.rbt_normal.setChecked(True)
-        self.rbt_no_definite.setChecked(False)
-        self.rbt_abnormal.setChecked(False)
+        # Clear all radios -> "not assessed" (issue #24). Toggle autoExclusive so a checked
+        # radio can be programmatically unchecked back to the none-selected state.
+        for rbt in (self.rbt_normal, self.rbt_no_definite, self.rbt_abnormal):
+            rbt.setAutoExclusive(False)
+            rbt.setChecked(False)
+            rbt.setAutoExclusive(True)
         self.chbx_pnes.setChecked(False)
         self.chbx_other_nonepileptic.setChecked(False)
         self.chbx_focal_dysfunction.setChecked(False)

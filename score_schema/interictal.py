@@ -3,6 +3,10 @@
 The single biggest gap in legacy OpenSCORE. Models epileptiform and abnormal rhythmic
 interictal graphoelements with their localization and time-related features (Tables 5/6),
 plus special/periodic patterns.
+
+Enum *values* are the node names of the HED-SCORE library schema (``score_2.1.0``,
+Modulator/Interictal-activity/Feature-property branches), so a finding's value is also its
+HED short tag. See ``score_schema.hed``.
 """
 
 from __future__ import annotations
@@ -17,75 +21,79 @@ from .background import Significance
 
 
 class Morphology(str, Enum):
-    """SCORE Table 5 — names/morphology of interictal findings."""
+    """SCORE Table 5 — names/morphology of interictal findings (HED-SCORE node names)."""
 
-    # Epileptiform interictal activity
+    # Epileptiform interictal activity (HED Feature-property/Signal-morphology-property)
     SPIKE = "Spike"
     SPIKE_AND_SLOW_WAVE = "Spike-and-slow-wave"
-    RUNS_OF_RAPID_SPIKES = "Runs of rapid spikes"
+    RUNS_OF_RAPID_SPIKES = "Runs-of-rapid-spikes"
     POLYSPIKES = "Polyspikes"
     POLYSPIKE_AND_SLOW_WAVE = "Polyspike-and-slow-wave"
     SHARP_WAVE = "Sharp-wave"
     SHARP_AND_SLOW_WAVE = "Sharp-and-slow-wave"
-    SLOW_SHARP_WAVE = "Slow sharp-wave"
-    HFO = "High frequency oscillation (HFO)"
-    HYPSARRHYTHMIA = "Hypsarrhythmia - classic"
-    HYPSARRHYTHMIA_MODIFIED = "Hypsarrhythmia - modified"
-    # Abnormal interictal rhythmic activity
-    DELTA = "Delta activity"
-    THETA = "Theta activity"
-    ALPHA = "Alpha activity"
-    BETA = "Beta activity"
-    GAMMA = "Gamma activity"
-    POLYMORPHIC_DELTA = "Polymorphic delta"
-    FIRDA = "Frontal intermittent rhythmic delta activity (FIRDA)"
-    OIRDA = "Occipital intermittent rhythmic delta activity (OIRDA)"
-    TIRDA = "Temporal intermittent rhythmic delta activity (TIRDA)"
+    SLOW_SHARP_WAVE = "Slow-sharp-wave"
+    HFO = "High-frequency-oscillation"
+    HYPSARRHYTHMIA = "Hypsarrhythmia-classic"
+    HYPSARRHYTHMIA_MODIFIED = "Hypsarrhythmia-modified"
+    POLYSHARP_WAVES = "Polysharp-waves"
+    # Abnormal interictal rhythmic activity (HED Signal-morphology-property/Rhythmic-property)
+    DELTA = "Delta-activity"
+    THETA = "Theta-activity"
+    ALPHA = "Alpha-activity"
+    BETA = "Beta-activity"
+    GAMMA = "Gamma-activity"
+    POLYMORPHIC_DELTA = "Polymorphic-delta-activity"
+    FIRDA = "Frontal-intermittent-rhythmic-delta-activity"
+    OIRDA = "Occipital-intermittent-rhythmic-delta-activity"
+    TIRDA = "Temporal-intermittent-rhythmic-delta-activity"
 
 
 class ModeOfAppearance(str, Enum):
+    """SCORE Table 6 — mode of appearance (HED Time-related-property/Appearance-mode)."""
+
     RANDOM = "Random"
     PERIODIC = "Periodic"
     VARIABLE = "Variable"
 
 
 class DischargePattern(str, Enum):
-    SINGLE = "Single discharges"
-    RHYTHMIC_TRAINS = "Rhythmic trains or bursts"
-    ARRHYTHMIC_TRAINS = "Arrhythmic trains or bursts"
-    FRAGMENTED = "Fragmented"
+    """HED Time-related-property/Discharge-pattern."""
+
+    SINGLE = "Single-discharge"
+    RHYTHMIC_TRAINS = "Rhythmic-trains-or-bursts"
+    ARRHYTHMIC_TRAINS = "Arrhythmic-trains-or-bursts"
+    FRAGMENTED = "Fragmented-discharge"
 
 
 class Incidence(str, Enum):
-    """SCORE Table 6 — incidence for single discharges."""
+    """SCORE Table 6 incidence for single discharges (HED Feature-incidence)."""
 
-    ONLY_ONCE = "Only once"
-    RARE = "Rare (less than 1/h)"
-    UNCOMMON = "Uncommon (1/5 min to 1/h)"
-    OCCASIONAL = "Occasional (1/min to 1/5min)"
-    FREQUENT = "Frequent (1/10 s to 1/min)"
-    ABUNDANT = "Abundant (>1/10 s)"
+    ONLY_ONCE = "One-time-incidence"
+    RARE = "Rare-feature-incidence"
+    UNCOMMON = "Uncommon-feature-incidence"
+    OCCASIONAL = "Occasional-feature-incidence"
+    FREQUENT = "Frequent-feature-incidence"
+    ABUNDANT = "Abundant-feature-incidence"
 
 
 class Prevalence(str, Enum):
-    """SCORE Table 6 — prevalence for trains/bursts."""
+    """SCORE Table 6 prevalence for trains/bursts (HED Feature-prevalence)."""
 
-    RARE = "Rare (<1%)"
-    OCCASIONAL = "Occasional (1-9%)"
-    FREQUENT = "Frequent (10-49%)"
-    ABUNDANT = "Abundant (50-89%)"
-    CONTINUOUS = "Continuous (>90%)"
+    RARE = "Rare-prevalence"
+    OCCASIONAL = "Occasional-prevalence"
+    FREQUENT = "Frequent-prevalence"
+    ABUNDANT = "Abundant-prevalence"
+    CONTINUOUS = "Continuous-prevalence"
 
 
+# HED Interictal-activity/Interictal-special-patterns (periodic discharges live here;
+# burst-suppression/attenuation are HED Background-activity features, not interictal).
 SPECIAL_PATTERNS = (
-    "Periodic discharges not further specified (PDs)",
-    "Generalized periodic discharges (GPDs)",
-    "Lateralized periodic discharges (LPDs)",
-    "Bilateral independent periodic discharges (BIPDs)",
-    "Multifocal periodic discharges (MPDs)",
-    "Extreme delta brush",
-    "Burst suppression",
-    "Burst attenuation",
+    "Generalized-periodic-discharges",
+    "Lateralized-periodic-discharges",
+    "Bilateral-independent-periodic-discharges",
+    "Multifocal-periodic-discharges",
+    "Extreme-delta-brush",
 )
 
 
@@ -106,6 +114,8 @@ class InterictalGraphoelement(ScoreModel):
     location: Location = Field(default_factory=Location, alias="Location")
     time_features: TimeRelatedFeatures = Field(default_factory=TimeRelatedFeatures, alias="Time-related features")
     modulator_effect: Optional[str] = Field(default=None, alias="Modulator effect")
+    # Optional explicit HED-SCORE tag string(s) for BIDS/HED export of this finding.
+    hed_tags: list[str] = Field(default_factory=list, alias="HED tags")
 
 
 class InterictalFindings(ScoreModel):

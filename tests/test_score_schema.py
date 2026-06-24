@@ -9,9 +9,12 @@ from pydantic import ValidationError
 from score_schema import (
     Diagnosis,
     EegReport,
+    EpisodeType,
+    Incidence,
     InterictalGraphoelement,
     Morphology,
     Ternary,
+    hed_tag,
     validate,
 )
 from score_schema.export_schema import build_schema
@@ -99,6 +102,21 @@ def test_synthetic_fixture_validates():
     assert len(ge) == 1
     assert ge[0].morphology == Morphology.SHARP_WAVE
     assert ge[0].location.regions[0].value == "temporal"
+
+
+def test_findings_vocab_is_hed_score_aligned():
+    """Findings enum values are HED-SCORE node names (so a value is also a HED short tag)."""
+    assert Morphology.HFO.value == "High-frequency-oscillation"
+    assert Morphology.FIRDA.value == "Frontal-intermittent-rhythmic-delta-activity"
+    assert Incidence.OCCASIONAL.value == "Occasional-feature-incidence"
+    assert EpisodeType.PNES.value == "Seizure-PNES"
+
+
+def test_hed_tag_helper_and_field():
+    assert hed_tag(Morphology.SHARP_WAVE) == "sc:Sharp-wave"
+    g = InterictalGraphoelement(morphology=Morphology.SHARP_WAVE, hed_tags=["sc:Sharp-wave"])
+    dumped = g.model_dump(mode="json", by_alias=True)
+    assert dumped["HED tags"] == ["sc:Sharp-wave"]
 
 
 def test_save_load_file_round_trip(tmp_path):

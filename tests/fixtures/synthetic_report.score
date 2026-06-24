@@ -89,11 +89,12 @@
                 },
                 "Time-related features": {
                     "Mode of appearance": "Periodic",
-                    "Discharge pattern": "Single discharges",
-                    "Incidence": "Occasional (1/min to 1/5min)",
+                    "Discharge pattern": "Single-discharge",
+                    "Incidence": "Occasional-feature-incidence",
                     "Prevalence": null
                 },
-                "Modulator effect": null
+                "Modulator effect": null,
+                "HED tags": ["sc:Sharp-wave"]
             }
         ],
         "Special patterns": []

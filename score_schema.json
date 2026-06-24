@@ -155,11 +155,12 @@
       "type": "object"
     },
     "DischargePattern": {
+      "description": "HED Time-related-property/Discharge-pattern.",
       "enum": [
-        "Single discharges",
-        "Rhythmic trains or bursts",
-        "Arrhythmic trains or bursts",
-        "Fragmented"
+        "Single-discharge",
+        "Rhythmic-trains-or-bursts",
+        "Arrhythmic-trains-or-bursts",
+        "Fragmented-discharge"
       ],
       "title": "DischargePattern",
       "type": "string"
@@ -248,22 +249,30 @@
           ],
           "default": null,
           "title": "Timing And Context"
+        },
+        "HED tags": {
+          "description": "Optional HED-SCORE tag string(s) for this episode.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Hed Tags",
+          "type": "array"
         }
       },
       "title": "Episode",
       "type": "object"
     },
     "EpisodeType": {
-      "description": "SCORE Table 9 \u2014 names of episodes.",
+      "description": "SCORE Table 9 \u2014 names of episodes (HED-SCORE Episode-branch node names).",
       "enum": [
-        "Epileptic seizure",
-        "Psychogenic non-epileptic seizure (PNES)",
-        "Electroencephalographic seizure",
-        "Sleep-related episode",
-        "Pediatric episode",
-        "Paroxysmal motor event",
+        "Epileptic-seizure",
+        "Seizure-PNES",
+        "Electroencephalographic-seizure",
+        "Sleep-related-episode",
+        "Pediatric-episode",
+        "Paroxysmal-motor-event",
         "Syncope",
-        "Other"
+        "Other-episode"
       ],
       "title": "EpisodeType",
       "type": "string"
@@ -324,14 +333,14 @@
       "type": "string"
     },
     "Incidence": {
-      "description": "SCORE Table 6 \u2014 incidence for single discharges.",
+      "description": "SCORE Table 6 incidence for single discharges (HED Feature-incidence).",
       "enum": [
-        "Only once",
-        "Rare (less than 1/h)",
-        "Uncommon (1/5 min to 1/h)",
-        "Occasional (1/min to 1/5min)",
-        "Frequent (1/10 s to 1/min)",
-        "Abundant (>1/10 s)"
+        "One-time-incidence",
+        "Rare-feature-incidence",
+        "Uncommon-feature-incidence",
+        "Occasional-feature-incidence",
+        "Frequent-feature-incidence",
+        "Abundant-feature-incidence"
       ],
       "title": "Incidence",
       "type": "string"
@@ -399,6 +408,13 @@
           ],
           "default": null,
           "title": "Modulator Effect"
+        },
+        "HED tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Hed Tags",
+          "type": "array"
         }
       },
       "title": "InterictalGraphoelement",
@@ -459,6 +475,7 @@
       "type": "object"
     },
     "ModeOfAppearance": {
+      "description": "SCORE Table 6 \u2014 mode of appearance (HED Time-related-property/Appearance-mode).",
       "enum": [
         "Random",
         "Periodic",
@@ -570,28 +587,29 @@
       "type": "object"
     },
     "Morphology": {
-      "description": "SCORE Table 5 \u2014 names/morphology of interictal findings.",
+      "description": "SCORE Table 5 \u2014 names/morphology of interictal findings (HED-SCORE node names).",
       "enum": [
         "Spike",
         "Spike-and-slow-wave",
-        "Runs of rapid spikes",
+        "Runs-of-rapid-spikes",
         "Polyspikes",
         "Polyspike-and-slow-wave",
         "Sharp-wave",
         "Sharp-and-slow-wave",
-        "Slow sharp-wave",
-        "High frequency oscillation (HFO)",
-        "Hypsarrhythmia - classic",
-        "Hypsarrhythmia - modified",
-        "Delta activity",
-        "Theta activity",
-        "Alpha activity",
-        "Beta activity",
-        "Gamma activity",
-        "Polymorphic delta",
-        "Frontal intermittent rhythmic delta activity (FIRDA)",
-        "Occipital intermittent rhythmic delta activity (OIRDA)",
-        "Temporal intermittent rhythmic delta activity (TIRDA)"
+        "Slow-sharp-wave",
+        "High-frequency-oscillation",
+        "Hypsarrhythmia-classic",
+        "Hypsarrhythmia-modified",
+        "Polysharp-waves",
+        "Delta-activity",
+        "Theta-activity",
+        "Alpha-activity",
+        "Beta-activity",
+        "Gamma-activity",
+        "Polymorphic-delta-activity",
+        "Frontal-intermittent-rhythmic-delta-activity",
+        "Occipital-intermittent-rhythmic-delta-activity",
+        "Temporal-intermittent-rhythmic-delta-activity"
       ],
       "title": "Morphology",
       "type": "string"
@@ -964,13 +982,13 @@
       "type": "object"
     },
     "Prevalence": {
-      "description": "SCORE Table 6 \u2014 prevalence for trains/bursts.",
+      "description": "SCORE Table 6 prevalence for trains/bursts (HED Feature-prevalence).",
       "enum": [
-        "Rare (<1%)",
-        "Occasional (1-9%)",
-        "Frequent (10-49%)",
-        "Abundant (50-89%)",
-        "Continuous (>90%)"
+        "Rare-prevalence",
+        "Occasional-prevalence",
+        "Frequent-prevalence",
+        "Abundant-prevalence",
+        "Continuous-prevalence"
       ],
       "title": "Prevalence",
       "type": "string"
@@ -1362,6 +1380,14 @@
         },
         "Location": {
           "$ref": "#/$defs/Location"
+        },
+        "HED tags": {
+          "description": "Optional HED-SCORE tag string(s) for this phase.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Hed Tags",
+          "type": "array"
         }
       },
       "title": "SemiologyPhase",

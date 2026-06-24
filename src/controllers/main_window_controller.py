@@ -9,6 +9,8 @@ from PyQt5.QtWidgets import QFileDialog, QMessageBox, QTabWidget
 from src.controllers.background_activity_controller import BackgroundActivityController
 from src.controllers.clinical_comments_controller import ClinicalCommentsController
 from src.controllers.diagnostic_significance_controller import DiagnosticSignificanceController
+from src.controllers.episodes_controller import EpisodesController
+from src.controllers.interictal_controller import InterictalController
 from src.controllers.modulators_controller import ModulatorsController
 from src.controllers.patient_details_controller import PatientDetailsController
 from src.controllers.patient_referral_controller import PatientReferralController
@@ -32,6 +34,8 @@ class MainWindowController:
         self.modulators_controller = ModulatorsController()
         self.background_activity_controller = BackgroundActivityController()
         self.sleep_controller = SleepController()
+        self.interictal_controller = InterictalController()
+        self.episodes_controller = EpisodesController()
         self.diagnostic_significance_controller = DiagnosticSignificanceController()
         self.clinical_comments_controller = ClinicalCommentsController()
 
@@ -43,6 +47,8 @@ class MainWindowController:
         self.model.report.modulators = self.modulators_controller.model
         self.model.report.background_activity = self.background_activity_controller.model
         self.model.report.sleep = self.sleep_controller.model
+        self.model.report.interictal = self.interictal_controller.model
+        self.model.report.episodes = self.episodes_controller.model
         self.model.report.diagnostic_significance = self.diagnostic_significance_controller.model
         self.model.report.clinical_comments = self.clinical_comments_controller.model
 
@@ -65,6 +71,8 @@ class MainWindowController:
         self.findings_tab = QTabWidget()
         self.findings_tab.addTab(self.background_activity_controller.view, "Background Activity")
         self.findings_tab.addTab(self.sleep_controller.view, "Sleep & Drowsiness")
+        self.findings_tab.addTab(self.interictal_controller.view, "Interictal")
+        self.findings_tab.addTab(self.episodes_controller.view, "Episodes")
         self.view.tabs.addTab(self.findings_tab, "Findings")
         self.view.tabs.addTab(self.diagnostic_significance_controller.view, "Diagnostic Significance")
         self.view.tabs.addTab(self.clinical_comments_controller.view, "Clinical Comments")
@@ -346,6 +354,8 @@ class MainWindowController:
         self.modulators_controller.update_model()
         self.background_activity_controller.update_model()
         self.sleep_controller.update_model()
+        self.interictal_controller.update_model()
+        self.episodes_controller.update_model()
         self.diagnostic_significance_controller.update_model()
         self.clinical_comments_controller.update_model()
 
@@ -359,6 +369,8 @@ class MainWindowController:
         self.modulators_controller.update_view()
         self.background_activity_controller.update_view()
         self.sleep_controller.update_view()
+        self.interictal_controller.update_view()
+        self.episodes_controller.update_view()
         self.diagnostic_significance_controller.update_view()
         self.clinical_comments_controller.update_view()
 

@@ -1,0 +1,116 @@
+{
+    "Schema version": "0.1.0",
+    "Patient details": {
+        "Patient name": "SYNTHETIC, Test",
+        "Patient ID": "SYN-0001",
+        "Patient DOB": "1950-01-01",
+        "Patient gender": "female",
+        "Patient handedness": "right",
+        "Patient address": null,
+        "Patient medication": "levetiracetam",
+        "Patient history": "Synthetic, non-real record for automated tests only."
+    },
+    "Patient referral": {
+        "Referrer name": "Dr Example",
+        "Referrer details": null,
+        "Diagnosis at referral": "Query epilepsy",
+        "Seizure frequency": "2 per month",
+        "Time since last seizure": "2 days",
+        "Epilepsy-related indications": ["clinical suspicion of epilepsy or seizure"],
+        "Other differential diagnostic questions": [],
+        "Specific paediatric indication": [],
+        "Other indications": null
+    },
+    "Recording conditions": {
+        "Study ID": "SYN-STUDY-1",
+        "Date & Time": "2026-01-02T10:00:00",
+        "Recording duration": "30 min",
+        "Technologist name": null,
+        "Physician name": null,
+        "Sensor group": "10-20",
+        "Recording type": "standard EEG",
+        "Alertness": ["awake", "drowsy"],
+        "Cooperation": "good cooperation",
+        "Patient age": "76",
+        "Latest meal": null,
+        "Skull defect": "absent",
+        "Brain surgery": null,
+        "Additional technical description": null,
+        "EDF location": null
+    },
+    "Modulators and procedures": {
+        "Intermittent photic stimulation": "present",
+        "Photic stimulation effect": "Unmodified",
+        "Hyperventilation": "present",
+        "Hyperventilation quality": "good effort",
+        "Hyperventilation effect": null,
+        "Sleep deprivation": "absent",
+        "Natural sleep": "present",
+        "Induced sleep": "absent",
+        "Awakening": "not_assessed",
+        "Medication administered during recording": null,
+        "Medication withdrawal or reduction during recording": null,
+        "Other modulators and procedures": null
+    },
+    "Background activity": {
+        "Posterior dominant rhythm": {
+            "Significance": "Abnormal",
+            "Frequency": 7.0,
+            "Frequency asymmetry": "Symmetrical",
+            "Hz lower left": null,
+            "Hz lower right": null,
+            "Amplitude": "Medium (20-70 uV)",
+            "Amplitude asymmetry": "Symmetrical",
+            "Reactivity to eye opening": "Yes",
+            "Organisation": "Disorganized",
+            "Caveat": "No",
+            "Absence of PDR": null
+        },
+        "Other organised rhythms": [],
+        "Critically ill background activity": null
+    },
+    "Sleep and drowsiness": {
+        "Normal sleep graphoelements": ["sleep spindles", "vertex waves"],
+        "Achieved sleep stages": ["N1", "N2"],
+        "Abnormal asymmetry of sleep graphoelements": "absent",
+        "Sleep-onset REM period (SOREMP)": "absent",
+        "Non-reactive sleep activity": "absent",
+        "Notes": null
+    },
+    "Interictal findings": {
+        "Graphoelements": [
+            {
+                "Morphology": "Sharp-wave",
+                "Significance": "Abnormal",
+                "Location": {
+                    "Laterality": "right",
+                    "Regions": ["temporal"],
+                    "Electrode maxima": "F8"
+                },
+                "Time-related features": {
+                    "Mode of appearance": "Periodic",
+                    "Discharge pattern": "Single discharges",
+                    "Incidence": "Occasional (1/min to 1/5min)",
+                    "Prevalence": null
+                },
+                "Modulator effect": null
+            }
+        ],
+        "Special patterns": []
+    },
+    "Episodes": {
+        "Episodes": []
+    },
+    "Diagnostic significance": {
+        "Diagnosis": "Abnormal",
+        "Abnormal specification": "Right temporal sharp waves; disorganised background.",
+        "ILAE classification": "Focal",
+        "Syndrome classification": [],
+        "Diagnostic yield": []
+    },
+    "Clinical comments": {
+        "Interpreter name": "Dr Reviewer",
+        "Clinical comments": "Synthetic example. Abnormal EEG with right temporal epileptiform discharges."
+    },
+    "Extraction": null
+}

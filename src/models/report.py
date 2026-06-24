@@ -18,6 +18,16 @@ from score_schema import (
 )
 
 
+def _overwrite_model(dst, src):
+    """Copy every field value from ``src`` into ``dst`` in place, preserving ``dst``'s identity.
+
+    Lets GUI controllers bind once to a section model on the report; reset/load then update
+    that same object rather than replacing it (mirroring the legacy section-model contract).
+    """
+    for name in type(dst).model_fields:
+        setattr(dst, name, getattr(src, name))
+
+
 def _blanks_to_none(obj):
     """Return a copy of a nested dict/list with empty strings replaced by None.
 
@@ -103,11 +113,12 @@ class Report:
         self.diagnostic_significance.update_from_dict(data['Diagnostic significance'])
         self.clinical_comments.update_from_dict(data['Clinical comments'])
 
-        # New sections — tolerate older 6-section files that omit them.
-        self.modulators = ModulatorsAndProcedures.model_validate(data.get("Modulators and procedures", {}))
-        self.sleep = SleepAndDrowsiness.model_validate(data.get("Sleep and drowsiness", {}))
-        self.interictal = InterictalFindings.model_validate(data.get("Interictal findings", {}))
-        self.episodes = Episodes.model_validate(data.get("Episodes", {}))
+        # New sections — tolerate older 6-section files that omit them; update in place so
+        # any bound controllers keep their reference.
+        _overwrite_model(self.modulators, ModulatorsAndProcedures.model_validate(data.get("Modulators and procedures", {})))
+        _overwrite_model(self.sleep, SleepAndDrowsiness.model_validate(data.get("Sleep and drowsiness", {})))
+        _overwrite_model(self.interictal, InterictalFindings.model_validate(data.get("Interictal findings", {})))
+        _overwrite_model(self.episodes, Episodes.model_validate(data.get("Episodes", {})))
 
     def reset(self):
         self.patient_details.set_to_nones()
@@ -116,7 +127,7 @@ class Report:
         self.background_activity.set_to_nones()
         self.diagnostic_significance.set_to_nones()
         self.clinical_comments.set_to_nones()
-        self.modulators = ModulatorsAndProcedures()
-        self.sleep = SleepAndDrowsiness()
-        self.interictal = InterictalFindings()
-        self.episodes = Episodes()
+        _overwrite_model(self.modulators, ModulatorsAndProcedures())
+        _overwrite_model(self.sleep, SleepAndDrowsiness())
+        _overwrite_model(self.interictal, InterictalFindings())
+        _overwrite_model(self.episodes, Episodes())

@@ -5,6 +5,13 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# EEG patient data — NEVER commit. Redistribution-restricted corpora (e.g. the
+# Temple University Hospital EEG corpus) and any real recordings/reports must stay
+# local only. Everything under data/ is ignored except this README.
+/data/**
+!/data/README.md
+*.edf
+
 # Test outputs
 report.json
 specified_recordings.txt

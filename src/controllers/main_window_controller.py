@@ -9,9 +9,11 @@ from PyQt5.QtWidgets import QFileDialog, QMessageBox, QTabWidget
 from src.controllers.background_activity_controller import BackgroundActivityController
 from src.controllers.clinical_comments_controller import ClinicalCommentsController
 from src.controllers.diagnostic_significance_controller import DiagnosticSignificanceController
+from src.controllers.modulators_controller import ModulatorsController
 from src.controllers.patient_details_controller import PatientDetailsController
 from src.controllers.patient_referral_controller import PatientReferralController
 from src.controllers.recording_conditions_controller import RecordingConditionsController
+from src.controllers.sleep_controller import SleepController
 from src.models.main_window_model import MainWindowModel
 from src.views.main_window import MainWindow
 
@@ -27,7 +29,9 @@ class MainWindowController:
         self.patient_details_controller = PatientDetailsController()
         self.patient_referral_controller = PatientReferralController()
         self.recording_conditions_controller = RecordingConditionsController(self)
+        self.modulators_controller = ModulatorsController()
         self.background_activity_controller = BackgroundActivityController()
+        self.sleep_controller = SleepController()
         self.diagnostic_significance_controller = DiagnosticSignificanceController()
         self.clinical_comments_controller = ClinicalCommentsController()
 
@@ -36,7 +40,9 @@ class MainWindowController:
         self.model.report.patient_details = self.patient_details_controller.model
         self.model.report.patient_referral = self.patient_referral_controller.model
         self.model.report.recording_conditions = self.recording_conditions_controller.model
+        self.model.report.modulators = self.modulators_controller.model
         self.model.report.background_activity = self.background_activity_controller.model
+        self.model.report.sleep = self.sleep_controller.model
         self.model.report.diagnostic_significance = self.diagnostic_significance_controller.model
         self.model.report.clinical_comments = self.clinical_comments_controller.model
 
@@ -55,8 +61,10 @@ class MainWindowController:
         self.patient_info_tab.addTab(self.patient_referral_controller.view, "Patient Referral")
         self.view.tabs.addTab(self.patient_info_tab, "Patient Info")
         self.view.tabs.addTab(self.recording_conditions_controller.view, "Recording Conditions")
+        self.view.tabs.addTab(self.modulators_controller.view, "Modulators & Procedures")
         self.findings_tab = QTabWidget()
         self.findings_tab.addTab(self.background_activity_controller.view, "Background Activity")
+        self.findings_tab.addTab(self.sleep_controller.view, "Sleep & Drowsiness")
         self.view.tabs.addTab(self.findings_tab, "Findings")
         self.view.tabs.addTab(self.diagnostic_significance_controller.view, "Diagnostic Significance")
         self.view.tabs.addTab(self.clinical_comments_controller.view, "Clinical Comments")
@@ -335,7 +343,9 @@ class MainWindowController:
         self.patient_details_controller.update_model()
         self.patient_referral_controller.update_model()
         self.recording_conditions_controller.update_model()
+        self.modulators_controller.update_model()
         self.background_activity_controller.update_model()
+        self.sleep_controller.update_model()
         self.diagnostic_significance_controller.update_model()
         self.clinical_comments_controller.update_model()
 
@@ -346,7 +356,9 @@ class MainWindowController:
         self.patient_details_controller.update_view()
         self.patient_referral_controller.update_view()
         self.recording_conditions_controller.update_view()
+        self.modulators_controller.update_view()
         self.background_activity_controller.update_view()
+        self.sleep_controller.update_view()
         self.diagnostic_significance_controller.update_view()
         self.clinical_comments_controller.update_view()
 

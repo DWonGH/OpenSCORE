@@ -16,16 +16,16 @@ from .common import Location, ScoreModel, Ternary
 
 
 class EpisodeType(str, Enum):
-    """SCORE Table 9 — names of episodes."""
+    """SCORE Table 9 — names of episodes (HED-SCORE Episode-branch node names)."""
 
-    EPILEPTIC_SEIZURE = "Epileptic seizure"
-    PNES = "Psychogenic non-epileptic seizure (PNES)"
-    EEG_SEIZURE = "Electroencephalographic seizure"
-    SLEEP_RELATED = "Sleep-related episode"
-    PAEDIATRIC = "Pediatric episode"
-    PAROXYSMAL_MOTOR = "Paroxysmal motor event"
+    EPILEPTIC_SEIZURE = "Epileptic-seizure"
+    PNES = "Seizure-PNES"
+    EEG_SEIZURE = "Electroencephalographic-seizure"
+    SLEEP_RELATED = "Sleep-related-episode"
+    PAEDIATRIC = "Pediatric-episode"
+    PAROXYSMAL_MOTOR = "Paroxysmal-motor-event"
     SYNCOPE = "Syncope"
-    OTHER = "Other"
+    OTHER = "Other-episode"
 
 
 class PhaseName(str, Enum):
@@ -62,6 +62,7 @@ class SemiologyPhase(ScoreModel):
     semiology: list[str] = Field(default_factory=list, alias="Semiology", description="ILAE semiologic findings (Tables 10/11).")
     ictal_eeg: list[str] = Field(default_factory=list, alias="Ictal EEG", description="Ictal EEG patterns (Table 12).")
     location: Location = Field(default_factory=Location, alias="Location")
+    hed_tags: list[str] = Field(default_factory=list, alias="HED tags", description="Optional HED-SCORE tag string(s) for this phase.")
 
 
 class Episode(ScoreModel):
@@ -75,6 +76,7 @@ class Episode(ScoreModel):
     duration: Optional[str] = Field(default=None, alias="Duration")
     number_of_episodes: Optional[int] = Field(default=None, alias="Number of stereotypical episodes")
     timing_context: Optional[str] = Field(default=None, alias="Timing and context")
+    hed_tags: list[str] = Field(default_factory=list, alias="HED tags", description="Optional HED-SCORE tag string(s) for this episode.")
 
 
 class Episodes(ScoreModel):

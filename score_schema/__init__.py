@@ -42,12 +42,18 @@ from .interictal import (
 )
 from .episodes import Consciousness, Episode, EpisodeType, Episodes, PhaseName, SemiologyPhase
 from .diagnostic import ClinicalComments, Diagnosis, DiagnosticSignificance, IlaeClassification
+from .hed import HED_LIBRARY_PREFIX, HED_SCORE_VERSION, hed_short_tag, hed_tag
 from .report import SCHEMA_VERSION, EegReport, validate
 
 __all__ = [
     "SCHEMA_VERSION",
     "EegReport",
     "validate",
+    # HED-SCORE binding
+    "HED_SCORE_VERSION",
+    "HED_LIBRARY_PREFIX",
+    "hed_short_tag",
+    "hed_tag",
     # common
     "ScoreModel",
     "Ternary",

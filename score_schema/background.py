@@ -111,11 +111,12 @@ class BackgroundActivity(ScoreModel):
 
 # --- SCORE §7 -------------------------------------------------------------------------
 
+# HED-SCORE Sleep-and-drowsiness node names.
 NORMAL_SLEEP_GRAPHOELEMENTS = (
-    "sleep spindles", "vertex waves", "K-complexes", "saw-tooth waves",
-    "positive occipital sharp transients of sleep (POSTS)", "hypnagogic hypersynchrony",
+    "Sleep-spindles", "Vertex-wave", "K-complex", "Saw-tooth-waves",
+    "POSTS", "Hypnagogic-hypersynchrony",
 )
-SLEEP_STAGES = ("drowsiness", "N1", "N2", "N3", "REM")
+SLEEP_STAGES = ("Sleep-stage-N1", "Sleep-stage-N2", "Sleep-stage-N3", "Sleep-stage-REM")
 
 
 class SleepAndDrowsiness(ScoreModel):

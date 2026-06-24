@@ -47,6 +47,28 @@ This implements the clinically central SCORE modules. Deferred: neonatal templat
 - **Provenance hook.** `EegReport.provenance` (`"Extraction"`) is an optional, forward-compatible
   place for the deferred extractor to record model + confidence for inter-model agreement testing.
 
+## Relationship to HED-SCORE
+
+[HED-SCORE](https://hed-schemas.readthedocs.io/en/latest/hed_score_schema.html) is a HED
+*library schema* — a controlled **tag vocabulary** for annotating events in EEG **time-series
+recordings** (BIDS `events.tsv`). It encodes the SCORE *findings* terminology but, by design,
+**does not** model a report document: it excludes patient/administrative data, diagnostic
+significance, and clinical comments.
+
+The two are complementary, so we use both:
+
+- `score_schema` remains the **report-document model** (the thing report-extraction outputs).
+- The **findings vocabulary** here (interictal morphology, time-related features, episode types,
+  sleep graphoelements, special patterns) uses **HED-SCORE node names as enum values**, pinned to
+  `score_schema.hed.HED_SCORE_VERSION` (`score_2.1.0`). So a finding's value *is* its HED short
+  tag, and `score_schema.hed.hed_tag(value)` yields a namespaced tag (e.g. `sc:Sharp-wave`).
+- Findings/episodes carry an optional `hed_tags` list (`"HED tags"`) for explicit HED export to
+  BIDS/HED tooling (`hedtools`).
+
+PDR/recording/diagnostic fields keep human-readable SCORE wording (HED-SCORE has no equivalent, or
+its node names are unwieldy). Verify node spellings against the schema file with `hedtools` before
+extending the aligned enums.
+
 ## Usage
 
 ```python

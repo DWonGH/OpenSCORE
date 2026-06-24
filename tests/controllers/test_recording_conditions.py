@@ -41,7 +41,8 @@ class TestRecordingConditionsController(unittest.TestCase):
         self.view.lne_physician.setText("1")
         self.view.cmb_sensor_group.setCurrentIndex(1)
         self.view.cmb_recording_type.setCurrentIndex(1)
-        self.view.cmb_alertness.setCurrentIndex(1)
+        self.view.lst_alertness.item(0).setSelected(True)
+        self.view.lst_alertness.item(2).setSelected(True)
         self.view.cmb_cooperation.setCurrentIndex(1)
         self.view.lne_age.setText("1")
         self.view.lne_latest_meal.setText("1")
@@ -58,7 +59,7 @@ class TestRecordingConditionsController(unittest.TestCase):
         self.assertEqual(self.model.physician_name, "1")
         self.assertEqual(self.model.sensor_group, self.view.txt_sensor_group[1])
         self.assertEqual(self.model.recording_type, self.view.txt_recording_type[1])
-        self.assertEqual(self.model.alertness, self.view.txt_alertness[1])
+        self.assertEqual(self.model.alertness, [self.view.txt_alertness[0], self.view.txt_alertness[2]])
         self.assertEqual(self.model.cooperation, self.view.txt_cooperation[1])
         self.assertEqual(self.model.age, "1")
         self.assertEqual(self.model.latest_meal, "1")
@@ -74,7 +75,7 @@ class TestRecordingConditionsController(unittest.TestCase):
         self.assertEqual(self.view.lne_physician.text(), '')
         self.assertEqual(self.view.cmb_sensor_group.currentText(), '')
         self.assertEqual(self.view.cmb_recording_type.currentText(), '')
-        self.assertEqual(self.view.cmb_alertness.currentText(), '')
+        self.assertEqual(self.view.selected_alertness(), [])
         self.assertEqual(self.view.cmb_cooperation.currentText(), '')
         self.assertEqual(self.view.lne_age.text(), '')
         self.assertEqual(self.view.lne_latest_meal.text(), '')
@@ -90,7 +91,7 @@ class TestRecordingConditionsController(unittest.TestCase):
         self.model.physician_name = "1"
         self.model.sensor_group = self.view.txt_sensor_group[1]
         self.model.recording_type = self.view.txt_recording_type[1]
-        self.model.alertness = self.view.txt_alertness[1]
+        self.model.alertness = [self.view.txt_alertness[1]]
         self.model.cooperation = self.view.txt_cooperation[1]
         self.model.age = "1"
         self.model.latest_meal = "1"
@@ -108,7 +109,7 @@ class TestRecordingConditionsController(unittest.TestCase):
         self.assertEqual(self.view.lne_physician.text(), "1")
         self.assertEqual(self.view.cmb_sensor_group.currentText(), self.view.txt_sensor_group[1])
         self.assertEqual(self.view.cmb_recording_type.currentText(), self.view.txt_recording_type[1])
-        self.assertEqual(self.view.cmb_alertness.currentText(), self.view.txt_alertness[1])
+        self.assertEqual(self.view.selected_alertness(), [self.view.txt_alertness[1]])
         self.assertEqual(self.view.cmb_cooperation.currentText(), self.view.txt_cooperation[1])
         self.assertEqual(self.view.lne_age.text(), "1")
         self.assertEqual(self.view.lne_latest_meal.text(), "1")

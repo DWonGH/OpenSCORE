@@ -8,6 +8,7 @@ tqdm
 # For OpenSCORE
 PyQt5
 psutil
+pydantic>=2.6
 
 # For eye tracker
 tobii_research

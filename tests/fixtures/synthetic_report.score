@@ -28,12 +28,12 @@
         "Technologist name": null,
         "Physician name": null,
         "Sensor group": "10-20",
-        "Recording type": "standard EEG",
+        "Recording type": "Standard EEG",
         "Alertness": ["awake", "drowsy"],
         "Cooperation": "good cooperation",
         "Patient age": "76",
         "Latest meal": null,
-        "Skull defect": "absent",
+        "Skull defect": null,
         "Brain surgery": null,
         "Additional technical description": null,
         "EDF location": null
@@ -104,7 +104,7 @@
     },
     "Diagnostic significance": {
         "Diagnosis": "Abnormal",
-        "Abnormal specification": "Right temporal sharp waves; disorganised background.",
+        "Abnormal specification": ["Focal dysfunction of the central nervous system"],
         "ILAE classification": "Focal",
         "Syndrome classification": [],
         "Diagnostic yield": []

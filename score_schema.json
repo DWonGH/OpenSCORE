@@ -114,16 +114,11 @@
           "default": null
         },
         "Abnormal specification": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Abnormal Specification"
+          "items": {
+            "type": "string"
+          },
+          "title": "Abnormal Specification",
+          "type": "array"
         },
         "ILAE classification": {
           "anyOf": [
@@ -1178,8 +1173,16 @@
           "title": "Latest Meal"
         },
         "Skull defect": {
-          "$ref": "#/$defs/Ternary",
-          "default": "not_assessed"
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Skull Defect"
         },
         "Brain surgery": {
           "anyOf": [
@@ -1222,15 +1225,15 @@
       "type": "object"
     },
     "RecordingType": {
-      "description": "SCORE \u00a73 type of EEG recording.",
+      "description": "SCORE \u00a73 type of EEG recording (values match the OpenSCORE GUI dropdown).",
       "enum": [
-        "standard EEG",
-        "sleep EEG",
-        "short-term video-EEG monitoring",
-        "long-term video-EEG monitoring (LTM)",
-        "ambulatory recording",
-        "recording in the ICU",
-        "intraoperative monitoring"
+        "Standard EEG",
+        "Sleep EEG",
+        "Short-term video-EEG",
+        "Long-term video-EEG",
+        "Ambulatory recording",
+        "Recording in the ICU",
+        "Intraoperative recording"
       ],
       "title": "RecordingType",
       "type": "string"

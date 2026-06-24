@@ -11,15 +11,15 @@ from .common import ScoreModel, Ternary
 
 
 class RecordingType(str, Enum):
-    """SCORE §3 type of EEG recording."""
+    """SCORE §3 type of EEG recording (values match the OpenSCORE GUI dropdown)."""
 
-    STANDARD = "standard EEG"
-    SLEEP = "sleep EEG"
-    SHORT_TERM_VIDEO = "short-term video-EEG monitoring"
-    LONG_TERM_VIDEO = "long-term video-EEG monitoring (LTM)"
-    AMBULATORY = "ambulatory recording"
-    ICU = "recording in the ICU"
-    INTRAOPERATIVE = "intraoperative monitoring"
+    STANDARD = "Standard EEG"
+    SLEEP = "Sleep EEG"
+    SHORT_TERM_VIDEO = "Short-term video-EEG"
+    LONG_TERM_VIDEO = "Long-term video-EEG"
+    AMBULATORY = "Ambulatory recording"
+    ICU = "Recording in the ICU"
+    INTRAOPERATIVE = "Intraoperative recording"
 
 
 # SCORE §3 alertness/cooperation multiple-choice list (issue #17 — multi-select).
@@ -44,7 +44,8 @@ class RecordingConditions(ScoreModel):
     cooperation: Optional[str] = Field(default=None, alias="Cooperation")
     age: Optional[str] = Field(default=None, alias="Patient age")
     latest_meal: Optional[str] = Field(default=None, alias="Latest meal")
-    skull_defect: Ternary = Field(default=Ternary.NOT_ASSESSED, alias="Skull defect")
+    # SCORE §3: skull defect / prior brain surgery are recorded with their location.
+    skull_defect: Optional[str] = Field(default=None, alias="Skull defect")
     brain_surgery: Optional[str] = Field(default=None, alias="Brain surgery")
     tech_description: Optional[str] = Field(default=None, alias="Additional technical description")
     edf_location: Optional[str] = Field(default=None, alias="EDF location")

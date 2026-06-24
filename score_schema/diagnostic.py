@@ -35,7 +35,8 @@ class DiagnosticSignificance(ScoreModel):
     """
 
     diagnosis: Optional[Diagnosis] = Field(default=None, alias="Diagnosis")
-    abnormal_specification: Optional[str] = Field(default=None, alias="Abnormal specification")
+    # The GUI records selected abnormality categories; keep it a list.
+    abnormal_specification: list[str] = Field(default_factory=list, alias="Abnormal specification")
     ilae_classification: Optional[IlaeClassification] = Field(default=None, alias="ILAE classification")
     syndromes: list[str] = Field(default_factory=list, alias="Syndrome classification")
     diagnostic_yield: list[str] = Field(default_factory=list, alias="Diagnostic yield")

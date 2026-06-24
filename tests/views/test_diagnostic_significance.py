@@ -38,6 +38,8 @@ class TestDiagnosticSignificanceWidget(unittest.TestCase):
         }
         result_dict = self.diagnostic_significance_widget.to_dict()
         self.assertEqual(target_dict, result_dict)
+        # Issue #24: nothing is pre-selected, so the diagnosis is "not assessed" (None).
+        self.assertIsNone(result_dict["Diagnosis"])
 
     def test_ones_to_dict(self):
         self.set_to_ones()
@@ -60,7 +62,7 @@ class TestDiagnosticSignificanceWidget(unittest.TestCase):
         self.assertTrue(self.diagnostic_significance_widget.chbx_uncertain.isEnabled())
         result_dict = self.diagnostic_significance_widget.to_dict()
         target_dict = {
-            "Diagnosis": "Abnormal recording",
+            "Diagnosis": "Abnormal",
             "Abnormal specification": [
                 "Psychogenic non-epileptic seizures (PNES)",
                 "Other non-epileptic clinical episode",

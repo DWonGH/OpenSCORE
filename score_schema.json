@@ -1,0 +1,1558 @@
+{
+  "$defs": {
+    "Amplitude": {
+      "enum": [
+        "Low (<20 uV)",
+        "Medium (20-70 uV)",
+        "High (>70 uV)"
+      ],
+      "title": "Amplitude",
+      "type": "string"
+    },
+    "AmplitudeAsymmetry": {
+      "enum": [
+        "Symmetrical",
+        "Right < Left",
+        "Left < Right"
+      ],
+      "title": "AmplitudeAsymmetry",
+      "type": "string"
+    },
+    "BackgroundActivity": {
+      "description": "SCORE \u00a76 container.",
+      "properties": {
+        "Posterior dominant rhythm": {
+          "$ref": "#/$defs/PosteriorDominantRhythm"
+        },
+        "Other organised rhythms": {
+          "items": {
+            "$ref": "#/$defs/OrganisedRhythm"
+          },
+          "title": "Other Organised Rhythms",
+          "type": "array"
+        },
+        "Critically ill background activity": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Critically Ill Background Activity"
+        }
+      },
+      "title": "BackgroundActivity",
+      "type": "object"
+    },
+    "ClinicalComments": {
+      "description": "Free-text interpretation / clinical correlation.",
+      "properties": {
+        "Interpreter name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Interpreter Name"
+        },
+        "Clinical comments": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Clinical Comments"
+        }
+      },
+      "title": "ClinicalComments",
+      "type": "object"
+    },
+    "Consciousness": {
+      "description": "SCORE Table 13.",
+      "enum": [
+        "Not tested",
+        "Affected",
+        "Mildly affected",
+        "Not affected"
+      ],
+      "title": "Consciousness",
+      "type": "string"
+    },
+    "Diagnosis": {
+      "description": "SCORE \u00a715 \u2014 the mandatory interpretation of diagnostic significance.",
+      "enum": [
+        "Normal",
+        "No definite abnormality",
+        "Abnormal"
+      ],
+      "title": "Diagnosis",
+      "type": "string"
+    },
+    "DiagnosticSignificance": {
+      "description": "SCORE \u00a715 / Table 17.\n\nIssue #24 fix: ``diagnosis`` defaults to ``None`` (not assessed), never silently to\n\"Normal\" \u2014 a value must be chosen deliberately.",
+      "properties": {
+        "Diagnosis": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Diagnosis"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Abnormal specification": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Abnormal Specification"
+        },
+        "ILAE classification": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/IlaeClassification"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Syndrome classification": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Syndrome Classification",
+          "type": "array"
+        },
+        "Diagnostic yield": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Diagnostic Yield",
+          "type": "array"
+        }
+      },
+      "title": "DiagnosticSignificance",
+      "type": "object"
+    },
+    "DischargePattern": {
+      "enum": [
+        "Single discharges",
+        "Rhythmic trains or bursts",
+        "Arrhythmic trains or bursts",
+        "Fragmented"
+      ],
+      "title": "DischargePattern",
+      "type": "string"
+    },
+    "Episode": {
+      "description": "A single scored clinical/EEG episode (SCORE \u00a710).",
+      "properties": {
+        "Name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Episode name / ILAE seizure type.",
+          "title": "Name"
+        },
+        "Type": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EpisodeType"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Phases": {
+          "items": {
+            "$ref": "#/$defs/SemiologyPhase"
+          },
+          "title": "Phases",
+          "type": "array"
+        },
+        "Consciousness": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Consciousness"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Awareness of the episode": {
+          "$ref": "#/$defs/Ternary",
+          "default": "not_assessed"
+        },
+        "Duration": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duration"
+        },
+        "Number of stereotypical episodes": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Number Of Stereotypical Episodes"
+        },
+        "Timing and context": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Timing And Context"
+        }
+      },
+      "title": "Episode",
+      "type": "object"
+    },
+    "EpisodeType": {
+      "description": "SCORE Table 9 \u2014 names of episodes.",
+      "enum": [
+        "Epileptic seizure",
+        "Psychogenic non-epileptic seizure (PNES)",
+        "Electroencephalographic seizure",
+        "Sleep-related episode",
+        "Pediatric episode",
+        "Paroxysmal motor event",
+        "Syncope",
+        "Other"
+      ],
+      "title": "EpisodeType",
+      "type": "string"
+    },
+    "Episodes": {
+      "description": "SCORE \u00a710 container.",
+      "properties": {
+        "Episodes": {
+          "items": {
+            "$ref": "#/$defs/Episode"
+          },
+          "title": "Episodes",
+          "type": "array"
+        }
+      },
+      "title": "Episodes",
+      "type": "object"
+    },
+    "FrequencyAsymmetry": {
+      "enum": [
+        "Symmetrical",
+        "Hz lower on the left side",
+        "Hz lower on the right side"
+      ],
+      "title": "FrequencyAsymmetry",
+      "type": "string"
+    },
+    "Handedness": {
+      "enum": [
+        "right",
+        "left",
+        "ambidextrous",
+        "unknown"
+      ],
+      "title": "Handedness",
+      "type": "string"
+    },
+    "HyperventilationQuality": {
+      "enum": [
+        "excellent effort",
+        "good effort",
+        "poor effort",
+        "refused the procedure",
+        "unable to do the procedure"
+      ],
+      "title": "HyperventilationQuality",
+      "type": "string"
+    },
+    "IlaeClassification": {
+      "description": "ILAE classification for abnormal recordings (Scheffer et al., 2017).",
+      "enum": [
+        "Focal",
+        "Generalized",
+        "Combined generalized and focal",
+        "Unknown"
+      ],
+      "title": "IlaeClassification",
+      "type": "string"
+    },
+    "Incidence": {
+      "description": "SCORE Table 6 \u2014 incidence for single discharges.",
+      "enum": [
+        "Only once",
+        "Rare (less than 1/h)",
+        "Uncommon (1/5 min to 1/h)",
+        "Occasional (1/min to 1/5min)",
+        "Frequent (1/10 s to 1/min)",
+        "Abundant (>1/10 s)"
+      ],
+      "title": "Incidence",
+      "type": "string"
+    },
+    "InterictalFindings": {
+      "description": "SCORE \u00a78 container.",
+      "properties": {
+        "Graphoelements": {
+          "items": {
+            "$ref": "#/$defs/InterictalGraphoelement"
+          },
+          "title": "Graphoelements",
+          "type": "array"
+        },
+        "Special patterns": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Special Patterns",
+          "type": "array"
+        }
+      },
+      "title": "InterictalFindings",
+      "type": "object"
+    },
+    "InterictalGraphoelement": {
+      "description": "A single scored interictal finding (SCORE \u00a78).",
+      "properties": {
+        "Morphology": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Morphology"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Significance": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Significance"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Location": {
+          "$ref": "#/$defs/Location"
+        },
+        "Time-related features": {
+          "$ref": "#/$defs/TimeRelatedFeatures"
+        },
+        "Modulator effect": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Modulator Effect"
+        }
+      },
+      "title": "InterictalGraphoelement",
+      "type": "object"
+    },
+    "Laterality": {
+      "description": "SCORE \u00a78 location laterality for graphoelements/findings.",
+      "enum": [
+        "left",
+        "right",
+        "midline",
+        "bilateral synchronous",
+        "bilateral independent",
+        "diffuse",
+        "generalized",
+        "multifocal",
+        "unclear"
+      ],
+      "title": "Laterality",
+      "type": "string"
+    },
+    "Location": {
+      "description": "Where a finding is seen on the scalp (SCORE \u00a78 localization).",
+      "properties": {
+        "Laterality": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Laterality"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Regions": {
+          "items": {
+            "$ref": "#/$defs/Region"
+          },
+          "title": "Regions",
+          "type": "array"
+        },
+        "Electrode maxima": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Electrode site(s) of peak negativity, e.g. 'F7' or 'T3/T5'.",
+          "title": "Electrode Maxima"
+        }
+      },
+      "title": "Location",
+      "type": "object"
+    },
+    "ModeOfAppearance": {
+      "enum": [
+        "Random",
+        "Periodic",
+        "Variable"
+      ],
+      "title": "ModeOfAppearance",
+      "type": "string"
+    },
+    "ModulatorsAndProcedures": {
+      "description": "SCORE \u00a74 / Table 2 \u2014 provocation methods and medication during the recording.\n\nNew module (absent in legacy OpenSCORE). Each procedure records whether it was done\n(tristate) and, where relevant, a graded quality and its effect on the EEG.",
+      "properties": {
+        "Intermittent photic stimulation": {
+          "$ref": "#/$defs/Ternary",
+          "default": "not_assessed"
+        },
+        "Photic stimulation effect": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Photic Stimulation Effect"
+        },
+        "Hyperventilation": {
+          "$ref": "#/$defs/Ternary",
+          "default": "not_assessed"
+        },
+        "Hyperventilation quality": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HyperventilationQuality"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Hyperventilation effect": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Hyperventilation Effect"
+        },
+        "Sleep deprivation": {
+          "$ref": "#/$defs/Ternary",
+          "default": "not_assessed"
+        },
+        "Natural sleep": {
+          "$ref": "#/$defs/Ternary",
+          "default": "not_assessed"
+        },
+        "Induced sleep": {
+          "$ref": "#/$defs/Ternary",
+          "default": "not_assessed"
+        },
+        "Awakening": {
+          "$ref": "#/$defs/Ternary",
+          "default": "not_assessed"
+        },
+        "Medication administered during recording": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Medication Administered During Recording"
+        },
+        "Medication withdrawal or reduction during recording": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Medication Withdrawal Or Reduction During Recording"
+        },
+        "Other modulators and procedures": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Other Modulators And Procedures"
+        }
+      },
+      "title": "ModulatorsAndProcedures",
+      "type": "object"
+    },
+    "Morphology": {
+      "description": "SCORE Table 5 \u2014 names/morphology of interictal findings.",
+      "enum": [
+        "Spike",
+        "Spike-and-slow-wave",
+        "Runs of rapid spikes",
+        "Polyspikes",
+        "Polyspike-and-slow-wave",
+        "Sharp-wave",
+        "Sharp-and-slow-wave",
+        "Slow sharp-wave",
+        "High frequency oscillation (HFO)",
+        "Hypsarrhythmia - classic",
+        "Hypsarrhythmia - modified",
+        "Delta activity",
+        "Theta activity",
+        "Alpha activity",
+        "Beta activity",
+        "Gamma activity",
+        "Polymorphic delta",
+        "Frontal intermittent rhythmic delta activity (FIRDA)",
+        "Occipital intermittent rhythmic delta activity (OIRDA)",
+        "Temporal intermittent rhythmic delta activity (TIRDA)"
+      ],
+      "title": "Morphology",
+      "type": "string"
+    },
+    "Organisation": {
+      "enum": [
+        "Normal",
+        "Poorly organized",
+        "Disorganized",
+        "Markedly disorganized"
+      ],
+      "title": "Organisation",
+      "type": "string"
+    },
+    "OrganisedRhythm": {
+      "description": "SCORE \u00a76 \u2014 an organised rhythm other than the PDR (e.g. mu).",
+      "properties": {
+        "Classification": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "e.g. Mu, Other",
+          "title": "Classification"
+        },
+        "Significance": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Significance"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Spectral frequency": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SpectralBand"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Frequency": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Hz",
+          "title": "Frequency"
+        },
+        "Amplitude": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Amplitude"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Modulator": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "e.g. hyperventilation",
+          "title": "Modulator"
+        },
+        "Modulator effect": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Modulator Effect"
+        }
+      },
+      "title": "OrganisedRhythm",
+      "type": "object"
+    },
+    "PatientInformation": {
+      "description": "SCORE \u00a72. Aliases preserve OpenSCORE's legacy ``.score`` keys.",
+      "properties": {
+        "Patient name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Patient Name"
+        },
+        "Patient ID": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Patient Id"
+        },
+        "Patient DOB": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Date of birth (ISO 8601 if known).",
+          "title": "Patient Dob"
+        },
+        "Patient gender": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Sex"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Patient handedness": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Handedness"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Patient address": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Patient Address"
+        },
+        "Patient medication": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Patient Medication"
+        },
+        "Patient history": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Patient History"
+        }
+      },
+      "title": "PatientInformation",
+      "type": "object"
+    },
+    "PdrAbsence": {
+      "enum": [
+        "Artifacts",
+        "Extreme low voltage",
+        "Eye-closure could not be achieved",
+        "Lack of awake period",
+        "Lack of compliance",
+        "Other causes"
+      ],
+      "title": "PdrAbsence",
+      "type": "string"
+    },
+    "PdrCaveat": {
+      "enum": [
+        "No",
+        "Only open eyes during the recording",
+        "Sleep-deprived",
+        "Drowsy",
+        "Only following hyperventilation"
+      ],
+      "title": "PdrCaveat",
+      "type": "string"
+    },
+    "PhaseName": {
+      "enum": [
+        "initial",
+        "subsequent",
+        "postictal"
+      ],
+      "title": "PhaseName",
+      "type": "string"
+    },
+    "PosteriorDominantRhythm": {
+      "description": "SCORE \u00a76 / Table 4. Aliases preserve legacy ``.score`` PDR keys.",
+      "properties": {
+        "Significance": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Significance"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Frequency": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Hz",
+          "title": "Frequency"
+        },
+        "Frequency asymmetry": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FrequencyAsymmetry"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Hz lower left": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Hz Lower Left"
+        },
+        "Hz lower right": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Hz Lower Right"
+        },
+        "Amplitude": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Amplitude"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Amplitude asymmetry": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AmplitudeAsymmetry"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Reactivity to eye opening": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Reactivity"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Organisation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Organisation"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Caveat": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PdrCaveat"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Absence of PDR": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PdrAbsence"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "title": "PosteriorDominantRhythm",
+      "type": "object"
+    },
+    "Prevalence": {
+      "description": "SCORE Table 6 \u2014 prevalence for trains/bursts.",
+      "enum": [
+        "Rare (<1%)",
+        "Occasional (1-9%)",
+        "Frequent (10-49%)",
+        "Abundant (50-89%)",
+        "Continuous (>90%)"
+      ],
+      "title": "Prevalence",
+      "type": "string"
+    },
+    "Provenance": {
+      "description": "Optional extraction metadata.\n\nForward-compatibility hook for the (deferred) LLM extraction pipeline so it can record\nwhich model produced a report and how confident it was, to support inter-model agreement\ntesting. Authoring tools (OpenSCORE) leave this null.",
+      "properties": {
+        "Model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model"
+        },
+        "Confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "Notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Notes"
+        }
+      },
+      "title": "Provenance",
+      "type": "object"
+    },
+    "Reactivity": {
+      "enum": [
+        "Yes",
+        "Reduced left side reactivity",
+        "Reduced right side reactivity",
+        "Reduced reactivity on both sides"
+      ],
+      "title": "Reactivity",
+      "type": "string"
+    },
+    "RecordingConditions": {
+      "description": "SCORE \u00a73. Aliases preserve OpenSCORE's legacy ``.score`` keys.",
+      "properties": {
+        "Study ID": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Study Id"
+        },
+        "Date & Time": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Date & Time"
+        },
+        "Recording duration": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recording Duration"
+        },
+        "Technologist name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Technologist Name"
+        },
+        "Physician name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Physician Name"
+        },
+        "Sensor group": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sensor Group"
+        },
+        "Recording type": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordingType"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Alertness": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Alertness",
+          "type": "array"
+        },
+        "Cooperation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cooperation"
+        },
+        "Patient age": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Patient Age"
+        },
+        "Latest meal": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Latest Meal"
+        },
+        "Skull defect": {
+          "$ref": "#/$defs/Ternary",
+          "default": "not_assessed"
+        },
+        "Brain surgery": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Brain Surgery"
+        },
+        "Additional technical description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Additional Technical Description"
+        },
+        "EDF location": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Edf Location"
+        }
+      },
+      "title": "RecordingConditions",
+      "type": "object"
+    },
+    "RecordingType": {
+      "description": "SCORE \u00a73 type of EEG recording.",
+      "enum": [
+        "standard EEG",
+        "sleep EEG",
+        "short-term video-EEG monitoring",
+        "long-term video-EEG monitoring (LTM)",
+        "ambulatory recording",
+        "recording in the ICU",
+        "intraoperative monitoring"
+      ],
+      "title": "RecordingType",
+      "type": "string"
+    },
+    "Referral": {
+      "description": "SCORE \u00a72 / Table 1 \u2014 referral details and indication for EEG.",
+      "properties": {
+        "Referrer name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Referrer Name"
+        },
+        "Referrer details": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Referrer Details"
+        },
+        "Diagnosis at referral": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Free text or ICD-10 code.",
+          "title": "Diagnosis At Referral"
+        },
+        "Seizure frequency": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seizure Frequency"
+        },
+        "Time since last seizure": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Time Since Last Seizure"
+        },
+        "Epilepsy-related indications": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Epilepsy-Related Indications",
+          "type": "array"
+        },
+        "Other differential diagnostic questions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Other Differential Diagnostic Questions",
+          "type": "array"
+        },
+        "Specific paediatric indication": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Specific Paediatric Indication",
+          "type": "array"
+        },
+        "Other indications": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Other Indications"
+        }
+      },
+      "title": "Referral",
+      "type": "object"
+    },
+    "Region": {
+      "description": "SCORE \u00a78 scalp region (lobar).",
+      "enum": [
+        "frontal",
+        "central",
+        "temporal",
+        "parietal",
+        "occipital"
+      ],
+      "title": "Region",
+      "type": "string"
+    },
+    "SemiologyPhase": {
+      "description": "One phase of an episode (SCORE \u00a710).",
+      "properties": {
+        "Phase": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PhaseName"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Semiology": {
+          "description": "ILAE semiologic findings (Tables 10/11).",
+          "items": {
+            "type": "string"
+          },
+          "title": "Semiology",
+          "type": "array"
+        },
+        "Ictal EEG": {
+          "description": "Ictal EEG patterns (Table 12).",
+          "items": {
+            "type": "string"
+          },
+          "title": "Ictal Eeg",
+          "type": "array"
+        },
+        "Location": {
+          "$ref": "#/$defs/Location"
+        }
+      },
+      "title": "SemiologyPhase",
+      "type": "object"
+    },
+    "Sex": {
+      "enum": [
+        "male",
+        "female",
+        "other",
+        "unknown"
+      ],
+      "title": "Sex",
+      "type": "string"
+    },
+    "Significance": {
+      "enum": [
+        "Normal",
+        "No definite abnormality",
+        "Abnormal"
+      ],
+      "title": "Significance",
+      "type": "string"
+    },
+    "SleepAndDrowsiness": {
+      "description": "SCORE \u00a77 \u2014 sleep and drowsiness features. New module (absent in legacy OpenSCORE).",
+      "properties": {
+        "Normal sleep graphoelements": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Normal Sleep Graphoelements",
+          "type": "array"
+        },
+        "Achieved sleep stages": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Achieved Sleep Stages",
+          "type": "array"
+        },
+        "Abnormal asymmetry of sleep graphoelements": {
+          "$ref": "#/$defs/Ternary",
+          "default": "not_assessed"
+        },
+        "Sleep-onset REM period (SOREMP)": {
+          "$ref": "#/$defs/Ternary",
+          "default": "not_assessed"
+        },
+        "Non-reactive sleep activity": {
+          "$ref": "#/$defs/Ternary",
+          "default": "not_assessed"
+        },
+        "Notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Notes"
+        }
+      },
+      "title": "SleepAndDrowsiness",
+      "type": "object"
+    },
+    "SpectralBand": {
+      "enum": [
+        "Delta",
+        "Theta",
+        "Alpha",
+        "Beta",
+        "Gamma"
+      ],
+      "title": "SpectralBand",
+      "type": "string"
+    },
+    "Ternary": {
+      "description": "Tristate for present / absent / not-yet-assessed features.\n\nFixes the OpenSCORE ambiguity (issues #23/#24) where an unticked checkbox serialised\nas ``false``/``null`` and could not be distinguished from a deliberate \"absent\".\n``NOT_ASSESSED`` is the explicit default for \"the reporter has not considered this\".",
+      "enum": [
+        "present",
+        "absent",
+        "not_assessed"
+      ],
+      "title": "Ternary",
+      "type": "string"
+    },
+    "TimeRelatedFeatures": {
+      "description": "SCORE Table 6.",
+      "properties": {
+        "Mode of appearance": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ModeOfAppearance"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Discharge pattern": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DischargePattern"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Incidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Incidence"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "Prevalence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Prevalence"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "title": "TimeRelatedFeatures",
+      "type": "object"
+    }
+  },
+  "description": "A complete SCORE-aligned EEG report (clinical-core subset).\n\nTop-level aliases preserve OpenSCORE's legacy ``.score`` section keys for the six\noriginal sections and add keys for the new modules (Modulators, Sleep, Interictal,\nEpisodes). Serialise with ``model_dump(mode='json', by_alias=True)`` to produce the\n``.score`` JSON shape.",
+  "properties": {
+    "Schema version": {
+      "default": "0.1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "Patient details": {
+      "$ref": "#/$defs/PatientInformation"
+    },
+    "Patient referral": {
+      "$ref": "#/$defs/Referral"
+    },
+    "Recording conditions": {
+      "$ref": "#/$defs/RecordingConditions"
+    },
+    "Modulators and procedures": {
+      "$ref": "#/$defs/ModulatorsAndProcedures"
+    },
+    "Background activity": {
+      "$ref": "#/$defs/BackgroundActivity"
+    },
+    "Sleep and drowsiness": {
+      "$ref": "#/$defs/SleepAndDrowsiness"
+    },
+    "Interictal findings": {
+      "$ref": "#/$defs/InterictalFindings"
+    },
+    "Episodes": {
+      "$ref": "#/$defs/Episodes"
+    },
+    "Diagnostic significance": {
+      "$ref": "#/$defs/DiagnosticSignificance"
+    },
+    "Clinical comments": {
+      "$ref": "#/$defs/ClinicalComments"
+    },
+    "Extraction": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Provenance"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    }
+  },
+  "title": "EegReport",
+  "type": "object"
+}

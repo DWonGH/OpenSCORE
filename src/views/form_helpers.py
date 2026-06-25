@@ -22,3 +22,21 @@ def combo_enum(combo, enum_cls):
 def set_combo_text(combo, value):
     """Select the item matching an enum member / string (blank if None)."""
     combo.setCurrentText(value.value if hasattr(value, "value") else (value or ""))
+
+
+def set_combo(combo, value):
+    """Select ``value`` in a combo robustly.
+
+    Blank (index 0) for None/empty; otherwise select the matching item, adding it if it
+    isn't already there. This means loading a report can never crash on an unexpected value
+    (the old ``list.index()`` raised ValueError) and never silently drops it.
+    """
+    if not value:
+        combo.setCurrentIndex(0)
+        return
+    text = value.value if hasattr(value, "value") else str(value)
+    idx = combo.findText(text)
+    if idx < 0:
+        combo.addItem(text)
+        idx = combo.findText(text)
+    combo.setCurrentIndex(idx)

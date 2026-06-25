@@ -31,43 +31,10 @@ class TestPatientReferralView(unittest.TestCase):
             'Diagnosis at referral': '',
             'Seizure frequency': '',
             'Time since last seizure': '',
-            'Epilepsy-related indications': {
-                'Clinical suspicion of epilepsy or seizure': 0,
-                'Changes in seizure pattern': 0,
-                'Suspicion of non-convulsive status epilepticus': 0,
-                'Reconsider the initial diagnosis of epilepsy': 0,
-                'Monitoring of status epilepticus': 0,
-                'Classification of a patient diagnosed with epilepsy': 0,
-                'Monitoring the effect of medication': 0,
-                'Monitoring of seizure frequency': 0,
-                'Presurgical evaluation': 0,
-                'Considering stopping AED therapy': 0,
-                'Drivers license or flight certificate': 0
-            },
-            'Other differential diagnostic questions': {
-                'Psychogenic non-epileptic seizures': 0,
-                'Encephalopathy': 0,
-                'Loss of consciousness': 0,
-                'Cerebral vascular disease': 0,
-                'Disturbance of consciousness': 0,
-                'Dementia': 0,
-                'Paroxysmal behavioral changes': 0,
-                'Other psychiatric or behavioral symptoms': 0,
-                'Coma': 0,
-                'Brain death': 0
-            },
-            'Specific paediatric indication': {
-                'Genetic syndrome': 0,
-                'Metabolic disorder': 0,
-                'Regression': 0,
-                'Developmental problems': 0
-            },
-            'Other indications': {
-                'Follow up EEG': 0,
-                'Research project': 0,
-                'Assessment of prognosis': 0,
-                'Other indication': 0
-            }
+            'Epilepsy-related indications': [],
+            'Other differential diagnostic questions': [],
+            'Specific paediatric indication': [],
+            'Other indications': []
         }
         self.results_dict = self.patient_referral.to_dict()
         self.assertEqual(self.results_dict, target_dict)
@@ -81,43 +48,10 @@ class TestPatientReferralView(unittest.TestCase):
             'Diagnosis at referral': '1',
             'Seizure frequency': self.patient_referral.txt_seizure_freq[1],
             'Time since last seizure': self.patient_referral.txt_last_seizure[1],
-            'Epilepsy-related indications': {
-                'Clinical suspicion of epilepsy or seizure': 1,
-                'Changes in seizure pattern': 1,
-                'Suspicion of non-convulsive status epilepticus': 1,
-                'Reconsider the initial diagnosis of epilepsy': 1,
-                'Monitoring of status epilepticus': 1,
-                'Classification of a patient diagnosed with epilepsy': 1,
-                'Monitoring the effect of medication': 1,
-                'Monitoring of seizure frequency': 1,
-                'Presurgical evaluation': 1,
-                'Considering stopping AED therapy': 1,
-                'Drivers license or flight certificate': 1
-            },
-            'Other differential diagnostic questions': {
-                'Psychogenic non-epileptic seizures': 1,
-                'Encephalopathy': 1,
-                'Loss of consciousness': 1,
-                'Cerebral vascular disease': 1,
-                'Disturbance of consciousness': 1,
-                'Dementia': 1,
-                'Paroxysmal behavioral changes': 1,
-                'Other psychiatric or behavioral symptoms': 1,
-                'Coma': 1,
-                'Brain death': 1
-            },
-            'Specific paediatric indication': {
-                'Genetic syndrome': 1,
-                'Metabolic disorder': 1,
-                'Regression': 1,
-                'Developmental problems': 1
-            },
-            'Other indications': {
-                'Follow up EEG': 1,
-                'Research project': 1,
-                'Assessment of prognosis': 1,
-                'Other indication': 1
-            }
+            'Epilepsy-related indications': self.patient_referral.epilepsy_related_conditions,
+            'Other differential diagnostic questions': self.patient_referral.other_differential_diagnostic_questions,
+            'Specific paediatric indication': self.patient_referral.specific_paediatric_indication,
+            'Other indications': self.patient_referral.other_indication
         }
         self.assertEqual(self.results_dict, target_dict)
 

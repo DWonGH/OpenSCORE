@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QWidget, QFormLayout, QLabel, QLineEdit, QSpinBox, \
     QListWidget, QAbstractItemView
 
 from src.views.custom_widgets import IntegerLineEdit, FloatLineEdit
+from src.views.form_helpers import set_combo
 from score_schema import ALERTNESS_CHOICES
 
 
@@ -163,28 +164,13 @@ class RecordingConditionsWidget(QWidget):
         self.lne_duration.setText(data["Recording duration"])
         self.lne_technologist.setText(data["Technologist name"])
         self.lne_physician.setText(data["Physician name"])
-        if data["Sensor group"] is None:
-            self.cmb_sensor_group.setCurrentIndex(0)
-        else:
-            self.cmb_sensor_group.setCurrentIndex(self.txt_sensor_group.index(data["Sensor group"]))
-        if data["Recording type"] is None:
-            self.cmb_recording_type.setCurrentIndex(0)
-        else:
-            self.cmb_recording_type.setCurrentIndex(self.txt_recording_type.index(data["Recording type"]))
+        set_combo(self.cmb_sensor_group, data["Sensor group"])
+        set_combo(self.cmb_recording_type, data["Recording type"])
         self.set_alertness(data.get("Alertness"))
-        if data['Cooperation'] is None:
-            self.cmb_cooperation.setCurrentIndex(0)
-        else:
-            self.cmb_cooperation.setCurrentIndex(self.txt_cooperation.index(data["Cooperation"]))
+        set_combo(self.cmb_cooperation, data["Cooperation"])
         self.lne_age.setText(data["Patient age"])
         self.lne_latest_meal.setText(data["Latest meal"])
-        if data['Skull defect'] is None:
-            self.cmb_skull_defect.setCurrentIndex(0)
-        else:
-            self.cmb_skull_defect.setCurrentIndex(self.txt_skull_defect.index(data["Skull defect"]))
-        if data['Brain surgery'] is None:
-            self.cmb_brain_surgery.setCurrentIndex(0)
-        else:
-            self.cmb_brain_surgery.setCurrentIndex(self.txt_brain_surgery.index(data["Brain surgery"]))
+        set_combo(self.cmb_skull_defect, data["Skull defect"])
+        set_combo(self.cmb_brain_surgery, data["Brain surgery"])
         self.txe_tech_description.setText(data["Additional technical description"])
         self.lne_edf_location.setText(data["EDF location"])

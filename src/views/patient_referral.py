@@ -1,6 +1,8 @@
 from PyQt5.QtWidgets import QListView, QLineEdit, QFormLayout, QLabel, QWidget, QComboBox, QTextEdit
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 
+from src.views.form_helpers import set_combo
+
 
 class PatientReferralWidget(QWidget):
 
@@ -107,14 +109,8 @@ class PatientReferralWidget(QWidget):
         self.lne_referrer_name.setText(data["Referrer name"])
         self.txe_referrer_details.setText(data["Referrer details"])
         self.lne_diagnosis.setText(data["Diagnosis at referral"])
-        if data["Seizure frequency"] is None:
-            self.cmb_seizure_freq.setCurrentIndex(0)
-        else:
-            self.cmb_seizure_freq.setCurrentIndex(self.txt_seizure_freq.index(data["Seizure frequency"]))
-        if data["Time since last seizure"] is None:
-            self.cmb_last_seizure.setCurrentIndex(0)
-        else:
-            self.cmb_last_seizure.setCurrentIndex(self.txt_last_seizure.index(data["Time since last seizure"]))
+        set_combo(self.cmb_seizure_freq, data["Seizure frequency"])
+        set_combo(self.cmb_last_seizure, data["Time since last seizure"])
 
         erc = data["Epilepsy-related indications"]
         if erc is None:
@@ -140,15 +136,18 @@ class PatientReferralWidget(QWidget):
         else:
             self.set_check_list(self.chlist_other, other)
 
-    def set_check_list(self, chlist, dict):
+    def set_check_list(self, chlist, selected):
+        # Accept the schema's list[str] of selected labels (and tolerate the old
+        # dict[label] -> checkState form from legacy files).
+        if isinstance(selected, dict):
+            selected = [label for label, state in selected.items() if state]
+        selected = selected or []
         for i in range(chlist.rowCount()):
-            chlist.item(i).setCheckState(dict[chlist.item(i).text()])
+            item = chlist.item(i)
+            item.setCheckState(2 if item.text() in selected else 0)
 
     def get_check_list(self, chlist):
-        results = {}
-        for i in range(chlist.rowCount()):
-            results[chlist.item(i).text()] = chlist.item(i).checkState()
-        return results
+        return [chlist.item(i).text() for i in range(chlist.rowCount()) if chlist.item(i).checkState()]
 
     def reset_check_list(self, chlist):
         for i in range(chlist.rowCount()):

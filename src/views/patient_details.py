@@ -1,5 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QFormLayout, QLabel, QLineEdit, QTextEdit, QComboBox
 
+from src.views.form_helpers import set_combo
+
 
 class PatientDetailsWidget(QWidget):
 
@@ -24,13 +26,13 @@ class PatientDetailsWidget(QWidget):
         self.lne_dob = QLineEdit(self)
         self.layout.addRow(self.lbl_dob, self.lne_dob)
 
-        self.txt_gender = ["", "Male", "Female"]
+        self.txt_gender = ["", "male", "female", "other", "unknown"]
         self.lbl_gender = QLabel("Gender")
         self.cmb_gender = QComboBox()
         self.cmb_gender.addItems(self.txt_gender)
         self.layout.addRow(self.lbl_gender, self.cmb_gender)
 
-        self.txt_handedness = ["", "Right", "Left", "Ambidextrous"]
+        self.txt_handedness = ["", "right", "left", "ambidextrous", "unknown"]
         self.lbl_handedness = QLabel("Handedness")
         self.cmb_handedness = QComboBox()
         self.cmb_handedness.addItems(self.txt_handedness)
@@ -69,14 +71,8 @@ class PatientDetailsWidget(QWidget):
         self.lne_name.setText(data['Patient name'])
         self.lne_id.setText(data['Patient ID'])
         self.lne_dob.setText(data['Patient DOB'])
-        if data['Patient gender'] is None:
-            self.cmb_gender.setCurrentIndex(0)
-        else:
-            self.cmb_gender.setCurrentIndex(self.txt_gender.index(data['Patient gender']))
-        if data['Patient handedness'] is None:
-            self.cmb_handedness.setCurrentIndex(0)
-        else:
-            self.cmb_handedness.setCurrentIndex(self.txt_handedness.index(data['Patient handedness']))
+        set_combo(self.cmb_gender, data['Patient gender'])
+        set_combo(self.cmb_handedness, data['Patient handedness'])
         self.txe_address.setText(data['Patient address'])
         self.txe_medication.setText(data['Patient medication'])
         self.txe_history.setText(data['Patient history'])

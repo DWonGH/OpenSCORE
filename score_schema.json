@@ -1324,16 +1324,11 @@
           "type": "array"
         },
         "Other indications": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Other Indications"
+          "items": {
+            "type": "string"
+          },
+          "title": "Other Indications",
+          "type": "array"
         }
       },
       "title": "Referral",

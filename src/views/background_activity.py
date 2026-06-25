@@ -2,7 +2,13 @@ from PyQt5.QtWidgets import QFormLayout, QLabel, QWidget, QComboBox, QCheckBox, 
     QPushButton
 
 from src.views.custom_widgets import IntegerLineEdit
+from src.views.form_helpers import set_combo
 from src.views.rhythm_table_widget import RhythmTableWidget
+
+
+def _as_text(value):
+    """Render a value (possibly a number or None) as line-edit text."""
+    return "" if value is None else str(value)
 
 
 class BackgroundActivityWidget(QWidget):
@@ -137,43 +143,16 @@ class BackgroundActivityWidget(QWidget):
 
     def update_from_dict(self, data):
         pdr = data["Posterior dominant rhythm"]
-        if pdr["Significance"] is not None:
-            self.cmb_pdr_significance.setCurrentIndex(self.txt_pdr_significance.index(pdr["Significance"]))
-        else:
-            self.cmb_pdr_significance.setCurrentIndex(0)
-        self.lne_pdr_frequency.setText(pdr["Frequency"])
-        if pdr["Frequency asymmetry"] is True:
-            self.chbx_pdr_freq_asymmetry.setChecked(True)
-        else:
-            self.chbx_pdr_freq_asymmetry.setChecked(False)
-        self.lne_pdr_freq_asymmetry_left.setText(pdr["Hz lower left"])
-        self.lne_pdr_freq_asymmetry_right.setText(pdr["Hz lower right"])
-        if pdr["Amplitude"] is not None:
-            self.cmb_pdr_amplitude.setCurrentIndex(self.txt_pdr_amplitude.index(pdr["Amplitude"]))
-        else:
-            self.cmb_pdr_amplitude.setCurrentIndex(0)
-        if pdr["Amplitude asymmetry"] is not None:
-            self.cmb_pdr_amp_asymmetry.setCurrentIndex(self.txt_pdr_amp_asymmetry.index(pdr["Amplitude asymmetry"]))
-        else:
-            self.cmb_pdr_amp_asymmetry.setCurrentIndex(0)
-        if pdr["Reactivity to eye opening"] is not None:
-            self.cmb_pdr_eye_opening.setCurrentIndex(self.txt_pdr_eye_opening.index(pdr["Reactivity to eye opening"]))
-        else:
-            self.cmb_pdr_eye_opening.setCurrentIndex(0)
-        if pdr["Organisation"] is not None:
-            self.cmb_pdr_organisation.setCurrentIndex(self.txt_pdr_organisation.index(pdr["Organisation"]))
-        else:
-            self.cmb_pdr_organisation.setCurrentIndex(0)
-        if pdr["Caveat"] is not None:
-            self.cmb_pdr_caveat.setCurrentIndex(self.txt_pdr_caveat.index(pdr["Caveat"]))
-        else:
-            self.cmb_pdr_caveat.setCurrentIndex(0)
-        if pdr["Absence of PDR"] is not None:
-            self.cmb_pdr_absence.setCurrentIndex(self.txt_pdr_absence.index(pdr["Absence of PDR"]))
-        else:
-            self.cmb_pdr_absence.setCurrentIndex(0)
-        if data["Critically ill background activity"] is not None:
-            self.cmb_critical_features.setCurrentIndex(self.txt_critical_features.index(data["Critically ill background activity"]))
-        else:
-            self.cmb_critical_features.setCurrentIndex(0)
+        set_combo(self.cmb_pdr_significance, pdr["Significance"])
+        self.lne_pdr_frequency.setText(_as_text(pdr["Frequency"]))
+        self.chbx_pdr_freq_asymmetry.setChecked(pdr["Frequency asymmetry"] is True)
+        self.lne_pdr_freq_asymmetry_left.setText(_as_text(pdr["Hz lower left"]))
+        self.lne_pdr_freq_asymmetry_right.setText(_as_text(pdr["Hz lower right"]))
+        set_combo(self.cmb_pdr_amplitude, pdr["Amplitude"])
+        set_combo(self.cmb_pdr_amp_asymmetry, pdr["Amplitude asymmetry"])
+        set_combo(self.cmb_pdr_eye_opening, pdr["Reactivity to eye opening"])
+        set_combo(self.cmb_pdr_organisation, pdr["Organisation"])
+        set_combo(self.cmb_pdr_caveat, pdr["Caveat"])
+        set_combo(self.cmb_pdr_absence, pdr["Absence of PDR"])
+        set_combo(self.cmb_critical_features, data["Critically ill background activity"])
         self.rhythm_table.update_from_dict(data["Other organised rhythms"])

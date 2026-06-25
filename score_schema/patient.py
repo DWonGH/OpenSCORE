@@ -50,4 +50,4 @@ class Referral(ScoreModel):
     epilepsy_indications: list[str] = Field(default_factory=list, alias="Epilepsy-related indications")
     differential_indications: list[str] = Field(default_factory=list, alias="Other differential diagnostic questions")
     paediatric_indications: list[str] = Field(default_factory=list, alias="Specific paediatric indication")
-    other_indications: Optional[str] = Field(default=None, alias="Other indications")
+    other_indications: list[str] = Field(default_factory=list, alias="Other indications")

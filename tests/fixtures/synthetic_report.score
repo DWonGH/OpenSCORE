@@ -16,7 +16,7 @@
         "Diagnosis at referral": "Query epilepsy",
         "Seizure frequency": "2 per month",
         "Time since last seizure": "2 days",
-        "Epilepsy-related indications": ["clinical suspicion of epilepsy or seizure"],
+        "Epilepsy-related indications": ["Clinical suspicion of epilepsy or seizure"],
         "Other differential diagnostic questions": [],
         "Specific paediatric indication": [],
         "Other indications": null

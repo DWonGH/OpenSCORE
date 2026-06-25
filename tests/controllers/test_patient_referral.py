@@ -45,51 +45,10 @@ class TestPatientReferralController(unittest.TestCase):
         self.assertEqual(self.model.diagnosis, "1")
         self.assertEqual(self.model.seizure_frequency, self.view.txt_seizure_freq[1])
         self.assertEqual(self.model.last_seizure, self.view.txt_last_seizure[1])
-        self.assertEqual(self.model.epilepsy_indications,
-            {
-                'Changes in seizure pattern': 1,
-                'Classification of a patient diagnosed with epilepsy': 1,
-                'Clinical suspicion of epilepsy or seizure': 1,
-                'Considering stopping AED therapy': 1,
-                'Drivers license or flight certificate': 1,
-                'Monitoring of seizure frequency': 1,
-                'Monitoring of status epilepticus': 1,
-                'Monitoring the effect of medication': 1,
-                'Presurgical evaluation': 1,
-                'Reconsider the initial diagnosis of epilepsy': 1,
-                'Suspicion of non-convulsive status epilepticus': 1
-            }
-        )
-        self.assertEqual(self.model.differential_indications,
-            {
-                'Brain death': 1,
-                'Cerebral vascular disease': 1,
-                'Coma': 1,
-                'Dementia': 1,
-                'Disturbance of consciousness': 1,
-                'Encephalopathy': 1,
-                'Loss of consciousness': 1,
-                'Other psychiatric or behavioral symptoms': 1,
-                'Paroxysmal behavioral changes': 1,
-                'Psychogenic non-epileptic seizures': 1
-            }
-        )
-        self.assertEqual(self.model.paediatric_indications,
-            {
-                'Developmental problems': 1,
-                'Genetic syndrome': 1,
-                'Metabolic disorder': 1,
-                'Regression': 1
-            }
-        )
-        self.assertEqual(self.model.other_indications,
-            {
-                'Assessment of prognosis': 1,
-                'Follow up EEG': 1,
-                'Other indication': 1,
-                'Research project': 1
-            }
-        )
+        self.assertEqual(self.model.epilepsy_indications, self.view.epilepsy_related_conditions)
+        self.assertEqual(self.model.differential_indications, self.view.other_differential_diagnostic_questions)
+        self.assertEqual(self.model.paediatric_indications, self.view.specific_paediatric_indication)
+        self.assertEqual(self.model.other_indications, self.view.other_indication)
 
     def test_update_view(self):
         self.assertEqual(self.view.lne_referrer_name.text(), '')
@@ -112,43 +71,10 @@ class TestPatientReferralController(unittest.TestCase):
         self.model.diagnosis = "1"
         self.model.seizure_frequency = self.view.txt_seizure_freq[1]
         self.model.last_seizure = self.view.txt_last_seizure[1]
-        self.model.epilepsy_indications = {
-            'Changes in seizure pattern': 1,
-            'Classification of a patient diagnosed with epilepsy': 1,
-            'Clinical suspicion of epilepsy or seizure': 1,
-            'Considering stopping AED therapy': 1,
-            'Drivers license or flight certificate': 1,
-            'Monitoring of seizure frequency': 1,
-            'Monitoring of status epilepticus': 1,
-            'Monitoring the effect of medication': 1,
-            'Presurgical evaluation': 1,
-            'Reconsider the initial diagnosis of epilepsy': 1,
-            'Suspicion of non-convulsive status epilepticus': 1
-        }
-        self.model.differential_indications = {
-            'Brain death': 1,
-            'Cerebral vascular disease': 1,
-            'Coma': 1,
-            'Dementia': 1,
-            'Disturbance of consciousness': 1,
-            'Encephalopathy': 1,
-            'Loss of consciousness': 1,
-            'Other psychiatric or behavioral symptoms': 1,
-            'Paroxysmal behavioral changes': 1,
-            'Psychogenic non-epileptic seizures': 1
-        }
-        self.model.paediatric_indications = {
-            'Developmental problems': 1,
-            'Genetic syndrome': 1,
-            'Metabolic disorder': 1,
-            'Regression': 1
-        }
-        self.model.other_indications = {
-            'Assessment of prognosis': 1,
-            'Follow up EEG': 1,
-            'Other indication': 1,
-            'Research project': 1
-        }
+        self.model.epilepsy_indications = self.view.epilepsy_related_conditions
+        self.model.differential_indications = self.view.other_differential_diagnostic_questions
+        self.model.paediatric_indications = self.view.specific_paediatric_indication
+        self.model.other_indications = self.view.other_indication
 
         self.controller.update_view()
 
@@ -158,13 +84,13 @@ class TestPatientReferralController(unittest.TestCase):
         self.assertEqual(self.view.cmb_seizure_freq.currentText(), self.view.txt_seizure_freq[1])
         self.assertEqual(self.view.cmb_last_seizure.currentText(), self.view.txt_last_seizure[1])
         for i in range(self.view.chlist_epilepsy.rowCount()):
-            self.assertEqual(self.view.chlist_epilepsy.item(i).checkState(), 1)
+            self.assertEqual(self.view.chlist_epilepsy.item(i).checkState(), 2)
         for i in range(self.view.chlist_other_diagnostic.rowCount()):
-            self.assertEqual(self.view.chlist_other_diagnostic.item(i).checkState(), 1)
+            self.assertEqual(self.view.chlist_other_diagnostic.item(i).checkState(), 2)
         for i in range(self.view.chlist_peadiatric.rowCount()):
-            self.assertEqual(self.view.chlist_peadiatric.item(i).checkState(), 1)
+            self.assertEqual(self.view.chlist_peadiatric.item(i).checkState(), 2)
         for i in range(self.view.chlist_other.rowCount()):
-            self.assertEqual(self.view.chlist_other.item(i).checkState(), 1)
+            self.assertEqual(self.view.chlist_other.item(i).checkState(), 2)
 
     def set_check_list_ones(self, chlist):
         for i in range(chlist.rowCount()):

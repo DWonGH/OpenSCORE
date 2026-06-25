@@ -62,10 +62,10 @@ class MainWindowModel:
             self.report.from_dict(data)
         if self.interpreter_name is not None:
             self.report.clinical_comments.interpreter_name = self.interpreter_name
-        # if os.path.exists(self.report.recording_conditions.edf_location):
-        #     self.set_edf(self.report.recording_conditions.edf_location)
-        self.set_edf(self.report.recording_conditions.edf_location)
-        print(self.report.recording_conditions.edf_location)
+        # Only link an EDF if the report actually records one (it may be null).
+        edf_location = self.report.recording_conditions.edf_location
+        if edf_location:
+            self.set_edf(edf_location)
 
     def save_report(self):
         """
@@ -92,18 +92,19 @@ class MainWindowModel:
         :param file_path: string - should be an absolute path to an edf file
         :return:
         """
+        self.set_edf(file_path)
+        # Best-effort auto-populate from a co-located text report (TUH-style naming).
+        # A parsing/IO failure here must not stop the EDF from being linked.
         try:
-            self.set_edf(file_path)
-
-            # When we open an EDF file, look for a corresponding text report which we can
-            # use as a base to convert to score standard
             files = next(os.walk(self.edf_directory))[2]
             target_text_file_name = f"{self.edf_file_name.rsplit('_', 1)[0]}.txt"
             if files.count(target_text_file_name) == 1:
                 self.set_text_report(os.path.join(self.edf_directory, target_text_file_name))
                 self.report_from_text_description()
-        except Exception as e:
-            print(f"Exception {e}")
+        except Exception as exc:
+            # e.g. an offline OneDrive placeholder text file (OSError 22). The EDF is still
+            # linked; auto-population is just skipped.
+            print(f"[open_edf] Could not auto-populate from a co-located text report: {exc}")
 
     def report_from_text_description(self):
         """Parse text descriptions (e.g. TUEG reports) and try autocomplete report"""
@@ -204,9 +205,15 @@ class MainWindowModel:
         self.report_file_name = os.path.basename(file_path)
 
     def set_edf(self, file_path):
-        self.edf_file_path = os.path.normpath(file_path)
-        self.edf_directory = os.path.dirname(os.path.normpath(file_path))
-        self.edf_file_name = os.path.basename(os.path.normpath(file_path))
+        if not file_path:
+            self.edf_file_path = None
+            self.edf_directory = None
+            self.edf_file_name = None
+            return
+        normalised = os.path.normpath(file_path)
+        self.edf_file_path = normalised
+        self.edf_directory = os.path.dirname(normalised)
+        self.edf_file_name = os.path.basename(normalised)
         self.report.recording_conditions.edf_location = self.edf_file_path
 
     def set_text_report(self, file_path):

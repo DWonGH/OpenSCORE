@@ -10,5 +10,7 @@ PyQt5
 psutil
 pydantic>=2.6
 
-# For eye tracker
-tobii_research
+# For eye tracker (optional, TEETACSI variant only). Not used by core OpenSCORE and has
+# no wheels for Python 3.11+. Install separately on a supported Python if you need it:
+#   pip install tobii_research
+# tobii_research

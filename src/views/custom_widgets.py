@@ -23,6 +23,6 @@ class FloatLineEdit(QLineEdit):
 
     def hdl_text_edited(self, text):
         if not str(text).count('.') > 1:
-            getVals = list([val for val in text if val is '.' or val.isnumeric()])
+            getVals = list([val for val in text if val == '.' or val.isnumeric()])
             self.fixed_text = "".join(getVals)
         self.setText(self.fixed_text)

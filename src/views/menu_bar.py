@@ -36,3 +36,9 @@ class MainMenuBar(QMenuBar):
         self.bt_close_window = QAction("&Close", self)
         self.bt_close_window.setStatusTip("Exit OpenScore")
         self.file_menu.addAction(self.bt_close_window)
+
+        self.settings_menu = self.addMenu("&Settings")
+
+        self.bt_locate_edfbrowser = QAction("Locate &EDFBrowser...", self)
+        self.bt_locate_edfbrowser.setStatusTip("Choose the EDFBrowser executable to use")
+        self.settings_menu.addAction(self.bt_locate_edfbrowser)

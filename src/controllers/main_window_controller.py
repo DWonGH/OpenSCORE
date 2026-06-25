@@ -1,9 +1,11 @@
 import json
 import os
+import shutil
 import subprocess
 import traceback
 
 import psutil
+from PyQt5.QtCore import QSettings
 from PyQt5.QtWidgets import QFileDialog, QMessageBox, QTabWidget
 
 from src.controllers.background_activity_controller import BackgroundActivityController
@@ -59,6 +61,7 @@ class MainWindowController:
         self.view.menu.bt_save_file.triggered.connect(self.hdl_save_report)
         self.view.menu.bt_save_as_file.triggered.connect(self.hdl_save_report_as)
         self.view.menu.bt_load_single_eeg.triggered.connect(self.hdl_load_edf)
+        self.view.menu.bt_locate_edfbrowser.triggered.connect(self.hdl_locate_edfbrowser)
         self.view.toolbar.btn_open_in_edfbrowser.triggered.connect(self.hdl_open_in_edfbrowser)
 
         # Connecting the widgets to the tab system
@@ -77,18 +80,50 @@ class MainWindowController:
         self.view.tabs.addTab(self.diagnostic_significance_controller.view, "Diagnostic Significance")
         self.view.tabs.addTab(self.clinical_comments_controller.view, "Clinical Comments")
 
-        self.edfbrowser_path = os.path.join(os.getcwd(), 'edfbrowser', 'edfbrowser.exe')
-        if not os.path.exists(self.edfbrowser_path):
-            print(f"EDFBrowser is not installed")
-            dialog = QMessageBox()
-            dialog.setWindowTitle("EDFBrowser")
-            dialog.setText("EDFBrowser is not installed")
-            dialog.setStandardButtons(QMessageBox.Ok)
-            dialog.setIcon(QMessageBox.Warning)
-            dialog.exec_()
+        # Resolve EDFBrowser from a saved setting / env var / repo folder / PATH. If it can't
+        # be found we don't nag at startup — the user is prompted to locate it only when they
+        # actually try to open a recording (or via Settings > Locate EDFBrowser).
+        self.edfbrowser_path = self.resolve_edfbrowser_path()
         self.edfbrowser_p = None
 
         #self.view..connect(self.hdl_close_event)
+
+    EDFBROWSER_SETTING = "edfbrowser_path"
+
+    def resolve_edfbrowser_path(self):
+        """Find the EDFBrowser executable, in priority order.
+
+        1. a path the user previously chose (QSettings), 2. the EDFBROWSER_PATH env var,
+        3. the repo-local ``edfbrowser/edfbrowser.exe``, 4. ``edfbrowser`` on PATH.
+        Returns the first one that exists, else None.
+        """
+        candidates = [
+            QSettings().value(self.EDFBROWSER_SETTING, "", type=str),
+            os.environ.get("EDFBROWSER_PATH", ""),
+            os.path.join(os.getcwd(), "edfbrowser", "edfbrowser.exe"),
+            shutil.which("edfbrowser") or "",
+            shutil.which("edfbrowser.exe") or "",
+        ]
+        for path in candidates:
+            if path and os.path.exists(path):
+                return path
+        return None
+
+    def hdl_locate_edfbrowser(self):
+        """Let the user pick the EDFBrowser executable and remember it across sessions."""
+        file_path, _ = QFileDialog.getOpenFileName(
+            caption="Locate EDFBrowser executable",
+            filter="EDFBrowser (edfbrowser.exe);;Executables (*.exe);;All files (*)")
+        if file_path:
+            self.edfbrowser_path = file_path
+            QSettings().setValue(self.EDFBROWSER_SETTING, file_path)
+            dialog = QMessageBox()
+            dialog.setWindowTitle("EDFBrowser")
+            dialog.setText(f"EDFBrowser location saved:\n{file_path}")
+            dialog.setStandardButtons(QMessageBox.Ok)
+            dialog.setIcon(QMessageBox.Information)
+            dialog.exec_()
+        return self.edfbrowser_path
 
     def hdl_new_report(self):
         """
@@ -287,14 +322,16 @@ class MainWindowController:
         EDFBrowser will start writing a UI log to the output directory.
         :return:
         """
-        if not os.path.exists(self.edfbrowser_path):
+        if not self.edfbrowser_path or not os.path.exists(self.edfbrowser_path):
             dialog = QMessageBox()
             dialog.setWindowTitle("Open in EDFBrowser")
-            dialog.setText("EDFBrowser has not been installed in the OpenSCORE directory")
-            dialog.setStandardButtons(QMessageBox.Ok)
-            dialog.setIcon(QMessageBox.Information)
-            answer = dialog.exec_()
-            return False
+            dialog.setText("EDFBrowser could not be found. Would you like to locate it now?")
+            dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            dialog.setIcon(QMessageBox.Question)
+            if dialog.exec_() == QMessageBox.Yes:
+                self.hdl_locate_edfbrowser()
+            if not self.edfbrowser_path or not os.path.exists(self.edfbrowser_path):
+                return False
         try:
             if not self.edfbrowser_is_open():
                 if self.model.edf_file_path is not None and os.path.exists(self.model.edf_file_path):

@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "score-schema"
+version = "0.1.0"
+description = "SCORE-2017-aligned schema for EEG reports (the report data model used by OpenSCORE)"
+readme = "score_schema/README.md"
+requires-python = ">=3.10"
+dependencies = ["pydantic>=2.6"]
+
+[project.urls]
+Homepage = "https://github.com/DWonGH/OpenSCORE"
+
+# OpenSCORE itself is run from source (main.py); this packaging exposes only the reusable
+# score_schema library so other projects (e.g. the EEG-report extraction service) can
+# `pip install` it as the single source of truth for the report schema.
+[tool.setuptools]
+packages = ["score_schema"]

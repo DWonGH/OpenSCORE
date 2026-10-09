@@ -51,3 +51,11 @@ the controller using python dictionaries.
 from persisted files.
 - The tests follow the same structure as the source code. Each test case needs
 to be added to the main test file in the project root.
+
+## Disclaimer
+
+OpenSCORE is provided for research, educational, and software development purposes only.
+
+It is not a medical device, has not been validated for clinical use, and is not intended to diagnose, treat, cure, or prevent any disease or condition. Any EEG interpretation or report generated or supported by this software must be reviewed and confirmed by a qualified clinician before clinical use.
+
+The software is provided “as is”, without warranty of any kind. Users are solely responsible for determining whether it is appropriate for their intended use, including compliance with applicable laws, regulations, institutional policies, and professional standards.
